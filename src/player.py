@@ -40,17 +40,17 @@ class Body(Entity):
 
 
 
-    # TODO comsomation de l'énergie du perso
+    # comsomation de l'énergie du perso
     def useEnergy(self, energyToConsume: int) -> None:
         if self.energy >= energyToConsume:
             self.energy -= energyToConsume;
-            print('energie restant:', self.energy);
-
 
     # dash du perso
     # TODO ajout la gestion d'énergie
     def dash(self, value: int) -> None:
         if self.energy >= settings.DASH_ENERGY_CONSUMPTION:
+            self.useEnergy(settings.DASH_ENERGY_CONSUMPTION);
+
             if self.current_dir_y == Direction.UP:
                 self.rect.y -= value;
             elif self.current_dir_y == Direction.DOWN:
