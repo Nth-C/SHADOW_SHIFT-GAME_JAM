@@ -2,3 +2,5 @@
 .build/*
 !.build/.gitkeep
 .ruff_cache
+.DS_STORE
+__pycache__/
