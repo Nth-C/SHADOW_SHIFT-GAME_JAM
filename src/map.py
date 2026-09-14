@@ -1,28 +1,28 @@
-import pygame
-import pytmx
 from pathlib import Path
+
+import pytmx
+
 from screen import Screen
 
 MAPS_DIR = Path(__file__).resolve().parent.parent / "assets" / "maps"
 
-class Map: 
+
+class Map:
     def __init__(self, screen: Screen):
         self.screen = screen
         self.tmx_data = None
 
     def switch_map(self, map_name: str):
         map_path = MAPS_DIR / f"{map_name}.tmx"
-        self.tmx_data = pytmx.load_pygame(str(map_path)) 
+        self.tmx_data = pytmx.load_pygame(str(map_path))
 
     def draw(self):
         if not self.tmx_data:
             return
-            
+
         display = self.screen.get_display()
-        
-        # Parcourt uniquement les couches visibles
+
         for layer in self.tmx_data.visible_layers:
-            # Vérifie qu'il s'agit d'une couche de tuiles
             if isinstance(layer, pytmx.TiledTileLayer):
                 for x, y, gid in layer:
                     tile = self.tmx_data.get_tile_image_by_gid(gid)

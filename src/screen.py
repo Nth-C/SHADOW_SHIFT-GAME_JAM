@@ -1,7 +1,7 @@
 import pygame
 
-class Screen: 
 
+class Screen:
     def __init__(self):
         self.display = pygame.display.set_mode((1024, 768))
         self.framerate = 60
@@ -9,7 +9,7 @@ class Screen:
     def update(self):
         pygame.display.flip()
         pygame.display.update()
-        self.display.fill((0,0,0))
+        self.display.fill((0, 0, 0))
 
     def get_size(self):
         return self.display.get_size()
