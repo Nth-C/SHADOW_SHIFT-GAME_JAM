@@ -1,29 +1,30 @@
-import pygame
+import pygame as pg
 import sys
 from player import Body
+from constants import settings
 
-pygame.init()
-ecran = pygame.display.set_mode((800, 600))
-horloge = pygame.time.Clock()
+pg.init()
+ecran = pg.display.set_mode((settings.WIDTH_SCREEN, settings.WIDTH_SCREEN))
+horloge = pg.time.Clock()
 
 joueur = Body(400, 300)
 
 en_jeu = True
 while en_jeu:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+    for event in pg.event.get():
+        if event.type == pg.QUIT:
             en_jeu = False
-
-    touches = pygame.key.get_pressed()
+            
+        joueur.event_handler(event)
+        
+    joueur.move()
     
-    joueur.move(touches)
-
     ecran.fill((30, 30, 30))
     
     ecran.blit(joueur.image, joueur.rect)
     
-    pygame.display.flip()
+    pg.display.flip()
     horloge.tick(60)
 
-pygame.quit()
+pg.quit()
 sys.exit()
