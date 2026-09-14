@@ -7,4 +7,5 @@ dependencies = [
     "pygame==2.6.1",
     "pytmx",
     "mypy",
+    "ruff"
 ]
