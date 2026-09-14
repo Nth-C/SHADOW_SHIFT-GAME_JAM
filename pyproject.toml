@@ -1,0 +1,10 @@
+[project]
+name = "exemple"
+version = "0.1.0"
+description = "Game Jam BUT3 (2026)"
+requires-python = ">=3.12, <3.13"
+dependencies = [
+    "pygame==2.6.1",
+    "pytmx",
+    "mypy",
+]
