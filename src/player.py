@@ -13,10 +13,18 @@ class Body(Entity):
         self.keypress_history: list[int] = []; # liste des touche qui sont actuellement presser
         self.current_dir_x: Direction = Direction.RIGHT; # direction dans laquel le joueur est
         self.current_dir_y: Direction = None;
+        self.position = [x,y];
+        self.feet = pg.Rect(0, 0, self.rect.width // 2, 12)
+        self.feet.midbottom = self.rect.midbottom
+        self.old_position = self.position.copy()
 
+    def save_location(self): self.old_position = self.position.copy()
+
+    def moove_back(self):
+        self.position = self.old_position
 
     # gere les evenement du joueur (déplacement)
-    def event_handler(self, event: Event):
+    def event_handler(self, event: Event, walls: list[pg.Rect] | None = None):
         # liste avec les boutons de directions
         key_move = [pg.K_q, pg.K_d, pg.K_z, pg.K_s];
 
@@ -36,7 +44,7 @@ class Body(Entity):
         # --- dash
         # dash dans la derniere direction
         if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
-            self.dash(player_constants.DASH_DISTANCE);
+            self.dash(player_constants.DASH_DISTANCE, walls);
 
 
     # comsomation de l'énergie du perso
@@ -50,22 +58,36 @@ class Body(Entity):
 
     # dash du perso
     # TODO ajout la gestion d'énergie
-    def dash(self, value: int) -> None:
+    def dash(self, value: int, walls: list[pg.Rect] | None = None) -> None:
         if self.energy >= player_constants.DASH_ENERGY_CONSUMPTION:
             self.useEnergy(player_constants.DASH_ENERGY_CONSUMPTION);
 
             if self.current_dir_y == Direction.UP:
-                self.rect.y -= value;
+                self._move_axis(0, -value, walls)
             elif self.current_dir_y == Direction.DOWN:
-                self.rect.y += value;
+                self._move_axis(0, value, walls)
 
             if self.current_dir_x == Direction.LEFT:
-                self.rect.x -= value;
+                self._move_axis(-value, 0, walls)
             elif self.current_dir_x == Direction.RIGHT:
-                self.rect.x += value;
+                self._move_axis(value, 0, walls)
 
     # mouvement du perso
-    def move(self):
+    def _move_axis(
+        self,
+        movement_x: int,
+        movement_y: int,
+        walls: list[pg.Rect] | None,
+    ) -> None:
+        next_rect = self.rect.move(movement_x, movement_y)
+        next_feet = self.feet.copy()
+        next_feet.midbottom = next_rect.midbottom
+
+        if not walls or not any(next_feet.colliderect(wall) for wall in walls):
+            self.rect = next_rect
+            self.feet = next_feet
+
+    def move(self, walls: list[pg.Rect] | None = None):
         # permet de pouvoir bouger que dans une seule direction
         move_x = False;
         move_y = False;
@@ -81,21 +103,21 @@ class Body(Entity):
             # --- mouvement x
             if not move_x:
                 if keypressed == pg.K_q:
-                    self.rect.x -= self.speed;
+                    self._move_axis(-self.speed, 0, walls)
                     self.current_dir_x = Direction.LEFT;
                     move_x = True; # verrouille l'axe x
                 elif keypressed == pg.K_d:
-                    self.rect.x += self.speed;
+                    self._move_axis(self.speed, 0, walls)
                     self.current_dir_x = Direction.RIGHT;
                     move_x = True;
                 
             # --- mouvement y
             if not move_y:
                 if keypressed == pg.K_z:
-                    self.rect.y -= self.speed;
+                    self._move_axis(0, -self.speed, walls)
                     self.current_dir_y = Direction.UP;
                     move_y = True; # verrouille l'axe y
                 elif keypressed == pg.K_s:
-                    self.rect.y += self.speed;
+                    self._move_axis(0, self.speed, walls)
                     self.current_dir_y = Direction.DOWN;
                     move_y = True;
