@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="1">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="8">
  <tileset firstgid="1" source="tilesets/tilesFloor32.tsx"/>
  <tileset firstgid="199" source="tilesets/laboratory-tileset7.tsx"/>
  <tileset firstgid="391" source="tilesets/laboratory-tileset6.tsx"/>
@@ -32,6 +32,18 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,211,196,197,198,215,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="4" name="collision">
+  <object id="1" type="collision" x="0" y="576" width="31.4537" height="147.436"/>
+  <object id="2" type="collision" x="0" y="640" width="448" height="126.244"/>
+  <object id="3" type="collision" x="544" y="640" width="480" height="128"/>
+  <object id="4" type="collision" x="992" y="576" width="32" height="64"/>
+  <object id="6" type="collision" x="70.166" y="516.567" width="16.9366" height="91.9416">
+   <capsule/>
+  </object>
+  <object id="7" type="collision" x="931.514" y="514.147" width="22.9854" height="93.1514">
+   <capsule/>
+  </object>
+ </objectgroup>
  <layer id="3" name="wall decoration" width="32" height="24">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

@@ -14,6 +14,12 @@ class Game:
         pg.display.set_caption("Shadow of PikPik")
         self.screen = Screen()
         self.timer = pg.time.Clock()
+
+        self.state = "MENU"
+        
+        pg.font.init()
+        self.font_title = pg.font.SysFont("Arial", 50, bold=True)
+        self.font_instruction = pg.font.SysFont("Arial", 25)
         
         self.map = Map(self.screen)
         self.map.switch_map("spawn")
@@ -49,6 +55,29 @@ class Game:
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     running = False
+                if self.state == "MENU":
+                    if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
+                        self.state = "PLAYING"
+                
+                elif self.state == "PLAYING":
+                    self.player.event_handler(event, self.walls)  
+
+            if self.state == "MENU":  
+                self.screen.display.fill((20, 20, 40))
+                
+                title_surf = self.font_title.render("Shadow of PikPik", True, (255, 255, 255))
+                title_rect = title_surf.get_rect(center=(1024 // 2, 768 // 3))
+                self.screen.display.blit(title_surf, title_rect)
+                
+                inst_surf = self.font_instruction.render("Appuyez sur ESPACE pour commencer", True, (0, 255, 200))
+                inst_rect = inst_surf.get_rect(center=(1024 // 2, 768 // 2))
+                self.screen.display.blit(inst_surf, inst_rect)
+
+            elif self.state == "PLAYING":
+                self.player.move(self.walls)
+                if not self.player.capacity_active:
+                    self.player.regen_energy();
+                self.player.update_energy();
                                      
                 self.entity_active.event_handler(event, self.walls)
 
@@ -80,13 +109,21 @@ class Game:
                 
             self.player.update_energy()
 
+                self.scroll.scroll_update(self.player, 1024 // self.zoom, 768 // self.zoom)
             if self.entity_active == self.shadow and self.player.energy <= 0:
                 self.entity_active = self.player
 
             self.scroll.scroll_update(self.entity_active, 1024 // self.zoom, 768 // self.zoom)
 
-            self.fake_screen.fill((0, 0, 0))
+                self.fake_screen.fill((0, 0, 0))
 
+                self.map.draw(self.scroll, self.fake_screen, ("sol", "objet"))
+                
+                self.map.draw(self.scroll, self.fake_screen, ("mur", "barriere", "armoire"), mur_bas_rects=self.mur_bas_rects, draw_foreground=False)
+                self.player_move = self.scroll.apply(self.player.rect)
+
+                
+                self.fake_screen.blit(self.player.image, self.player_move)
             self.map.draw(self.scroll, self.fake_screen, ("sol", "objet"))
             
             self.map.draw(self.scroll, self.fake_screen, ("mur", "barriere", "armoire"), mur_bas_rects=self.mur_bas_rects, draw_foreground=False)
@@ -99,7 +136,13 @@ class Game:
                 self.fake_screen.blit(self.shadow.image, self.shadow_move)
 
             self.map.draw(self.scroll, self.fake_screen, ("mur", "barriere", "armoire"), mur_bas_rects=self.mur_bas_rects, draw_foreground=True)
+                self.map.draw(self.scroll, self.fake_screen, ("mur", "barriere", "armoire"), mur_bas_rects=self.mur_bas_rects, draw_foreground=True)
 
+                screen_zoom = pg.transform.scale(self.fake_screen, (1024, 768))
+                self.screen.display.blit(screen_zoom, (0, 0))
+                
+                self.hud.draw(self.screen.display, self.player)
+                
             screen_zoom = pg.transform.scale(self.fake_screen, (1024, 768))
             self.screen.display.blit(screen_zoom, (0, 0))
             
