@@ -15,6 +15,9 @@ class Body(Entity):
 
         self.last_regen_time = pg.time.get_ticks()
 
+        self.capacity_active = false
+        self.last_capacity_time = pg.time.get_ticks()
+
 
     # gere les evenement du joueur (déplacement)
     def event_handler(self, event: Event):
@@ -38,6 +41,11 @@ class Body(Entity):
         # dash dans la derniere direction
         if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
             self.dash(player_constants.DASH_DISTANCE);
+
+        # --- capacite ombre
+        # active la capacite de se spéarer de son ombre
+        if event.type == pg.K_f:
+            self.toggle_capacity();
 
 
     # comsomation de l'énergie du perso
@@ -116,3 +124,41 @@ class Body(Entity):
                     self.rect.y += self.speed;
                     self.current_dir_y = Direction.DOWN;
                     move_y = True;
+
+    # active / desactive la capacité
+    def toggle_capacity(self):
+        # si capacité pas active alors on l'active sinon on la desactive
+        if not self.capacity_active and self.energie > 0:
+            self.capacity_active = true
+        else :
+            self.capacity_active = false
+            self.last_regen_time = pg.time.get_ticks()
+
+    # actualise l'energie du joueurs en fonction du temps d'utilisation de l'ombre
+    def update_energy(self):
+        current_time = pg.time.get_ticks()
+
+        if self.capacity_active:
+            if (current_time - self.last_capacity_time) >= 100:
+                self.energy -= 5
+                self.last_capacity_time = current_time
+
+                if self.energy <= 0:
+                    self.energy = 0
+                    self.capacity_active = false
+                    self.last_regen_time = current_time
+        else:
+            self.regen_energy()
+
+
+
+class Shadow(Entity):
+    def __init__(self, x, y):
+        super().__init__(x, y, color=(0, 0, 255), width=25, height=50, hp=100, attack=5, speed=6, energy=100, health=100);
+        self.is_defenseless = False;
+
+        self.keypress_history: list[int] = []; # liste des touche qui sont actuellement presser
+        self.current_dir_x: Direction = Direction.RIGHT; # direction dans laquel le joueur est
+        self.current_dir_y: Direction = None;
+
+        self.last_regen_time = pg.time.get_ticks()

@@ -38,19 +38,17 @@ class Game:
                 
             self.player.move();
             self.player.regen_energy();
+            self.player.update_energy();
 
             self.fake_screen.fill((0,0,0))
 
             self.scroll.scroll_update(self.player, 1024 // self.zoom, 768 // self.zoom)
-
             self.map.draw(self.scroll, self.fake_screen)
-
             self.player_move = self.scroll.apply(self.player.rect)
+
             
             self.fake_screen.blit(self.player.image, self.player_move)
-
             screen_zoom = pg.transform.scale(self.fake_screen, (1024, 768))
-
             self.screen.display.blit(screen_zoom, (0, 0))
             
             self.hud.draw(self.screen.display, self.player)
