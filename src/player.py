@@ -3,11 +3,11 @@ from pygame.event import Event
 from pygame.key import ScancodeWrapper
 from entity import Entity
 from enums.direction import Direction
-from constants import settings
+import constants.player as player_constants
 
 class Body(Entity):
     def __init__(self, x, y):
-        super().__init__(x, y, color=(0, 255, 0), width=25, height=50, hp=100, attack=20, speed=4, energy=100);
+        super().__init__(x, y, color=(0, 255, 0), width=25, height=50, hp=100, attack=20, speed=4, energy=100, health=100);
         self.is_defenseless = False;
 
         self.keypress_history: list[int] = []; # liste des touche qui sont actuellement presser
@@ -36,8 +36,7 @@ class Body(Entity):
         # --- dash
         # dash dans la derniere direction
         if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
-            self.dash(settings.DASH_DISTANCE);
-
+            self.dash(player_constants.DASH_DISTANCE);
 
 
     # comsomation de l'énergie du perso
@@ -45,11 +44,15 @@ class Body(Entity):
         if self.energy >= energyToConsume:
             self.energy -= energyToConsume;
 
+    #def recupEnergy(self) -> None:
+        # if self.energy < settings.PLAYER_ENERGY_MAX:
+            
+
     # dash du perso
     # TODO ajout la gestion d'énergie
     def dash(self, value: int) -> None:
-        if self.energy >= settings.DASH_ENERGY_CONSUMPTION:
-            self.useEnergy(settings.DASH_ENERGY_CONSUMPTION);
+        if self.energy >= player_constants.DASH_ENERGY_CONSUMPTION:
+            self.useEnergy(player_constants.DASH_ENERGY_CONSUMPTION);
 
             if self.current_dir_y == Direction.UP:
                 self.rect.y -= value;

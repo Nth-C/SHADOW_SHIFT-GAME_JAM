@@ -1,15 +1,4 @@
-# TODO séparer les constants
-
 # sceen
 WIDTH_SCREEN:int = 600
 HEIGHT_SCREEN:int = 600
 FPS = 60
-
-# Joueur
-PLAYER_SPEED = 4
-PLAYER_HP_MAX = 100
-PLAYER_ENERGY_MAX = 100
-
-# Dash
-DASH_DISTANCE = 50
-DASH_ENERGY_CONSUMPTION = 25 

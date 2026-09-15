@@ -12,7 +12,8 @@ class Entity(pg.sprite.Sprite):
             hp, 
             attack, 
             speed,
-            energy
+            energy,
+            health
         ):
         super().__init__()
         self.image = pg.Surface((width, height))
@@ -23,6 +24,7 @@ class Entity(pg.sprite.Sprite):
         self.attack = attack
         self.speed = speed
         self.energy = energy
+        self.health = health
 
     def take_damage(self, amount: int) -> None:
         self.hp -= amount
