@@ -5,6 +5,7 @@ import constants.settings as settings_constants
 from hud.hud import HudManager
 from map import Map
 from screen import Screen
+from entity import Entity
 
 class Game:
     def __init__(self):
