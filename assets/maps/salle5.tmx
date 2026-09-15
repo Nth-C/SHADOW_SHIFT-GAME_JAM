@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="1">
- <tileset firstgid="1" source="../../../PycharmProjects/Game-jam/assets/maps/tilesets/tilesFloor32.tsx"/>
- <tileset firstgid="199" source="../tileset/laboratory-tileset7.tsx"/>
- <tileset firstgid="391" source="../tileset/laboratory-tileset6.tsx"/>
- <tileset firstgid="983" source="../tileset/laboratory-tileset2.tsx"/>
+ <tileset firstgid="1" source="tilesets/tilesFloor32.tsx"/>
+ <tileset firstgid="199" source="tilesets/laboratory-tileset7.tsx"/>
+ <tileset firstgid="391" source="tilesets/laboratory-tileset6.tsx"/>
+ <tileset firstgid="983" source="tilesets/laboratory-tileset2.tsx"/>
  <layer id="1" name="Tile Layer 1" width="32" height="24">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

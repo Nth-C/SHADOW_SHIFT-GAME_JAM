@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="49">
- <tileset firstgid="1" source="../tiles/tileset/laboratory-tileset5.tsx"/>
- <tileset firstgid="199" source="../tiles/tileset/laboratory-tileset7.tsx"/>
- <tileset firstgid="391" source="../../PycharmProjects/Game-jam/assets/maps/tilesets/tilesWalls.tsx"/>
- <tileset firstgid="583" source="../tiles/tileset/laboratory-tileset6.tsx"/>
- <tileset firstgid="1175" source="../../PycharmProjects/Game-jam/assets/maps/tilesets/tilesFloor32.tsx"/>
- <tileset firstgid="1373" source="../../PycharmProjects/Game-jam/assets/maps/tilesets/tilesStuff.tsx"/>
- <tileset firstgid="1965" source="../tiles/tileset/laboratory-tileset2.tsx"/>
+ <tileset firstgid="1" source="tilesets/laboratory-tileset5.tsx"/>
+ <tileset firstgid="199" source="tilesets/laboratory-tileset7.tsx"/>
+ <tileset firstgid="391" source="tilesets/tilesWalls.tsx"/>
+ <tileset firstgid="583" source="tilesets/laboratory-tileset6.tsx"/>
+ <tileset firstgid="1175" source="tilesets/tilesFloor32.tsx"/>
+ <tileset firstgid="1373" source="tilesets/tilesStuff.tsx"/>
+ <tileset firstgid="1965" source="tilesets/laboratory-tileset2.tsx"/>
  <layer id="1" name="Tile Layer 1" width="32" height="24">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,179,180,181,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
