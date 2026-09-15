@@ -3,6 +3,8 @@ import pygame as pg
 from player import Body
 import constants.settings as settings_constants
 from hud.hud import HudManager
+from map import Map
+from screen import Screen
 
 class Game:
     def __init__(self):
@@ -10,6 +12,8 @@ class Game:
 
         self.screen = pg.display.set_mode((settings_constants.WIDTH_SCREEN, settings_constants.HEIGHT_SCREEN));
         self.timer = pg.time.Clock();
+        self.map = Map(self.screen)
+        self.map.switch_map("spawn")
         
         self.player = Body(400, 300);
         self.hud = HudManager()
@@ -17,6 +21,7 @@ class Game:
     def run(self):
         # boucle de jeu
         running = True;
+        self.screen = Screen()
 
         while running:
             for event in pg.event.get():
@@ -34,7 +39,11 @@ class Game:
             self.hud.draw(self.screen, self.player)
             
             pg.display.flip();
-            self.timer.tick(60);
+            clock.tick(self.screen.framerate)
+            self.screen.update()
+            self.map.draw()
+
 
         pg.quit();
         sys.exit();
+import pygame
