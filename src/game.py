@@ -6,6 +6,7 @@ from hud.hud import HudManager
 from map import Map
 from screen import Screen
 from entity import Entity
+from scroll import Scroll
 
 class Game:
     def __init__(self):
@@ -34,6 +35,10 @@ class Game:
         self.player = Body(player_position.x, player_position.y)
         self.hud = HudManager()
 
+        self.scroll = Scroll()
+        self.zoom = 2
+        self.fake_screen = pg.Surface((1024 // self.zoom, 768 // self.zoom))
+
     def run(self):
         # boucle de jeu
         running = True
@@ -50,6 +55,24 @@ class Game:
             self.map.draw(("mur", "barriere", "armoire"), mur_bas_rects=self.mur_bas_rects, draw_foreground=False)
             self.screen.display.blit(self.player.image, self.player.rect)
             self.map.draw(("mur", "barriere", "armoire"), mur_bas_rects=self.mur_bas_rects, draw_foreground=True)
+                
+            self.player.move();
+            self.player.regen_energy();
+
+            self.fake_screen.fill((0,0,0))
+
+            self.scroll.scroll_update(self.player, 1024 // self.zoom, 768 // self.zoom)
+
+            self.map.draw(self.scroll, self.fake_screen)
+
+            self.player_move = self.scroll.apply(self.player.rect)
+            
+            self.fake_screen.blit(self.player.image, self.player_move)
+
+            screen_zoom = pg.transform.scale(self.fake_screen, (1024, 768))
+
+            self.screen.display.blit(screen_zoom, (0, 0))
+            
             self.hud.draw(self.screen.display, self.player)
             
             self.screen.update()
