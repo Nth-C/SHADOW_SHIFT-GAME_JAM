@@ -1,6 +1,7 @@
 import sys
 import pygame as pg
 from player import Body
+from player import Shadow
 import constants.settings as settings_constants
 from hud.hud import HudManager
 from map import Map
@@ -30,6 +31,11 @@ class Game:
         
         player_position = self.map.tmx_data.get_object_by_name("player")
         self.player = Body(player_position.x, player_position.y)
+        self.shadow = Shadow(player_position.x, player_position.y)
+
+        self.entity_active = self.player
+
+
         self.hud = HudManager()
 
         self.scroll = Scroll()
@@ -44,31 +50,60 @@ class Game:
                 if event.type == pg.QUIT:
                     running = False
                                      
-                self.player.event_handler(event, self.walls)
-                             
-            self.player.move(self.walls)
-            if not self.player.capacity_active:
-                self.player.regen_energy();
-            self.player.update_energy();
+                self.entity_active.event_handler(event, self.walls)
 
-            self.scroll.scroll_update(self.player, 1024 // self.zoom, 768 // self.zoom)
+                # --- capacite ombre
+                # active la capacite de se spéarer de son ombre
+                if event.type == pg.KEYDOWN and event.key == pg.K_f:
+                    if self.entity_active == self.player and self.player.energy > 0:
+                        self.player.toggle_capacity();
+                        self.shadow.rect.topleft = self.player.rect.topleft
+                        self.entity_active = self.shadow
+
+                    elif self.entity_active == self.shadow:
+                        self.player.toggle_capacity()
+                        self.entity_active = self.player
+
+                # permet de se téléporter à l'ombre
+                if self.entity_active == self.shadow:
+                    if event.type == pg.KEYDOWN and event.key == pg.K_j:
+                        self.player.rect.topleft = self.shadow.rect.topleft
+                        self.player.toggle_capacity()
+                        self.entity_active = self.player
+
+                             
+            self.entity_active.move(self.walls)
+
+            if self.entity_active == self.player:
+                if not self.entity_active.capacity_active:
+                    self.entity_active.regen_energy()
+                
+            self.player.update_energy()
+
+            if self.entity_active == self.shadow and self.player.energy <= 0:
+                self.entity_active = self.player
+
+            self.scroll.scroll_update(self.entity_active, 1024 // self.zoom, 768 // self.zoom)
 
             self.fake_screen.fill((0, 0, 0))
 
             self.map.draw(self.scroll, self.fake_screen, ("sol", "objet"))
             
             self.map.draw(self.scroll, self.fake_screen, ("mur", "barriere", "armoire"), mur_bas_rects=self.mur_bas_rects, draw_foreground=False)
-            self.player_move = self.scroll.apply(self.player.rect)
-
             
+            self.player_move = self.scroll.apply(self.player.rect)
             self.fake_screen.blit(self.player.image, self.player_move)
+
+            if self.player.capacity_active:
+                self.shadow_move = self.scroll.apply(self.shadow.rect)
+                self.fake_screen.blit(self.shadow.image, self.shadow_move)
 
             self.map.draw(self.scroll, self.fake_screen, ("mur", "barriere", "armoire"), mur_bas_rects=self.mur_bas_rects, draw_foreground=True)
 
             screen_zoom = pg.transform.scale(self.fake_screen, (1024, 768))
             self.screen.display.blit(screen_zoom, (0, 0))
             
-            self.hud.draw(self.screen.display, self.player)
+            self.hud.draw(self.screen.display, self.entity_active)
             
             self.screen.update()
             self.timer.tick(60)
