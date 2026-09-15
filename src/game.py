@@ -10,8 +10,9 @@ class Game:
     def __init__(self):
         pg.display.set_caption("Shadow of PikPik");
 
-        self.screen = pg.display.set_mode((settings_constants.WIDTH_SCREEN, settings_constants.HEIGHT_SCREEN));
+        self.screen = Screen()
         self.timer = pg.time.Clock();
+        
         self.map = Map(self.screen)
         self.map.switch_map("spawn")
         
@@ -21,7 +22,6 @@ class Game:
     def run(self):
         # boucle de jeu
         running = True;
-        self.screen = Screen()
 
         while running:
             for event in pg.event.get():
@@ -32,18 +32,14 @@ class Game:
                 
             self.player.move();
             #self.player.recupEnergy();
-            
-            self.screen.fill((30, 30, 30));
-            self.screen.blit(self.player.image, self.player.rect);
 
-            self.hud.draw(self.screen, self.player)
-            
-            pg.display.flip();
-            clock.tick(self.screen.framerate)
-            self.screen.update()
             self.map.draw()
+            
+            self.screen.display.blit(self.player.image, self.player.rect)
+            self.hud.draw(self.screen.display, self.player)
 
+            self.screen.update()
+            self.timer.tick(60)
 
         pg.quit();
         sys.exit();
-import pygame
