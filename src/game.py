@@ -77,19 +77,6 @@ class Game:
                 self.player.take_damage(ennemi.attack)
                 break
 
-            self.map.draw()
-            
-            self.screen.display.blit(self.player.image, self.player.rect)
-            self.hud.draw(self.screen.display, self.player)
-
-            self.enemies.draw(self.screen.display)
-
-            for enemy in self.enemies:
-                enemy.draw_hp_bar(self.screen.display)
-                enemy.draw_aggro_range(self.screen.display)
-                enemy.update(self.player)
-
-
             # attaque
             if self.player.is_attacking:
                 # recupere la zone d'attaque
@@ -137,6 +124,14 @@ class Game:
                 
                 self.player.update_energy()
 
+                for enemy in self.enemies:
+                    enemy.update(self.player)
+                                
+                    ennemis_touches = pg.sprite.spritecollide(self.player, self.enemies, False)
+                    for ennemi in ennemis_touches:
+                        self.player.take_damage(ennemi.attack)
+                        break
+
                 if self.entity_active == self.shadow and not self.player.capacity_active:
                     self.entity_active = self.player
 
@@ -153,6 +148,10 @@ class Game:
                 if self.player.capacity_active:
                     self.shadow_move = self.scroll.apply(self.shadow.rect)
                     self.fake_screen.blit(self.shadow.image, self.shadow_move)
+
+                for enemy in self.enemies:
+                    enemy_move = self.scroll.apply(enemy.rect)
+                    self.fake_screen.blit(enemy.image, enemy_move)
 
                 self.map.draw(self.scroll, self.fake_screen, ("mur", "barriere", "armoire"), mur_bas_rects=self.mur_bas_rects, draw_foreground=True)
 
