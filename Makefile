@@ -8,3 +8,6 @@ format:
 
 lint-format: 
 	ruff check --fix && ruff format
+
+start:
+	python src/main.py

@@ -10,15 +10,29 @@ from scroll import Scroll
 
 class Game:
     def __init__(self):
-        pg.display.set_caption("Shadow of PikPik");
-
+        pg.display.set_caption("Shadow of PikPik")
         self.screen = Screen()
-        self.timer = pg.time.Clock();
+        self.timer = pg.time.Clock()
         
         self.map = Map(self.screen)
         self.map.switch_map("spawn")
         
-        self.player = Body(400, 300);
+        # --- Récupération des rectangles "mur_bas" ---
+        self.mur_bas_rects = []
+        try:
+            for obj in self.map.tmx_data.get_layer_by_name("mur_bas"):
+                self.mur_bas_rects.append(pg.Rect(obj.x, obj.y, obj.width, obj.height))
+        except ValueError:
+            pass # Si le calque "mur_bas" n'existe pas sur une autre map, on ignore
+            
+        self.walls = [
+            pg.Rect(object.x, object.y, object.width, object.height)
+            for object in self.map.tmx_data.objects
+            if object.type == "collision"
+        ]
+        
+        player_position = self.map.tmx_data.get_object_by_name("player")
+        self.player = Body(player_position.x, player_position.y)
         self.hud = HudManager()
 
         self.scroll = Scroll()
@@ -27,14 +41,20 @@ class Game:
 
     def run(self):
         # boucle de jeu
-        running = True;
-
+        running = True
         while running:
             for event in pg.event.get():
                 if event.type == pg.QUIT:
-                    running = False;
-                    
-                self.player.event_handler(event);
+                    running = False
+                                     
+                self.player.event_handler(event, self.walls)
+                             
+            self.player.move(self.walls)
+      
+            self.map.draw(("sol", "objet"))
+            self.map.draw(("mur", "barriere", "armoire"), mur_bas_rects=self.mur_bas_rects, draw_foreground=False)
+            self.screen.display.blit(self.player.image, self.player.rect)
+            self.map.draw(("mur", "barriere", "armoire"), mur_bas_rects=self.mur_bas_rects, draw_foreground=True)
                 
             self.player.move();
             self.player.regen_energy();
@@ -54,9 +74,9 @@ class Game:
             self.screen.display.blit(screen_zoom, (0, 0))
             
             self.hud.draw(self.screen.display, self.player)
-
+            
             self.screen.update()
             self.timer.tick(60)
 
-        pg.quit();
-        sys.exit();
+        pg.quit()
+        sys.exit()
