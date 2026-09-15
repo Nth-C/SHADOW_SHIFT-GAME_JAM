@@ -1,6 +1,5 @@
 import pygame as pg
 from pygame.event import Event
-from pygame.key import ScancodeWrapper
 from entity import Entity
 from enums.direction import Direction
 import constants.player as player_constants
@@ -13,6 +12,8 @@ class Body(Entity):
         self.keypress_history: list[int] = []; # liste des touche qui sont actuellement presser
         self.current_dir_x: Direction = Direction.RIGHT; # direction dans laquel le joueur est
         self.current_dir_y: Direction = None;
+
+        self.last_regen_time = pg.time.get_ticks()
 
 
     # gere les evenement du joueur (déplacement)
@@ -40,19 +41,35 @@ class Body(Entity):
 
 
     # comsomation de l'énergie du perso
-    def useEnergy(self, energyToConsume: int) -> None:
+    def use_energy(self, energyToConsume: int) -> None:
         if self.energy >= energyToConsume:
+            # si l'énérgie été au max on commence le timer de recuperation
+            if self.energy == player_constants.ENERGY_MAX:
+                self.last_regen_time = pg.time.get_ticks()
+
             self.energy -= energyToConsume;
 
-    #def recupEnergy(self) -> None:
-        # if self.energy < settings.PLAYER_ENERGY_MAX:
+
+    # recupere de l'energie toutes le 2 sec
+    def regen_energy(self) -> None:
+        if self.energy < player_constants.ENERGY_MAX: 
+            
+            current_time = pg.time.get_ticks()
+
+            # si il s'est écoulé 2sec avant la derniere regen
+            if current_time - self.last_regen_time >= player_constants.ENERGY_REGEN_TIME:
+                self.energy += player_constants.ENERGY_REGEN
+                
+                if self.energy > player_constants.ENERGY_MAX:
+                    self.energy = player_constants.ENERGY_MAX
+                
+                self.last_regen_time = current_time
             
 
     # dash du perso
-    # TODO ajout la gestion d'énergie
     def dash(self, value: int) -> None:
         if self.energy >= player_constants.DASH_ENERGY_CONSUMPTION:
-            self.useEnergy(player_constants.DASH_ENERGY_CONSUMPTION);
+            self.use_energy(player_constants.DASH_ENERGY_CONSUMPTION);
 
             if self.current_dir_y == Direction.UP:
                 self.rect.y -= value;

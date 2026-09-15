@@ -32,7 +32,7 @@ class Game:
                 self.player.event_handler(event);
                 
             self.player.move();
-            #self.player.recupEnergy();
+            self.player.regen_energy();
 
             self.map.draw()
             
