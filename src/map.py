@@ -10,9 +10,9 @@ class Map:
 
     def switch_map(self, map_name: str):
         map_path = "assets/maps/" + map_name + ".tmx"
-        self.map = pytmx.load_pygame(map_path)
+        self.tmx_data = pytmx.load_pygame(map_path)
 
-    def draw(self, layer_names=None, mur_bas_rects=None, draw_foreground=False):
+    def draw(self, scroll, zoom, layer_names=None, mur_bas_rects=None, draw_foreground=False):
         if not self.tmx_data:
             return
             
@@ -24,10 +24,10 @@ class Map:
                 
             if isinstance(layer, pytmx.TiledTileLayer):
                 for x, y, img_id in layer:
-                    tile = self.map.get_tile_image_by_gid(img_id)
+                    tile = self.tmx_data.get_tile_image_by_gid(img_id)
                     if tile:
-                        pos_x = x * (self.map.tilewidth) + scroll.x
-                        pos_y = y * (self.map.tileheight) + scroll.y
+                        pos_x = x * (self.tmx_data.tilewidth) + scroll.x
+                        pos_y = y * (self.tmx_data.tileheight) + scroll.y
                         zoom.blit(tile, (pos_x, pos_y))
                         
                         if mur_bas_rects:

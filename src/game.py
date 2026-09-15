@@ -19,11 +19,9 @@ class Game:
         
         # --- Récupération des rectangles "mur_bas" ---
         self.mur_bas_rects = []
-        try:
-            for obj in self.map.tmx_data.get_layer_by_name("mur_bas"):
-                self.mur_bas_rects.append(pg.Rect(obj.x, obj.y, obj.width, obj.height))
-        except ValueError:
-            pass # Si le calque "mur_bas" n'existe pas sur une autre map, on ignore
+        for obj in self.map.tmx_data.get_layer_by_name("mur_bas"):
+            self.mur_bas_rects.append(pg.Rect(obj.x, obj.y, obj.width, obj.height))
+        
             
         self.walls = [
             pg.Rect(object.x, object.y, object.width, object.height)
@@ -50,27 +48,22 @@ class Game:
                 self.player.event_handler(event, self.walls)
                              
             self.player.move(self.walls)
-      
-            self.map.draw(("sol", "objet"))
-            self.map.draw(("mur", "barriere", "armoire"), mur_bas_rects=self.mur_bas_rects, draw_foreground=False)
-            self.screen.display.blit(self.player.image, self.player.rect)
-            self.map.draw(("mur", "barriere", "armoire"), mur_bas_rects=self.mur_bas_rects, draw_foreground=True)
-                
-            self.player.move();
-            self.player.regen_energy();
-
-            self.fake_screen.fill((0,0,0))
+            self.player.regen_energy()
 
             self.scroll.scroll_update(self.player, 1024 // self.zoom, 768 // self.zoom)
 
-            self.map.draw(self.scroll, self.fake_screen)
+            self.fake_screen.fill((0, 0, 0))
+
+            self.map.draw(self.scroll, self.fake_screen, ("sol", "objet"))
+            
+            self.map.draw(self.scroll, self.fake_screen, ("mur", "barriere", "armoire"), mur_bas_rects=self.mur_bas_rects, draw_foreground=False)
 
             self.player_move = self.scroll.apply(self.player.rect)
-            
             self.fake_screen.blit(self.player.image, self.player_move)
 
-            screen_zoom = pg.transform.scale(self.fake_screen, (1024, 768))
+            self.map.draw(self.scroll, self.fake_screen, ("mur", "barriere", "armoire"), mur_bas_rects=self.mur_bas_rects, draw_foreground=True)
 
+            screen_zoom = pg.transform.scale(self.fake_screen, (1024, 768))
             self.screen.display.blit(screen_zoom, (0, 0))
             
             self.hud.draw(self.screen.display, self.player)
