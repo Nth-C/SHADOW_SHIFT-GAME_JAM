@@ -17,14 +17,13 @@ class Body(Entity):
         self.feet.midbottom = self.rect.midbottom
         self.old_position = self.position.copy()
         self.last_regen_time = pg.time.get_ticks()
+        self.capacity_active = False
+        self.last_capacity_time = pg.time.get_ticks()
 
     def save_location(self): self.old_position = self.position.copy()
 
     def moove_back(self):
         self.position = self.old_position
-        self.capacity_active = false
-        self.last_capacity_time = pg.time.get_ticks()
-
 
     # gere les evenement du joueur (déplacement)
     def event_handler(self, event: Event, walls: list[pg.Rect] | None = None):
@@ -156,9 +155,9 @@ class Body(Entity):
     def toggle_capacity(self):
         # si capacité pas active alors on l'active sinon on la desactive
         if not self.capacity_active and self.energie > 0:
-            self.capacity_active = true
+            self.capacity_active = True
         else :
-            self.capacity_active = false
+            self.capacity_active = False
             self.last_regen_time = pg.time.get_ticks()
 
     # actualise l'energie du joueurs en fonction du temps d'utilisation de l'ombre
@@ -172,7 +171,7 @@ class Body(Entity):
 
                 if self.energy <= 0:
                     self.energy = 0
-                    self.capacity_active = false
+                    self.capacity_active = False
                     self.last_regen_time = current_time
         else:
             self.regen_energy()

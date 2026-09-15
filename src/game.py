@@ -17,7 +17,6 @@ class Game:
         self.map = Map(self.screen)
         self.map.switch_map("spawn")
         
-        # --- Récupération des rectangles "mur_bas" ---
         self.mur_bas_rects = []
         for obj in self.map.tmx_data.get_layer_by_name("mur_bas"):
             self.mur_bas_rects.append(pg.Rect(obj.x, obj.y, obj.width, obj.height))
@@ -48,16 +47,8 @@ class Game:
                 self.player.event_handler(event, self.walls)
                              
             self.player.move(self.walls)
-            self.player.regen_energy()
-                    running = False;
-                    
-                self.player.event_handler(event);
-                
-            self.player.move();
             self.player.regen_energy();
             self.player.update_energy();
-
-            self.fake_screen.fill((0,0,0))
 
             self.scroll.scroll_update(self.player, 1024 // self.zoom, 768 // self.zoom)
 
@@ -66,8 +57,6 @@ class Game:
             self.map.draw(self.scroll, self.fake_screen, ("sol", "objet"))
             
             self.map.draw(self.scroll, self.fake_screen, ("mur", "barriere", "armoire"), mur_bas_rects=self.mur_bas_rects, draw_foreground=False)
-
-            self.map.draw(self.scroll, self.fake_screen)
             self.player_move = self.scroll.apply(self.player.rect)
 
             
