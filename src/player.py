@@ -5,13 +5,16 @@ from enums.direction import Direction
 import constants.player as player_constants
 
 class Body(Entity):
-    def __init__(self, x, y):
+    def __init__(self, x: int, y:int):
         super().__init__(x, y, color=(0, 255, 0), width=25, height=50, hp=100, attack=20, speed=4, energy=100, health=100);
         self.is_defenseless = False;
 
         self.keypress_history: list[int] = []; # liste des touche qui sont actuellement presser
         self.current_dir_x: Direction = Direction.RIGHT; # direction dans laquel le joueur est
         self.current_dir_y: Direction = None;
+        self.is_attacking: bool = False;
+
+        self.last_damage_time = 0
 
         self.last_regen_time = pg.time.get_ticks()
 
@@ -39,6 +42,9 @@ class Body(Entity):
         if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
             self.dash(player_constants.DASH_DISTANCE);
 
+        # --- attaque
+        if event.type == pg.KEYDOWN and event.key == pg.K_f:
+            self.is_attacking = True;
 
     # comsomation de l'énergie du perso
     def use_energy(self, energyToConsume: int) -> None:
@@ -56,7 +62,7 @@ class Body(Entity):
             
             current_time = pg.time.get_ticks()
 
-            # si il s'est écoulé 2sec avant la derniere regen
+            # si il s'est écoulé 2 sec avant la derniere regen
             if current_time - self.last_regen_time >= player_constants.ENERGY_REGEN_TIME:
                 self.energy += player_constants.ENERGY_REGEN
                 
@@ -116,3 +122,31 @@ class Body(Entity):
                     self.rect.y += self.speed;
                     self.current_dir_y = Direction.DOWN;
                     move_y = True;
+
+    # permet de gerer l'invincibilité apres un degat
+    def take_damage(self, amount: int) -> None:
+        current_time = pg.time.get_ticks()
+
+        if current_time - self.last_damage_time >= player_constants.INVINCIBLILITY_DURATION:
+
+            # met les degat
+            super().take_damage(amount)
+            
+            self.last_damage_time = current_time
+
+    # recupere la position de l'attaque
+    def get_attack_range(self) -> pg.Rect:
+        attack_rect = pg.Rect(0, 0, 40, 40)
+        attack_rect.center = self.rect.center 
+        
+        if self.current_dir_x == Direction.LEFT:
+            attack_rect.centerx -= 30
+        elif self.current_dir_x == Direction.RIGHT:
+            attack_rect.centerx += 30
+            
+        if self.current_dir_y == Direction.UP:
+            attack_rect.centery -= 30
+        elif self.current_dir_y == Direction.DOWN:
+            attack_rect.centery += 30
+            
+        return attack_rect

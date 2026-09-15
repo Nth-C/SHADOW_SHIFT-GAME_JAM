@@ -8,8 +8,8 @@ class HealthBar:
         self.height = 20
         self.maxhealth = 100
 
-    def draw(self, screen: pg.Surface, current_energy: int) -> None:
-        ratio = current_energy / self.maxhealth
+    def draw(self, screen: pg.Surface, current_health: int) -> None:
+        ratio = current_health / self.maxhealth
         
         # fond
         pg.draw.rect(screen, (50, 50, 50), (self.x, self.y, self.width, self.height))
