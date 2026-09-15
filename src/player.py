@@ -50,12 +50,7 @@ class Body(Entity):
 
         # --- capacite ombre
         # active la capacite de se spéarer de son ombre
-        if event.type == pg.K_f:
-            self.toggle_capacity();
-
-        # --- capacite ombre
-        # active la capacite de se spéarer de son ombre
-        if event.type == pg.K_f:
+        if event.type == pg.KEYDOWN and event.key == pg.K_f:
             self.toggle_capacity();
 
 
@@ -154,18 +149,20 @@ class Body(Entity):
     # active / desactive la capacité
     def toggle_capacity(self):
         # si capacité pas active alors on l'active sinon on la desactive
-        if not self.capacity_active and self.energie > 0:
+        if not self.capacity_active and self.energy > 0:
             self.capacity_active = True
+            self.speed = 0
         else :
             self.capacity_active = False
             self.last_regen_time = pg.time.get_ticks()
+            self.speed = 4
 
     # actualise l'energie du joueurs en fonction du temps d'utilisation de l'ombre
     def update_energy(self):
         current_time = pg.time.get_ticks()
 
         if self.capacity_active:
-            if (current_time - self.last_capacity_time) >= 100:
+            if (current_time - self.last_capacity_time) >= 200:
                 self.energy -= 5
                 self.last_capacity_time = current_time
 
@@ -173,6 +170,7 @@ class Body(Entity):
                     self.energy = 0
                     self.capacity_active = False
                     self.last_regen_time = current_time
+                    self.speed = 4
         else:
             self.regen_energy()
 

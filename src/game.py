@@ -47,7 +47,8 @@ class Game:
                 self.player.event_handler(event, self.walls)
                              
             self.player.move(self.walls)
-            self.player.regen_energy();
+            if not self.player.capacity_active:
+                self.player.regen_energy();
             self.player.update_energy();
 
             self.scroll.scroll_update(self.player, 1024 // self.zoom, 768 // self.zoom)
