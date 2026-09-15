@@ -1,0 +1,4 @@
+# sceen
+WIDTH_SCREEN:int = 600
+HEIGHT_SCREEN:int = 600
+FPS = 60
