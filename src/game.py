@@ -6,6 +6,7 @@ from hud.hud import HudManager
 from map import Map
 from screen import Screen
 from entity import Entity
+from scroll import Scroll
 
 class Game:
     def __init__(self):
@@ -19,6 +20,8 @@ class Game:
         
         self.player = Body(400, 300);
         self.hud = HudManager()
+
+        self.scroll = Scroll()
 
     def run(self):
         # boucle de jeu
@@ -34,9 +37,14 @@ class Game:
             self.player.move();
             self.player.regen_energy();
 
-            self.map.draw()
+            self.scroll.scroll_update(self.player, 1024, 768)
+
+            self.map.draw(self.scroll)
+
+            self.player_move = self.scroll.apply(self.player.rect)
             
-            self.screen.display.blit(self.player.image, self.player.rect)
+            self.screen.display.blit(self.player.image, self.player_move)
+            
             self.hud.draw(self.screen.display, self.player)
 
             self.screen.update()

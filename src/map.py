@@ -16,7 +16,7 @@ class Map:
         map_path = MAPS_DIR / f"{map_name}.tmx"
         self.tmx_data = pytmx.load_pygame(str(map_path))
 
-    def draw(self):
+    def draw(self, scroll):
         if not self.tmx_data:
             return
 
@@ -27,6 +27,6 @@ class Map:
                 for x, y, gid in layer:
                     tile = self.tmx_data.get_tile_image_by_gid(gid)
                     if tile:
-                        pos_x = x * self.tmx_data.tilewidth
-                        pos_y = y * self.tmx_data.tileheight
+                        pos_x = x * (self.tmx_data.tilewidth) + scroll.x
+                        pos_y = y * (self.tmx_data.tileheight) + scroll.y
                         display.blit(tile, (pos_x, pos_y))
