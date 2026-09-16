@@ -35,16 +35,18 @@ class Game:
         
         self.map = Map(self.screen)
         self.map.switch_map("spawn")
-        self._refresh_map_data()
+        self.refresh_map_data()
         
         self.hud = HudManager();
+
+        self.zoom = 2
 
         self.enemies = pg.sprite.Group()
         
         self.enemies.add(Enemy(600, 600, 50))
         self.enemies.add(Enemy(200, 150, 50))
         self.enemies.add(Enemy(750, 400, 50))
-        self._spawn_entities_at_player()
+        self.spawn_entities_at_player()
 
         self.entity_active = self.player
 
@@ -52,7 +54,6 @@ class Game:
         self.hud = HudManager()
 
         self.scroll = Scroll()
-        self.zoom = 2
         self.fake_screen = pg.Surface((1024 // self.zoom, 768 // self.zoom))
         self.light_surface = pg.Surface(self.screen.get_size(), pg.SRCALPHA)
 
