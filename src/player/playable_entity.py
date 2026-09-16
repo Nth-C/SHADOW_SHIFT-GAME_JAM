@@ -88,14 +88,17 @@ class PlayableEntity(Entity):
         movement_x: int,
         movement_y: int,
         walls: list[pg.Rect] | None,
-    ) -> None:
+    ) -> bool:
         next_rect = self.rect.move(movement_x, movement_y)
         next_feet = self.feet.copy()
         next_feet.midbottom = next_rect.midbottom
 
-        if not walls or not any(next_feet.colliderect(wall) for wall in walls):
-            self.rect = next_rect
-            self.feet = next_feet
+        if walls and any(next_feet.colliderect(wall) for wall in walls):
+            return False
+
+        self.rect = next_rect
+        self.feet = next_feet
+        return True
 
     def move(self, walls: list[pg.Rect] | None = None):
         # permet de pouvoir bouger que dans une seule direction
