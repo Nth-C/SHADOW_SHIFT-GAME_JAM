@@ -40,6 +40,10 @@ class Game:
         self.sound_death.set_volume(1)
         self.sound_hit.set_volume(1)
 
+        pg.mixer.music.load('assets/sounds/music.mp3')
+        pg.mixer.music.set_volume(0.5)
+        pg.mixer.music.play(-1)
+
         self.last_hit_time = 0
         self.hit_cooldown = 800
         
