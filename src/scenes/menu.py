@@ -7,7 +7,6 @@ from constants.player import ENERGY_MAX, HP_MAX
 from player.body import Body
 from screen import Screen
 
-
 class Menu:
     def __init__(self):
         pg.font.init()
@@ -26,8 +25,7 @@ class Menu:
     def restart_game(self, event: Event, player: Body) -> str:
         if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
             # regen le joueur
-            player.hp = HP_MAX;
-            player.energy = ENERGY_MAX;
+            player.regen_all();
 
             return game_constants.PLAYING
 
@@ -36,8 +34,7 @@ class Menu:
     def end_game(self, event: Event, player: Body) -> str:
         if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
             # regen le joueur
-            player.hp = HP_MAX;
-            player.energy = ENERGY_MAX;
+            player.regen_all();
 
             return game_constants.MENU
 

@@ -12,7 +12,7 @@ from scenarioManager import ScenarioManager
 from screen import Screen
 from scroll import Scroll
 from sound import Sound
-from hud.hint import Hint # N'oublie pas l'import
+from hud.hint import Hint
 
 class Playing:
     def __init__(self):
