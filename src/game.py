@@ -15,6 +15,8 @@ import constants.game_states as game_constants
 import constants.settings as settings_constants
 from light import render_lights
 
+from scenarioManager import ScenarioManager
+
 # TODO essayer de ranger tout les fichier dans des dossiers
 
 # TODO mettre des constants pour tout les string en ecrit en dur
@@ -56,6 +58,8 @@ class Game:
         self.scroll = Scroll()
         self.fake_screen = pg.Surface((1024 // self.zoom, 768 // self.zoom))
         self.light_surface = pg.Surface(self.screen.get_size(), pg.SRCALPHA)
+
+        self.scenario = ScenarioManager()
 
     def refresh_map_data(self):
         self.mur_bas_rects = []
@@ -116,8 +120,11 @@ class Game:
                         self.state = game_constants.PLAYING
 
                 elif self.state == game_constants.PLAYING:
-                    used_walls = self.walls_shadow if self.entity_active == self.shadow else self.walls_player
-                    self.entity_active.event_handler(event, used_walls)
+                    if self.scenario.is_dialog_playing():
+                        self.scenario.event_handler(event)
+                    else:
+                        used_walls = self.walls_shadow if self.entity_active == self.shadow else self.walls_player
+                        self.entity_active.event_handler(event, used_walls)
 
                 elif self.state == game_constants.GAME_OVER:
                     if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
@@ -204,36 +211,38 @@ class Game:
                 self.screen.display.blit(inst_surf, inst_rect)
 
             elif self.state == game_constants.PLAYING:
+                self.scenario.update_dialog(self)
 
-                if self.entity_active == self.shadow:
-                    used_walls = self.walls_shadow
-                else:
-                    used_walls = self.walls_player
+                if not self.scenario.is_dialog_playing():
+                    if self.entity_active == self.shadow:
+                        used_walls = self.walls_shadow
+                    else:
+                        used_walls = self.walls_player
 
-                self.entity_active.move(used_walls)
+                    self.entity_active.move(used_walls)
                 
-                self.player.update_energy()
+                    self.player.update_energy()
 
-                for enemy in self.enemies:
-                    enemy.update(self.player)
+                    for enemy in self.enemies:
+                        enemy.update(self.player)
 
-                ennemis_touches = pg.sprite.spritecollide(self.player, self.enemies, False)
-                for ennemi in ennemis_touches:
-                    self.player.take_damage(ennemi.attack)
-                    break
+                    ennemis_touches = pg.sprite.spritecollide(self.player, self.enemies, False)
+                    for ennemi in ennemis_touches:
+                        self.player.take_damage(ennemi.attack)
+                        break
 
-                if self.player.hp <= 0:
-                    self.state = game_constants.GAME_OVER
+                    if self.player.hp <= 0:
+                        self.state = game_constants.GAME_OVER
 
-                if self.entity_active == self.shadow and not self.player.capacity_active:
-                    self.entity_active = self.player
-
-                if self.entity_active == self.player:
-                    if self.switch_map_rect and self.player.feet.colliderect(self.switch_map_rect):
-                        self.map.switch_map("salle2");
-                        self.refresh_map_data()
-                        self.spawn_entities_at_player()
+                    if self.entity_active == self.shadow and not self.player.capacity_active:
                         self.entity_active = self.player
+
+                    if self.entity_active == self.player:
+                        if self.switch_map_rect and self.player.feet.colliderect(self.switch_map_rect):
+                            self.map.switch_map("salle2");
+                            self.refresh_map_data()
+                            self.spawn_entities_at_player()
+                            self.entity_active = self.player
 
 
                 self.scroll.scroll_update(self.entity_active, 1024 // self.zoom, 768 // self.zoom)
@@ -242,7 +251,7 @@ class Game:
 
                 # TODO constants ?
                 self.map.draw(self.scroll, self.fake_screen, mur_bas_rects=self.mur_bas_rects, draw_foreground=False)
-                
+                    
                 self.player_move = self.scroll.apply(self.player.rect)
                 self.fake_screen.blit(self.player.image, self.player_move)
 
@@ -262,8 +271,10 @@ class Game:
                 self.light_surface.fill((0, 0, 0, 0))
                 render_lights(self.light_surface, self.map.tmx_data, camera_offset=(self.scroll.x, self.scroll.y))
                 self.screen.display.blit(self.light_surface, (0, 0), special_flags=pg.BLEND_RGB_ADD)
-                
+                    
                 self.hud.draw(self.screen.display, self.player)
+
+                self.scenario.dialog_draw(self.screen.display)
             
             self.screen.update()
             self.timer.tick(60)
