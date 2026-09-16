@@ -75,7 +75,7 @@ class Game:
         self.fake_screen = pg.Surface((1024 // self.zoom, 768 // self.zoom))
         self.light_surface = pg.Surface(self.screen.get_size(), pg.SRCALPHA)
 
-        self.background_galaxy = pg.image.load("../assets/images/galaxie.png").convert()
+        self.background_galaxy = pg.image.load('assets/images/galaxie.png').convert()
         self.background_galaxy = pg.transform.scale(
             self.background_galaxy,
             (1024 // self.zoom, 768 // self.zoom)
