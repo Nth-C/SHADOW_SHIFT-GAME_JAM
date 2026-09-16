@@ -1,33 +1,35 @@
-# enemy.py
 import pygame as pg
-
 from entity import Entity
 
-
 class Enemy(Entity):
-    def __init__(self, x:int, y:int, range:int = 50):
-        super().__init__(x, y, color=(255, 0, 0), width=25, height=40, hp=30, attack=10, speed=1);
+    def __init__(self, x: int, y: int, width: int = 64, height: int = 64, hp: int = 30, attack: int = 10, speed: int = 1, aggro_range: int = 50):
+        
+        super().__init__(x, y, color=(255, 0, 0), width=width, height=height, hp=hp, attack=attack, speed=speed)
+
+        self.max_hp = hp
+        self.aggro_range = aggro_range
+        
+        self.width = width
+        self.height = height
+
 
         original_sheet = pg.image.load('assets/characters/sprite_robot.png').convert_alpha()
         self.sprite_sheet = pg.transform.scale(original_sheet, (96, 128))
 
         self.images = {
-            'down': pg.transform.scale(self.get_image(32, 0), (64, 64)),
-            'left': pg.transform.scale(self.get_image(64, 32), (64, 64)),
-            'right': pg.transform.scale(self.get_image(0, 32), (64, 64)),
-            'up': pg.transform.scale(self.get_image(32, 96), (64, 64))
+            'down': pg.transform.scale(self.get_image(32, 0), (self.width, self.height)),
+            'left': pg.transform.scale(self.get_image(64, 32), (self.width, self.height)),
+            'right': pg.transform.scale(self.get_image(0, 32), (self.width, self.height)),
+            'up': pg.transform.scale(self.get_image(32, 96), (self.width, self.height))
         }
 
         small_image = self.get_image(64, 0)
-        self.image = pg.transform.scale(small_image, (64, 64))
+        self.image = pg.transform.scale(small_image, (self.width, self.height))
 
         self.rect = self.image.get_rect(topleft=(x, y))
 
         self.feet = pg.Rect(0, 0, self.rect.width // 2, 12)
         self.feet.midbottom = self.rect.midbottom
-
-        self.max_hp = 30
-        self.aggro_range = range
 
     def get_image(self, x, y):
         image = pg.Surface([32, 32], pg.SRCALPHA)
@@ -37,7 +39,6 @@ class Enemy(Entity):
     def change_animation(self, name):
         self.image = self.images[name]
 
-    # boucle de l'enemie
     def update(self, player) -> None:
         attack_range = self.get_aggro_range()
 
@@ -57,7 +58,6 @@ class Enemy(Entity):
                 self.change_animation('up')
                 self.rect.y -= self.speed        
 
-    # affiche la bar d'hp de l'enemie
     def draw_hp_bar(self, surface: pg.Surface) -> None:
         if self.hp > 0:
             ratio = self.hp / self.max_hp
@@ -75,13 +75,10 @@ class Enemy(Entity):
         taille = self.aggro_range * 5
         zone_rect = pg.Rect(0, 0, taille, taille)
         zone_rect.center = self.rect.center
-        
         pg.draw.rect(surface, (255, 255, 0), zone_rect, 1)
 
-    # recupere la zone d'aggro autour de l'enemie
     def get_aggro_range(self) -> pg.Rect:
-        taille = self.aggro_range * 5;
-        zone_rect = pg.Rect(0, 0, taille, taille);
-        zone_rect.center = self.rect.center;
-
+        taille = self.aggro_range * 5
+        zone_rect = pg.Rect(0, 0, taille, taille)
+        zone_rect.center = self.rect.center
         return zone_rect
