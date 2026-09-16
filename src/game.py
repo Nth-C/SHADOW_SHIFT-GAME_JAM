@@ -119,16 +119,16 @@ class Game:
                         self.entity_active = self.player
 
             # attaque
-            if self.player.is_attacking:
+            if self.entity_active.is_attacking:
                 # recupere la zone d'attaque
-                zone_attaque = self.player.get_attack_range()
+                zone_attaque = self.entity_active.get_attack_range()
 
                 # verfie si un enemie est dans une zone d'attaque
                 for ennemi in self.enemies:
                     if zone_attaque.colliderect(ennemi.rect):
-                        ennemi.take_damage(self.player.attack)
+                        ennemi.take_damage(self.entity_active.attack)
                         
-                self.player.is_attacking = False
+                self.entity_active.is_attacking = False
 
             # affichage selon l'étape de l'affichage
             if self.state == game_constants.MENU:

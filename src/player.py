@@ -267,6 +267,8 @@ class Shadow(Entity):
         self.current_dir_y: Direction = None;
         self.position = [x,y];
 
+        self.is_attacking: bool = False;
+
     def get_image(self, x, y):
         image = pg.Surface([32, 32], pg.SRCALPHA)
         image.blit(self.sprite_sheet, (0, 0), (x, y, 32, 32))
@@ -292,6 +294,10 @@ class Shadow(Entity):
         elif event.type == pg.KEYUP and event.key in key_move:
             if event.key in self.keypress_history:
                 self.keypress_history.remove(event.key);
+
+        # --- attaque
+        if event.type == pg.KEYDOWN and event.key == pg.K_f:
+            self.is_attacking = True;
 
     # mouvement du perso
     def _move_axis(
@@ -347,3 +353,20 @@ class Shadow(Entity):
                     self.current_dir_y = Direction.DOWN;
                     self.change_animation('down')
                     move_y = True;
+
+    # recupere la position de l'attaque
+    def get_attack_range(self) -> pg.Rect:
+        attack_rect = pg.Rect(0, 0, 40, 40)
+        attack_rect.center = self.rect.center 
+        
+        if self.current_dir_x == Direction.LEFT:
+            attack_rect.centerx -= 30
+        elif self.current_dir_x == Direction.RIGHT:
+            attack_rect.centerx += 30
+            
+        if self.current_dir_y == Direction.UP:
+            attack_rect.centery -= 30
+        elif self.current_dir_y == Direction.DOWN:
+            attack_rect.centery += 30
+            
+        return attack_rect
