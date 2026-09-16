@@ -1,2 +1,2 @@
 PLAYING: str = "playing"
-MENU: str = "menu" 
+MENU: str = "menu"
