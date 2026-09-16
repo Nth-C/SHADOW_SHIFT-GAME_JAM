@@ -1,5 +1,6 @@
-import pygame as pg
+from pathlib import Path
 import pytmx
+import pygame as pg
 
 from screen import Screen
 
@@ -10,8 +11,13 @@ class Map:
         self.map = None
 
     def switch_map(self, map_name: str):
-        map_path = "assets/maps/" + map_name + ".tmx"
-        self.tmx_data = pytmx.load_pygame(map_path)
+        repo_root = Path(__file__).resolve().parent.parent
+        map_path = (repo_root / "assets" / "maps" / f"{map_name}.tmx").resolve()
+
+        if not map_path.exists():
+            raise FileNotFoundError(f"TMX map not found at: {map_path}")
+
+        self.tmx_data = pytmx.load_pygame(str(map_path))
 
     def draw(self, scroll, zoom, layer_names=None, mur_bas_rects=None, draw_foreground=False):
         if not self.tmx_data:
