@@ -64,7 +64,7 @@ class Game:
 
                 # --- capacite ombre
                 # active la capacite de se spéarer de son ombre
-                if event.type == pg.KEYDOWN and event.key == pg.K_f:
+                if event.type == pg.KEYDOWN and event.key == pg.K_a:
                     if self.entity_active == self.player and self.player.energy > 0:
                         self.player.toggle_capacity();
                         self.shadow.rect.topleft = self.player.rect.topleft
@@ -76,7 +76,7 @@ class Game:
 
                 # permet de se téléporter à l'ombre
                 if self.entity_active == self.shadow:
-                    if event.type == pg.KEYDOWN and event.key == pg.K_j:
+                    if event.type == pg.KEYDOWN and event.key == pg.K_c:
                         self.player.rect.topleft = self.shadow.rect.topleft
                         self.player.toggle_capacity()
                         self.entity_active = self.player
