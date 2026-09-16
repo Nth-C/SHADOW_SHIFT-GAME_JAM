@@ -1,6 +1,5 @@
 import pygame as pg
 from pygame.event import Event
-
 import constants.game_states as game_constants
 import constants.settings as settings_constants
 from enemy import Enemy
@@ -12,14 +11,14 @@ from player.shadow import Shadow
 from scenarioManager import ScenarioManager
 from screen import Screen
 from scroll import Scroll
-
+from sound import Sound
+from hud.hint import Hint # N'oublie pas l'import
 
 class Playing:
     def __init__(self):
         pg.display.set_caption(settings_constants.NAME_GAME)
         self.screen = Screen()
         self.timer = pg.time.Clock()
-        self.hint_shown = True
         self.state = game_constants.MENU
         
         pg.font.init()
@@ -27,15 +26,8 @@ class Playing:
         self.font_title = pg.font.SysFont("Arial", 50, bold=True)
         self.font_instruction = pg.font.SysFont("Arial", 25)
 
-        pg.mixer.init()
-        self.sound_hit = pg.mixer.Sound('assets/sounds/hurt.mp3')
-        self.sound_death = pg.mixer.Sound('assets/sounds/death.mp3')
-        self.sound_death.set_volume(1)
-        self.sound_hit.set_volume(1)
-
-        pg.mixer.music.load('assets/sounds/music.mp3')
-        pg.mixer.music.set_volume(0.5)
-        pg.mixer.music.play(-1)
+        self.sound = Sound()
+        self.sound.play_music()
 
         self.last_hit_time = 0
         self.hit_cooldown = 800
@@ -58,6 +50,7 @@ class Playing:
         self.entity_active = self.player
 
         self.hud = HudManager()
+        self.shadow_hint = Hint("A pour passer en ombre", pg.K_a, True)
 
         self.scroll = Scroll()
         self.fake_screen = pg.Surface((1024 // self.zoom, 768 // self.zoom))
@@ -74,6 +67,10 @@ class Playing:
             used_walls = self.walls_shadow if self.entity_active == self.shadow else self.walls_player
             self.entity_active.event_handler(event, used_walls)
 
+            # hint
+            if self.shadow_hint:
+                self.shadow_hint.handle_event(event)
+
             # --- capacite ombre
             # active la capacite de se spéarer de son ombre
             if event.type == pg.KEYDOWN and event.key == pg.K_a:
@@ -81,7 +78,6 @@ class Playing:
                     self.player.toggle_capacity();
                     self.shadow.rect.topleft = self.player.rect.topleft
                     self.entity_active = self.shadow
-                    self.hint_shown = False
 
                     # pour debug le mouvement en changant d'etat
                     self.player.reset_movement()
@@ -179,7 +175,7 @@ class Playing:
             now = pg.time.get_ticks()
             if now - self.last_hit_time >= self.hit_cooldown:
                 self.player.take_damage(ennemis_touches[0].attack)
-                self.sound_hit.play()
+                self.sound.play_hit();
                 self.last_hit_time = now
 
         if len(self.enemies) == 0:
@@ -206,13 +202,13 @@ class Playing:
 
         # mort
         if self.player.hp <= 0:
-            self.sound_death.play()
+            self.sound.play_death()
             return game_constants.GAME_OVER
 
         # continuer le jeu
         return game_constants.PLAYING
 
-    # affichage
+    # --- affichage
     def draw(self):
         self.scroll.scroll_update(self.entity_active, 1024 // self.zoom, 768 // self.zoom)
 
@@ -248,13 +244,5 @@ class Playing:
         self.scenario.dialog_draw(self.screen.display)
 
         # hint
-        if self.hint_shown:
-            hint_text: str = "A pour passer en ombre"
-            hint_surf = self.font_hint.render(hint_text, True, (255, 255, 255))
-            hint_rect = hint_surf.get_rect(midbottom=(1024 // 2, 768 // 3))
-
-            bg_rect = hint_rect.inflate(20, 20)
-            bg_surf = pg.Surface(bg_rect.size, pg.SRCALPHA)
-            bg_surf.fill((0, 0, 0, 150))
-            self.screen.display.blit(bg_surf, bg_rect)
-            self.screen.display.blit(hint_surf, hint_rect)
+        if self.shadow_hint:
+            self.shadow_hint.draw(self.screen.display)
