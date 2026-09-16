@@ -286,7 +286,7 @@ class Game:
 
                 if self.hint_shown:
 
-                    hint_text:str = "A : passer en ombre (traverse les grillages)"
+                    hint_text:str = "A pour passer en ombre"
                     hint_surf = self.font_hint.render(hint_text, True, (255, 255, 255))
                     hint_rect = hint_surf.get_rect(midbottom=(1024 // 2, 768 // 3) )
 
