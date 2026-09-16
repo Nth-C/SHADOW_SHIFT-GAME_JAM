@@ -86,7 +86,10 @@ class Body(PlayableEntity):
                         break
                     distance_left -= distance
 
-
+    # permet de soigner le joueur et de recuperer l'energie
+    def regen_all(self) -> None:
+        self.hp = player_constants.HP_MAX
+        self.energy = player_constants.ENERGY_MAX
 
     # permet de gerer l'invincibilité apres un degat
     def take_damage(self, amount: int) -> None:
