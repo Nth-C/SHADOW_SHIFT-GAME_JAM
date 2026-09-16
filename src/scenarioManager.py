@@ -60,7 +60,9 @@ class ScenarioManager:
                 game.enemies.add()
                 self.wave = 0
 
-            self.step = 2
+            self.step = 4
+        elif self.step == 3 and self.wave == 0 and not self.is_dialog_playing() and len(game.enemies) <= 0:
+            game.eclipse.start_animation()
 
     def dialog_draw(self, surface):
         if self.is_dialog_playing():

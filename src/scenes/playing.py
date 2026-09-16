@@ -9,6 +9,7 @@ from map import Map
 from player.body import Body
 from player.shadow import Shadow
 from scenarioManager import ScenarioManager
+from eclipse import Eclipse
 from screen import Screen
 from scroll import Scroll
 from sound import Sound
@@ -57,6 +58,8 @@ class Playing:
         self.light_surface = pg.Surface(self.screen.get_size(), pg.SRCALPHA)
 
         self.scenario = ScenarioManager()
+
+        self.eclipse = Eclipse(500, 350)
 
     # evenement du player
     def handle_event(self, event: Event) -> None:
@@ -156,6 +159,7 @@ class Playing:
             self.entity_active.is_attacking = False
 
         self.scenario.update_dialog(self)
+        self.eclipse.update()
 
         if not self.scenario.is_dialog_playing():
             # Choix des murs selon qui on contrôle
@@ -215,6 +219,9 @@ class Playing:
         self.fake_screen.blit(self.background_galaxy, (0, 0))
 
         self.map.draw(self.scroll, self.fake_screen, mur_bas_rects=self.mur_bas_rects, draw_foreground=False)
+
+        if self.eclipse.is_animating:
+            self.eclipse.draw(self.fake_screen, self.scroll)
             
         self.player_move = self.scroll.apply(self.player.rect)
         self.fake_screen.blit(self.player.image, self.player_move)
