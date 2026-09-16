@@ -3,7 +3,7 @@ import pygame as pg
 from entity import Entity
 
 class Enemy(Entity):
-    def __init__(self, x:int, y:int, range:int):
+    def __init__(self, x:int, y:int, range:int = 50):
         super().__init__(x, y, color=(255, 0, 0), width=25, height=40, hp=30, attack=10, speed=1);
 
         self.max_hp = 30

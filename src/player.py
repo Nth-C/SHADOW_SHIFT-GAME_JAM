@@ -86,7 +86,6 @@ class Body(Entity):
             
 
     # dash du perso
-    # TODO ajout la gestion d'énergie
     def dash(self, value: int, walls: list[pg.Rect] | None = None) -> None:
         if self.energy >= player_constants.DASH_ENERGY_CONSUMPTION:
             self.use_energy(player_constants.DASH_ENERGY_CONSUMPTION);
@@ -256,6 +255,7 @@ class Shadow(Entity):
             self.rect = next_rect
             self.feet = next_feet
 
+    # TODO factoriser les 2 move
     def move(self, walls: list[pg.Rect] | None = None):
         # permet de pouvoir bouger que dans une seule direction
         move_x = False;

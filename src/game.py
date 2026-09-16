@@ -9,14 +9,22 @@ from screen import Screen
 from entity import Entity
 from enemy import Enemy
 from scroll import Scroll
+import constants.game_states as game_constants
+import constants.settings as settings_constants
+
+# TODO essayer de ranger tout les fichier dans des dossiers
+
+# TODO mettre des constants pour tout les string en ecrit en dur
+# TODO mettre des constants pour la taille du screen
+# TODO essayer de découper le fichier en plusieurs
 
 class Game:
     def __init__(self):
-        pg.display.set_caption("Shadow of PikPik")
+        pg.display.set_caption(settings_constants.NAME_GAME)
         self.screen = Screen()
         self.timer = pg.time.Clock()
 
-        self.state = "MENU"
+        self.state = game_constants.MENU
         
         pg.font.init()
         self.font_title = pg.font.SysFont("Arial", 50, bold=True)
@@ -64,11 +72,11 @@ class Game:
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     running = False
-                if self.state == "MENU":
+                if self.state == game_constants.MENU:
                     if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
-                        self.state = "PLAYING"
+                        self.state = game_constants.PLAYING
                 
-                elif self.state == "PLAYING":
+                elif self.state == game_constants.PLAYING:
                     self.entity_active.event_handler(event, self.walls)  
 
             # colisions avc tout les enemies
@@ -108,10 +116,10 @@ class Game:
                         self.player.toggle_capacity()
                         self.entity_active = self.player
 
-            if self.state == "MENU":  
+            if self.state == game_constants.MENU:  
                 self.screen.display.fill((20, 20, 40))
                 
-                title_surf = self.font_title.render("Shadow of PikPik", True, (255, 255, 255))
+                title_surf = self.font_title.render(settings_constants.NAME_GAME, True, (255, 255, 255))
                 title_rect = title_surf.get_rect(center=(1024 // 2, 768 // 3))
                 self.screen.display.blit(title_surf, title_rect)
                 
@@ -119,7 +127,7 @@ class Game:
                 inst_rect = inst_surf.get_rect(center=(1024 // 2, 768 // 2))
                 self.screen.display.blit(inst_surf, inst_rect)
 
-            elif self.state == "PLAYING":
+            elif self.state == game_constants.PLAYING:
                 self.entity_active.move(self.walls)
                 
                 self.player.update_energy()
@@ -139,6 +147,7 @@ class Game:
 
                 self.fake_screen.fill((0, 0, 0))
 
+                # TODO constants ?
                 self.map.draw(self.scroll, self.fake_screen, ("sol", "objet"))
                 self.map.draw(self.scroll, self.fake_screen, ("mur", "barriere", "armoire"), mur_bas_rects=self.mur_bas_rects, draw_foreground=False)
                 
