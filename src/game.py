@@ -88,12 +88,12 @@ class Game:
         self.walls_player = [
             pg.Rect(obj.x, obj.y, obj.width, obj.height)
             for obj in self.map.tmx_data.objects
-            if obj.type in ("collision", "ombre")
+            if obj.type in ("collision", "ombre", "wave_exit")
         ]
         self.walls_shadow = [
             pg.Rect(obj.x, obj.y, obj.width, obj.height)
             for obj in self.map.tmx_data.objects
-            if obj.type in ("collision", "switch_map")
+            if obj.type in ("collision", "switch_map", "wave_exit")
         ]
 
         switch_map = next(
@@ -239,6 +239,18 @@ class Game:
                         self.player.take_damage(ennemis_touches[0].attack)
                         self.sound_hit.play()
                         self.last_hit_time = now
+
+                if len(self.enemies) == 0:
+                    self.walls_player = [
+                        pg.Rect(obj.x, obj.y, obj.width, obj.height)
+                        for obj in self.map.tmx_data.objects
+                        if obj.type in ("collision", "ombre")
+                    ]
+                    self.walls_shadow = [
+                        pg.Rect(obj.x, obj.y, obj.width, obj.height)
+                        for obj in self.map.tmx_data.objects
+                        if obj.type in ("collision", "switch_map")
+                    ]
 
                 if self.player.hp <= 0:
                     self.sound_death.play()
