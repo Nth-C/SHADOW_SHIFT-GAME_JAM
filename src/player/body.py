@@ -62,15 +62,29 @@ class Body(PlayableEntity):
         if self.energy >= player_constants.DASH_ENERGY_CONSUMPTION:
             self.use_energy(player_constants.DASH_ENERGY_CONSUMPTION);
 
+            movement = []
             if self.current_dir_y == Direction.UP:
-                self._move_axis(0, -value, walls)
+                movement.append((0, -1))
             elif self.current_dir_y == Direction.DOWN:
-                self._move_axis(0, value, walls)
+                movement.append((0, 1))
 
             if self.current_dir_x == Direction.LEFT:
-                self._move_axis(-value, 0, walls)
+                movement.append((-1, 0))
             elif self.current_dir_x == Direction.RIGHT:
-                self._move_axis(value, 0, walls)
+                movement.append((1, 0))
+
+            step = max(1, self.speed)
+            for direction_x, direction_y in movement:
+                distance_left = value
+                while distance_left > 0:
+                    distance = min(step, distance_left)
+                    if not self._move_axis(
+                        direction_x * distance,
+                        direction_y * distance,
+                        walls,
+                    ):
+                        break
+                    distance_left -= distance
 
 
 
