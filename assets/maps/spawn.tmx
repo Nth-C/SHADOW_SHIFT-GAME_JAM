@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="9">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="11">
  <tileset firstgid="1" source="tilesets/tilesFloor32.tsx"/>
  <tileset firstgid="199" source="tilesets/tilesWalls.tsx"/>
  <tileset firstgid="391" source="tilesets/dav65gu-5438904a-c502-4b9f-8a73-053fe69dc2e4.tsx"/>
@@ -187,5 +187,12 @@
  </objectgroup>
  <objectgroup id="10" name="mur_bas">
   <object id="42" x="259" y="672" width="480" height="96"/>
+ </objectgroup>
+ <objectgroup id="8" name="light">
+  <object id="10" name="lampe" gid="410" x="545.333" y="475.333" width="32" height="32">
+   <properties>
+    <property name="rayon" type="int" value="50"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>
