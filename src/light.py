@@ -2,7 +2,7 @@ import pygame as pg
 
 
 def dessiner_lumiere_degradee(surface: pg.Surface, x: int, y: int, rayon: int, couleur_base, alpha_max: int = 255):
-    """Dessine un halo lumineux circulaire avec dégradé."""
+    # Dessine un halo lumineux circulaire avec dégradé
     rayon = max(1, int(rayon))
 
     for distance in range(rayon, 0, -1):
@@ -41,7 +41,7 @@ def _iter_dark_areas(tmx_data):
 
 
 def render_lights(surface_lumiere: pg.Surface, tmx_data, camera_offset=(0, 0), couleur_lumiere=(247, 255, 0)):
-    """Applique la lumière sur une surface de rendu avec un fond sombre."""
+    # Applique la lumière sur une surface de rendu avec un fond sombre
     if surface_lumiere is None:
         return
 
@@ -63,7 +63,7 @@ def render_lights(surface_lumiere: pg.Surface, tmx_data, camera_offset=(0, 0), c
 
 
 def draw_light_objects(screen: pg.Surface, tmx_data, camera_offset=(0, 0)):
-    """Redessine les lampes au premier plan pour les préserver au-dessus du halo."""
+    # Redessine les lampes au premier plan pour les préserver au-dessus du halo
     if not tmx_data:
         return
 
