@@ -77,25 +77,7 @@ class Game:
                         self.state = game_constants.PLAYING
                 
                 elif self.state == game_constants.PLAYING:
-                    self.entity_active.event_handler(event, self.walls)  
-
-            # colisions avc tout les enemies
-            ennemis_touches = pg.sprite.spritecollide(self.player, self.enemies, False)
-            for ennemi in ennemis_touches:
-                self.player.take_damage(ennemi.attack)
-                break
-
-            # attaque
-            if self.player.is_attacking:
-                # recupere la zone d'attaque
-                zone_attaque = self.player.get_attack_range()
-
-                # verfie si un enemie est dans une zone d'attaque
-                for ennemi in self.enemies:
-                    if zone_attaque.colliderect(ennemi.rect):
-                        ennemi.take_damage(self.player.attack)
-                        
-                self.player.is_attacking = False
+                    self.entity_active.event_handler(event, self.walls) 
 
                 # --- capacite ombre
                 # active la capacite de se spéarer de son ombre
@@ -115,6 +97,24 @@ class Game:
                         self.player.rect.topleft = self.shadow.rect.topleft
                         self.player.toggle_capacity()
                         self.entity_active = self.player
+
+            # colisions avc tout les enemies
+            ennemis_touches = pg.sprite.spritecollide(self.player, self.enemies, False)
+            for ennemi in ennemis_touches:
+                self.player.take_damage(ennemi.attack)
+                break
+
+            # attaque
+            if self.player.is_attacking:
+                # recupere la zone d'attaque
+                zone_attaque = self.player.get_attack_range()
+
+                # verfie si un enemie est dans une zone d'attaque
+                for ennemi in self.enemies:
+                    if zone_attaque.colliderect(ennemi.rect):
+                        ennemi.take_damage(self.player.attack)
+                        
+                self.player.is_attacking = False
 
             if self.state == game_constants.MENU:  
                 self.screen.display.fill((20, 20, 40))
