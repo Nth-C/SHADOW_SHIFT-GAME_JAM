@@ -26,10 +26,11 @@ class Game:
         pg.display.set_caption(settings_constants.NAME_GAME)
         self.screen = Screen()
         self.timer = pg.time.Clock()
-
+        self.hint_shown = True
         self.state = game_constants.MENU
         
         pg.font.init()
+        self.font_hint = pg.font.SysFont("Arial", 16)
         self.font_title = pg.font.SysFont("Arial", 50, bold=True)
         self.font_instruction = pg.font.SysFont("Arial", 25)
         
@@ -112,6 +113,7 @@ class Game:
                         self.player.toggle_capacity();
                         self.shadow.rect.topleft = self.player.rect.topleft
                         self.entity_active = self.shadow
+                        self.hint_shown = False
 
                         # pour debug le mouvement en changant d'etat
                         self.player.reset_movement()
@@ -233,6 +235,22 @@ class Game:
                 self.screen.display.blit(self.light_surface, (0, 0), special_flags=pg.BLEND_RGB_ADD)
                 
                 self.hud.draw(self.screen.display, self.player)
+
+                if self.hint_shown:
+
+                    hint_text:str = "A : passer en ombre (traverse les grillages)"
+                    hint_surf = self.font_hint.render(hint_text, True, (255, 255, 255))
+                    hint_rect = hint_surf.get_rect(midbottom=(1024 // 2, 768 // 3) )
+
+                    bg_rect = hint_rect.inflate(20, 20)
+                    bg_surf = pg.Surface(bg_rect.size, pg.SRCALPHA)
+                    bg_surf.fill((0, 0, 0,150))
+                    self.screen.display.blit(bg_surf, bg_rect)
+
+                    self.screen.display.blit(hint_surf, hint_rect)
+
+                    self.hud.draw(self.screen.display, self.player)
+
             
             self.screen.update()
             self.timer.tick(60)
