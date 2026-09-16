@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="9">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="23">
  <tileset firstgid="1" source="tilesets/tilesFloor32.tsx"/>
  <tileset firstgid="199" source="tilesets/tilesWalls.tsx"/>
  <tileset firstgid="391" source="tilesets/dav65gu-5438904a-c502-4b9f-8a73-053fe69dc2e4.tsx"/>
@@ -179,9 +179,37 @@
   <object id="6" type="collision" x="791.335" y="96.6488" width="39.6223" height="62.581"/>
   <object id="7" type="collision" x="672" y="256" width="86.7484" height="35.4275"/>
   <object id="8" type="collision" x="192.927" y="93.6864" width="95.1676" height="17.0339"/>
+  <object id="11" name="switch_map" type="switch_map" x="448" y="0" width="96" height="96"/>
  </objectgroup>
  <objectgroup id="8" name="spawn">
   <object id="36" name="player" x="495.212" y="587.352">
+   <point/>
+  </object>
+  <object id="12" name="ennemi 5" x="493.533" y="352.819">
+   <point/>
+  </object>
+  <object id="13" name="ennemi 6" x="492.499" y="250.388">
+   <point/>
+  </object>
+  <object id="15" name="ennemi 7" x="603.207" y="186.239">
+   <point/>
+  </object>
+  <object id="16" name="ennemi 9" x="726.332" y="136.575">
+   <point/>
+  </object>
+  <object id="17" name="ennemi 8" x="735.644" y="215.21">
+   <point/>
+  </object>
+  <object id="18" name="ennemi 1" x="239.007" y="140.714">
+   <point/>
+  </object>
+  <object id="19" name="ennemi 2" x="236.937" y="227.625">
+   <point/>
+  </object>
+  <object id="20" name="ennemi 4" x="326.953" y="201.759">
+   <point/>
+  </object>
+  <object id="22" name="ennemi3" x="282.462" y="175.892">
    <point/>
   </object>
  </objectgroup>
