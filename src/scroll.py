@@ -1,4 +1,3 @@
-import pygame
 
 class Scroll:
     def __init__(self):

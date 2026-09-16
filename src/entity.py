@@ -1,5 +1,6 @@
 import pygame as pg
 
+
 # Class parent qui represente une entité dans le jeu (joueur, ennemi, etc.)
 class Entity(pg.sprite.Sprite):
     def __init__(

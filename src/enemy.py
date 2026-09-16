@@ -1,6 +1,8 @@
 # enemy.py
 import pygame as pg
+
 from entity import Entity
+
 
 class Enemy(Entity):
     def __init__(self, x:int, y:int, range:int = 50):

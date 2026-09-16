@@ -1,8 +1,10 @@
 import pygame as pg
 from pygame.event import Event
+
+import constants.player as player_constants
 from entity import Entity
 from enums.direction import Direction
-import constants.player as player_constants
+
 
 class Body(Entity):
     def __init__(self, x: int, y:int):
@@ -79,8 +81,7 @@ class Body(Entity):
             if current_time - self.last_regen_time >= player_constants.ENERGY_REGEN_TIME:
                 self.energy += player_constants.ENERGY_REGEN
                 
-                if self.energy > player_constants.ENERGY_MAX:
-                    self.energy = player_constants.ENERGY_MAX
+                self.energy = min(self.energy, player_constants.ENERGY_MAX)
                 
                 self.last_regen_time = current_time
             

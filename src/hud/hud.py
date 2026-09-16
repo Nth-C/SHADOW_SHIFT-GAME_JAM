@@ -1,5 +1,7 @@
 import pygame as pg
+
 from player import Body
+
 from .energy_bar import EnergyBar
 from .health_bar import HealthBar
 

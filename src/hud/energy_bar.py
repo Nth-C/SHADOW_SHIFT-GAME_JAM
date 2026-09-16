@@ -1,5 +1,6 @@
 import pygame as pg
 
+
 class EnergyBar:
     #TODO faire avec un nb de dash ex 4
     def __init__(self, x: int, y: int):

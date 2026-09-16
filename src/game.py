@@ -1,16 +1,13 @@
-import sys
 import pygame as pg
-from player import Body
-from player import Shadow
-import constants.settings as settings_constants
-from hud.hud import HudManager
-from map import Map
-from screen import Screen
-from entity import Entity
-from enemy import Enemy
-from scroll import Scroll
+
 import constants.game_states as game_constants
 import constants.settings as settings_constants
+from enemy import Enemy
+from hud.hud import HudManager
+from map import Map
+from player import Body, Shadow
+from screen import Screen
+from scroll import Scroll
 
 # TODO essayer de ranger tout les fichier dans des dossiers
 
@@ -41,6 +38,7 @@ class Game:
         self.enemies.add(Enemy(600, 600, 50))
         self.enemies.add(Enemy(200, 150, 50))
         self.enemies.add(Enemy(750, 400, 50))
+        
         self.mur_bas_rects = []
         for obj in self.map.tmx_data.get_layer_by_name("mur_bas"):
             self.mur_bas_rects.append(pg.Rect(obj.x, obj.y, obj.width, obj.height))
