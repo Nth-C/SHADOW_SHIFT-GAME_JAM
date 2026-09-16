@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="23">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="24">
  <tileset firstgid="1" source="tilesets/tilesFloor32.tsx"/>
  <tileset firstgid="199" source="tilesets/tilesWalls.tsx"/>
  <tileset firstgid="391" source="tilesets/dav65gu-5438904a-c502-4b9f-8a73-053fe69dc2e4.tsx"/>
@@ -123,9 +123,9 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,286,0,0,0,289,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,298,0,0,0,301,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,310,0,0,0,313,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,286,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,298,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,310,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -175,11 +175,11 @@
   <object id="40" type="collision" x="704" y="672" width="32" height="96"/>
   <object id="2" type="collision" x="659.82" y="542.099" width="44.1802" height="97.9014"/>
   <object id="3" type="ombre" x="441.818" y="146.788" width="8.23564" height="82.8408"/>
-  <object id="4" type="ombre" x="543.068" y="145.819" width="7.26674" height="77.5119"/>
   <object id="6" type="collision" x="791.335" y="96.6488" width="39.6223" height="62.581"/>
   <object id="7" type="collision" x="672" y="256" width="86.7484" height="35.4275"/>
   <object id="8" type="collision" x="192.927" y="93.6864" width="95.1676" height="17.0339"/>
   <object id="11" name="switch_map" type="switch_map" x="448" y="0" width="96" height="96"/>
+  <object id="23" type="wave_exit" x="448" y="64" width="96" height="64"/>
  </objectgroup>
  <objectgroup id="8" name="spawn">
   <object id="36" name="player" x="495.212" y="587.352">
