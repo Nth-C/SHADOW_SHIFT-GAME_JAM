@@ -84,23 +84,6 @@ class Body(PlayableEntity):
             super().take_damage(amount)
             
             self.last_damage_time = current_time
-
-    # recupere la position de l'attaque
-    def get_attack_range(self) -> pg.Rect:
-        attack_rect = pg.Rect(0, 0, 40, 40)
-        attack_rect.center = self.rect.center 
-        
-        if self.current_dir_x == Direction.LEFT:
-            attack_rect.centerx -= 30
-        elif self.current_dir_x == Direction.RIGHT:
-            attack_rect.centerx += 30
-            
-        if self.current_dir_y == Direction.UP:
-            attack_rect.centery -= 30
-        elif self.current_dir_y == Direction.DOWN:
-            attack_rect.centery += 30
-            
-        return attack_rect
     
     # active / desactive la capacité
     def toggle_capacity(self):

@@ -48,6 +48,23 @@ class PlayableEntity(Entity):
 
             self.energy -= energyToConsume;
 
+    # recupere la position de l'attaque
+    def get_attack_range(self) -> pg.Rect:
+        attack_rect = pg.Rect(0, 0, 40, 40)
+        attack_rect.center = self.rect.center 
+        
+        if self.current_dir_x == Direction.LEFT:
+            attack_rect.centerx -= 30
+        elif self.current_dir_x == Direction.RIGHT:
+            attack_rect.centerx += 30
+            
+        if self.current_dir_y == Direction.UP:
+            attack_rect.centery -= 30
+        elif self.current_dir_y == Direction.DOWN:
+            attack_rect.centery += 30
+            
+        return attack_rect
+
     # recupere de l'energie toutes le 2 sec
     def regen_energy(self) -> None:
         if self.energy < player_constants.ENERGY_MAX: 
