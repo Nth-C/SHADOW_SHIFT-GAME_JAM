@@ -75,6 +75,12 @@ class Game:
         self.fake_screen = pg.Surface((1024 // self.zoom, 768 // self.zoom))
         self.light_surface = pg.Surface(self.screen.get_size(), pg.SRCALPHA)
 
+        self.background_galaxy = pg.image.load("../assets/images/galaxie.png").convert()
+        self.background_galaxy = pg.transform.scale(
+            self.background_galaxy,
+            (1024 // self.zoom, 768 // self.zoom)
+        )
+
     def run(self):
         # boucle de jeu
         running = True
@@ -145,11 +151,11 @@ class Game:
             elif self.state == game_constants.GAME_OVER:
                 self.screen.display.fill((20, 20, 40))
 
-                title_surf = self.font_title.render("GAME OVER", True, (255, 255, 255))
+                title_surf = self.font_title.render("GAME OVER", True, (255, 0, 0))
                 title_rect = title_surf.get_rect(center=(1024 // 2, 768 // 3))
                 self.screen.display.blit(title_surf, title_rect)
 
-                inst_surf = self.font_instruction.render("Appuyez sur ESPACE pour recommencer", True, (0, 255, 200))
+                inst_surf = self.font_instruction.render("Appuyez sur ESPACE pour recommencer", True, (255, 0, 0))
                 inst_rect = inst_surf.get_rect(center=(1024 // 2, 768 // 2))
                 self.screen.display.blit(inst_surf, inst_rect)
 
@@ -190,7 +196,7 @@ class Game:
 
                 self.scroll.scroll_update(self.entity_active, 1024 // self.zoom, 768 // self.zoom)
 
-                self.fake_screen.fill((0, 0, 0))
+                self.fake_screen.blit(self.background_galaxy, (0, 0))
 
                 # TODO constants ?
                 self.map.draw(self.scroll, self.fake_screen, ("sol", "objet"))
