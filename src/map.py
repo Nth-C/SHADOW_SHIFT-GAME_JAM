@@ -1,6 +1,7 @@
 from pathlib import Path
-import pytmx
+
 import pygame as pg
+import pytmx
 
 from screen import Screen
 

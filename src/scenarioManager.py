@@ -1,5 +1,5 @@
 import pygame as pg
-from enemy import Enemy
+
 
 class ScenarioManager:
     def __init__(self):

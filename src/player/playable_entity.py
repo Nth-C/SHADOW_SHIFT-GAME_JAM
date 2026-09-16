@@ -5,6 +5,7 @@ import constants.player as player_constants
 from entity import Entity
 from enums.direction import Direction
 
+
 # class parent de body et shadow
 class PlayableEntity(Entity):
     def __init__(self, x: int, y:int):

@@ -1,10 +1,8 @@
 import pygame as pg
-from pygame.event import Event
 
-import constants.player as player_constants
-from entity import Entity
 from enums.direction import Direction
 from player.playable_entity import PlayableEntity
+
 
 class Shadow(PlayableEntity):
     def __init__(self, x: int, y:int):
