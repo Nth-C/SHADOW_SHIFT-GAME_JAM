@@ -36,35 +36,18 @@ class Game:
         
         self.map = Map(self.screen)
         self.map.switch_map("spawn")
+        self.refresh_map_data()
         
-        self.player = Body(400, 300);
         self.hud = HudManager();
+
+        self.zoom = 2
 
         self.enemies = pg.sprite.Group()
         
         self.enemies.add(Enemy(600, 600, 50))
         self.enemies.add(Enemy(200, 150, 50))
         self.enemies.add(Enemy(750, 400, 50))
-        self.mur_bas_rects = []
-        for obj in self.map.tmx_data.get_layer_by_name("mur_bas"):
-            self.mur_bas_rects.append(pg.Rect(obj.x, obj.y, obj.width, obj.height))
-
-            
-        self.walls_player = [
-            pg.Rect(object.x, object.y, object.width, object.height)
-            for object in self.map.tmx_data.objects
-            if object.type == "collision" or object.type == "ombre"
-        ]
-
-        self.walls_shadow = [
-            pg.Rect(object.x, object.y, object.width, object.height)
-            for object in self.map.tmx_data.objects
-            if object.type == "collision"
-        ]
-        
-        player_position = self.map.tmx_data.get_object_by_name("player")
-        self.player = Body(player_position.x, player_position.y)
-        self.shadow = Shadow(player_position.x, player_position.y)
+        self.spawn_entities_at_player()
 
         self.entity_active = self.player
 
@@ -72,9 +55,49 @@ class Game:
         self.hud = HudManager()
 
         self.scroll = Scroll()
-        self.zoom = 2
         self.fake_screen = pg.Surface((1024 // self.zoom, 768 // self.zoom))
         self.light_surface = pg.Surface(self.screen.get_size(), pg.SRCALPHA)
+
+    def refresh_map_data(self):
+        self.mur_bas_rects = []
+        mur_bas_layer = next(
+            (
+                layer
+                for layer in self.map.tmx_data.visible_layers
+                if layer.name == "mur_bas"
+            ),
+            None,
+        )
+        if mur_bas_layer is not None:
+            for obj in mur_bas_layer:
+                self.mur_bas_rects.append(pg.Rect(obj.x, obj.y, obj.width, obj.height))
+
+        self.walls_player = [
+            pg.Rect(obj.x, obj.y, obj.width, obj.height)
+            for obj in self.map.tmx_data.objects
+            if obj.type in ("collision", "ombre")
+        ]
+        self.walls_shadow = [
+            pg.Rect(obj.x, obj.y, obj.width, obj.height)
+            for obj in self.map.tmx_data.objects
+            if obj.type in ("collision", "switch_map")
+        ]
+
+        switch_map = next(
+            (obj for obj in self.map.tmx_data.objects if obj.type == "switch_map"),
+            None,
+        )
+        self.switch_map_rect = (
+            pg.Rect(switch_map.x, switch_map.y, switch_map.width, switch_map.height)
+            if switch_map is not None
+            else None
+        )
+
+    def spawn_entities_at_player(self):
+        player_position = self.map.tmx_data.get_object_by_name("player")
+        self.player = Body(player_position.x, player_position.y)
+        self.shadow = Shadow(player_position.x, player_position.y)
+        
 
         self.background_galaxy = pg.image.load('assets/images/galaxie.png').convert()
         self.background_galaxy = pg.transform.scale(
@@ -183,6 +206,7 @@ class Game:
                 self.screen.display.blit(inst_surf, inst_rect)
 
             elif self.state == game_constants.PLAYING:
+
                 if self.entity_active == self.shadow:
                     used_walls = self.walls_shadow
                 else:
@@ -206,13 +230,20 @@ class Game:
                 if self.entity_active == self.shadow and not self.player.capacity_active:
                     self.entity_active = self.player
 
+                if self.entity_active == self.player:
+                    if self.switch_map_rect and self.player.feet.colliderect(self.switch_map_rect):
+                        self.map.switch_map("salle2");
+                        self.refresh_map_data()
+                        self.spawn_entities_at_player()
+                        self.entity_active = self.player
+
+
                 self.scroll.scroll_update(self.entity_active, 1024 // self.zoom, 768 // self.zoom)
 
                 self.fake_screen.blit(self.background_galaxy, (0, 0))
 
                 # TODO constants ?
-                self.map.draw(self.scroll, self.fake_screen, ("sol", "objet"))
-                self.map.draw(self.scroll, self.fake_screen, ("mur", "barriere", "armoire"), mur_bas_rects=self.mur_bas_rects, draw_foreground=False)
+                self.map.draw(self.scroll, self.fake_screen, mur_bas_rects=self.mur_bas_rects, draw_foreground=False)
                 
                 self.player_move = self.scroll.apply(self.player.rect)
                 self.fake_screen.blit(self.player.image, self.player_move)
@@ -225,7 +256,7 @@ class Game:
                     enemy_move = self.scroll.apply(enemy.rect)
                     self.fake_screen.blit(enemy.image, enemy_move)
 
-                self.map.draw(self.scroll, self.fake_screen, ("mur", "barriere", "armoire"), mur_bas_rects=self.mur_bas_rects, draw_foreground=True)
+                self.map.draw(self.scroll, self.fake_screen, mur_bas_rects=self.mur_bas_rects, draw_foreground=True)
 
                 screen_zoom = pg.transform.scale(self.fake_screen, (1024, 768))
                 self.screen.display.blit(screen_zoom, (0, 0))
