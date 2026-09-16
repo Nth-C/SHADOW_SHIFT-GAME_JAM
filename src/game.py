@@ -47,10 +47,16 @@ class Game:
             self.mur_bas_rects.append(pg.Rect(obj.x, obj.y, obj.width, obj.height))
         
             
-        self.walls = [
+        self.walls_player = [
             pg.Rect(object.x, object.y, object.width, object.height)
             for object in self.map.tmx_data.objects
-            if object.type == "collision"
+            if object.type == "collision" or object.type == "ombre"
+        ]
+
+        self.walls_shadow = [
+            pg.Rect(object.x, object.y, object.width, object.height)
+            for object in self.map.tmx_data.objects
+            if object.type == "collision"      
         ]
         
         player_position = self.map.tmx_data.get_object_by_name("player")
@@ -79,7 +85,7 @@ class Game:
                         self.state = game_constants.PLAYING
                 
                 elif self.state == game_constants.PLAYING:
-                    self.entity_active.event_handler(event, self.walls) 
+                    self.entity_active.event_handler(event, self.walls_player) 
 
                 # --- capacite ombre
                 # active la capacite de se spéarer de son ombre
@@ -130,7 +136,12 @@ class Game:
                 self.screen.display.blit(inst_surf, inst_rect)
 
             elif self.state == game_constants.PLAYING:
-                self.entity_active.move(self.walls)
+                if self.entity_active == self.shadow:
+                    used_walls = self.walls_shadow
+                else:
+                    used_walls = self.walls_player
+
+                self.entity_active.move(used_walls)
                 
                 self.player.update_energy()
 
