@@ -9,6 +9,26 @@ from enums.direction import Direction
 class Body(Entity):
     def __init__(self, x: int, y:int):
         super().__init__(x, y, color=(0, 255, 0), width=25, height=50, hp=100, attack=20, speed=4, energy=100, health=100);
+        
+        original_sheet = pg.image.load('assets/characters/sprite_perso.png').convert_alpha()
+        self.sprite_sheet = pg.transform.scale(original_sheet, (96, 128))
+        
+
+        self.images = {
+            'down': pg.transform.scale(self.get_image(0, 0), (64, 64)),
+            'left': pg.transform.scale(self.get_image(0, 32), (64, 64)),
+            'right': pg.transform.scale(self.get_image(64, 32), (64, 64)),
+            'up': pg.transform.scale(self.get_image(0, 96), (64, 64))
+        }
+
+        small_image = self.get_image(64, 0)
+        self.image = pg.transform.scale(small_image, (64, 64))
+
+        self.rect = self.image.get_rect(topleft=(x, y))
+
+        self.feet = pg.Rect(0, 0, self.rect.width // 2, 12)
+        self.feet.midbottom = self.rect.midbottom
+        
         self.is_defenseless = False;
 
         self.keypress_history: list[int] = []; # liste des touche qui sont actuellement presser
@@ -19,13 +39,18 @@ class Body(Entity):
         self.last_damage_time = 0
         self.position = [x,y];
 
-        self.feet = pg.Rect(0, 0, self.rect.width // 2, 12)
-        self.feet.midbottom = self.rect.midbottom
-
         self.old_position = self.position.copy()
         self.last_regen_time = pg.time.get_ticks()
         self.capacity_active = False
         self.last_capacity_time = pg.time.get_ticks()
+
+    def get_image(self, x, y):
+        image = pg.Surface([32, 32], pg.SRCALPHA)
+        image.blit(self.sprite_sheet, (0, 0), (x, y, 32, 32))
+        return image
+
+    def change_animation(self, name):
+        self.image = self.images[name]
 
     def save_location(self): self.old_position = self.position.copy()
 
@@ -134,10 +159,12 @@ class Body(Entity):
                 if keypressed == pg.K_q:
                     self._move_axis(-self.speed, 0, walls)
                     self.current_dir_x = Direction.LEFT;
+                    self.change_animation('left')
                     move_x = True; # verrouille l'axe x
                 elif keypressed == pg.K_d:
                     self._move_axis(self.speed, 0, walls)
                     self.current_dir_x = Direction.RIGHT;
+                    self.change_animation('right')
                     move_x = True;
                 
             # --- mouvement y
@@ -145,10 +172,12 @@ class Body(Entity):
                 if keypressed == pg.K_z:
                     self._move_axis(0, -self.speed, walls)
                     self.current_dir_y = Direction.UP;
+                    self.change_animation('up')
                     move_y = True; # verrouille l'axe y
                 elif keypressed == pg.K_s:
                     self._move_axis(0, self.speed, walls)
                     self.current_dir_y = Direction.DOWN;
+                    self.change_animation('down')
                     move_y = True;
 
     # permet de gerer l'invincibilité apres un degat
@@ -211,6 +240,26 @@ class Body(Entity):
 class Shadow(Entity):
     def __init__(self, x, y):
         super().__init__(x, y, color=(0, 0, 255), width=25, height=50, hp=100, attack=20, speed=6, energy=100, health=100);
+        
+        original_sheet = pg.image.load('assets/characters/sprite_shadow.png').convert_alpha()
+        self.sprite_sheet = pg.transform.scale(original_sheet, (96, 128))
+        
+
+        self.images = {
+            'down': pg.transform.scale(self.get_image(0, 0), (64, 64)),
+            'left': pg.transform.scale(self.get_image(0, 32), (64, 64)),
+            'right': pg.transform.scale(self.get_image(64, 32), (64, 64)),
+            'up': pg.transform.scale(self.get_image(0, 96), (64, 64))
+        }
+
+        small_image = self.get_image(64, 0)
+        self.image = pg.transform.scale(small_image, (64, 64))
+
+        self.rect = self.image.get_rect(topleft=(x, y))
+
+        self.feet = pg.Rect(0, 0, self.rect.width // 2, 12)
+        self.feet.midbottom = self.rect.midbottom
+        
         self.is_defenseless = False;
 
         self.keypress_history: list[int] = []; # liste des touche qui sont actuellement presser
@@ -218,10 +267,13 @@ class Shadow(Entity):
         self.current_dir_y: Direction = None;
         self.position = [x,y];
 
-        self.feet = pg.Rect(0, 0, self.rect.width // 2, 12)
-        self.feet.midbottom = self.rect.midbottom
-        
+    def get_image(self, x, y):
+        image = pg.Surface([32, 32], pg.SRCALPHA)
+        image.blit(self.sprite_sheet, (0, 0), (x, y, 32, 32))
+        return image
 
+    def change_animation(self, name):
+        self.image = self.images[name]
 
     # gere les evenement du joueur (déplacement)
     def event_handler(self, event: Event, walls: list[pg.Rect] | None = None):
@@ -275,10 +327,12 @@ class Shadow(Entity):
                 if keypressed == pg.K_q:
                     self._move_axis(-self.speed, 0, walls)
                     self.current_dir_x = Direction.LEFT;
+                    self.change_animation('left')
                     move_x = True; # verrouille l'axe x
                 elif keypressed == pg.K_d:
                     self._move_axis(self.speed, 0, walls)
                     self.current_dir_x = Direction.RIGHT;
+                    self.change_animation('right')
                     move_x = True;
                 
             # --- mouvement y
@@ -286,8 +340,10 @@ class Shadow(Entity):
                 if keypressed == pg.K_z:
                     self._move_axis(0, -self.speed, walls)
                     self.current_dir_y = Direction.UP;
+                    self.change_animation('up')
                     move_y = True; # verrouille l'axe y
                 elif keypressed == pg.K_s:
                     self._move_axis(0, self.speed, walls)
                     self.current_dir_y = Direction.DOWN;
+                    self.change_animation('down')
                     move_y = True;
