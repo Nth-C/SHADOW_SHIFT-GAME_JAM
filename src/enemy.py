@@ -57,7 +57,6 @@ class Enemy(Entity):
                 self.change_animation('up')
                 self.rect.y -= self.speed        
 
-    # affiche la bar d'hp de l'enemie
     def draw_hp_bar(self, surface: pg.Surface) -> None:
         if self.hp > 0:
             ratio = self.hp / self.max_hp
