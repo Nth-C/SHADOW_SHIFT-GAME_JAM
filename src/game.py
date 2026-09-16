@@ -33,6 +33,15 @@ class Game:
         self.font_hint = pg.font.SysFont("Arial", 16)
         self.font_title = pg.font.SysFont("Arial", 50, bold=True)
         self.font_instruction = pg.font.SysFont("Arial", 25)
+
+        pg.mixer.init()
+        self.sound_hit = pg.mixer.Sound('assets/sounds/hurt.mp3')
+        self.sound_death = pg.mixer.Sound('assets/sounds/death.mp3')
+        self.sound_death.set_volume(1)
+        self.sound_hit.set_volume(1)
+
+        self.last_hit_time = 0
+        self.hit_cooldown = 800
         
         self.map = Map(self.screen)
         self.map.switch_map("spawn")
@@ -220,11 +229,15 @@ class Game:
                     enemy.update(self.player)
 
                 ennemis_touches = pg.sprite.spritecollide(self.player, self.enemies, False)
-                for ennemi in ennemis_touches:
-                    self.player.take_damage(ennemi.attack)
-                    break
+                if ennemis_touches:
+                    now = pg.time.get_ticks()
+                    if now - self.last_hit_time >= self.hit_cooldown:
+                        self.player.take_damage(ennemis_touches[0].attack)
+                        self.sound_hit.play()
+                        self.last_hit_time = now
 
                 if self.player.hp <= 0:
+                    self.sound_death.play()
                     self.state = game_constants.GAME_OVER
 
                 if self.entity_active == self.shadow and not self.player.capacity_active:
