@@ -8,14 +8,14 @@ class Enemy(Entity):
     def __init__(self, x:int, y:int, range:int = 50):
         super().__init__(x, y, color=(255, 0, 0), width=25, height=40, hp=30, attack=10, speed=1);
 
-        original_sheet = pg.image.load('assets/characters/sprite_shadow.png').convert_alpha()
+        original_sheet = pg.image.load('assets/characters/sprite_robot.png').convert_alpha()
         self.sprite_sheet = pg.transform.scale(original_sheet, (96, 128))
 
         self.images = {
-            'down': pg.transform.scale(self.get_image(0, 0), (64, 64)),
-            'left': pg.transform.scale(self.get_image(0, 32), (64, 64)),
-            'right': pg.transform.scale(self.get_image(64, 32), (64, 64)),
-            'up': pg.transform.scale(self.get_image(0, 96), (64, 64))
+            'down': pg.transform.scale(self.get_image(32, 0), (64, 64)),
+            'left': pg.transform.scale(self.get_image(64, 32), (64, 64)),
+            'right': pg.transform.scale(self.get_image(0, 32), (64, 64)),
+            'up': pg.transform.scale(self.get_image(32, 96), (64, 64))
         }
 
         small_image = self.get_image(64, 0)
@@ -44,13 +44,17 @@ class Enemy(Entity):
         # si le joueur entre dans la range l'enemie lui fonce dessus
         if player.rect.colliderect(attack_range):
             if self.rect.x < player.rect.x:
+                self.change_animation('right')
                 self.rect.x += self.speed
             elif self.rect.x > player.rect.x:
+                self.change_animation('left')
                 self.rect.x -= self.speed
                 
             if self.rect.y < player.rect.y:
+                self.change_animation('down')
                 self.rect.y += self.speed
             elif self.rect.y > player.rect.y:
+                self.change_animation('up')
                 self.rect.y -= self.speed        
 
     # affiche la bar d'hp de l'enemie
