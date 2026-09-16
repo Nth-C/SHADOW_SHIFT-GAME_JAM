@@ -1,18 +1,22 @@
+import sys
 import pygame as pg
-
-import constants.game_states as game_constants
+from player import Body
+from player import Shadow
 import constants.settings as settings_constants
-from enemy import Enemy
 from hud.hud import HudManager
 from map import Map
-from player import Body, Shadow
 from screen import Screen
+from entity import Entity
+from enemy import Enemy
 from scroll import Scroll
+import constants.game_states as game_constants
+import constants.settings as settings_constants
+from light import render_lights
 
 # TODO essayer de ranger tout les fichier dans des dossiers
 
 # TODO mettre des constants pour tout les string en ecrit en dur
-# TODO mettre des constants pour la taille du screen
+# TODO mettre des constantes pour la taille du screen
 # TODO essayer de découper le fichier en plusieurs
 
 class Game:
@@ -38,7 +42,6 @@ class Game:
         self.enemies.add(Enemy(600, 600, 50))
         self.enemies.add(Enemy(200, 150, 50))
         self.enemies.add(Enemy(750, 400, 50))
-        
         self.mur_bas_rects = []
         for obj in self.map.tmx_data.get_layer_by_name("mur_bas"):
             self.mur_bas_rects.append(pg.Rect(obj.x, obj.y, obj.width, obj.height))
@@ -62,6 +65,7 @@ class Game:
         self.scroll = Scroll()
         self.zoom = 2
         self.fake_screen = pg.Surface((1024 // self.zoom, 768 // self.zoom))
+        self.light_surface = pg.Surface(self.screen.get_size(), pg.SRCALPHA)
 
     def run(self):
         # boucle de jeu
@@ -164,6 +168,10 @@ class Game:
 
                 screen_zoom = pg.transform.scale(self.fake_screen, (1024, 768))
                 self.screen.display.blit(screen_zoom, (0, 0))
+
+                self.light_surface.fill((0, 0, 0, 0))
+                render_lights(self.light_surface, self.map.tmx_data, camera_offset=(self.scroll.x, self.scroll.y))
+                self.screen.display.blit(self.light_surface, (0, 0), special_flags=pg.BLEND_RGB_ADD)
                 
                 self.hud.draw(self.screen.display, self.player)
             
