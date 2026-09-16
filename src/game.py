@@ -2,8 +2,8 @@ import sys
 import pygame as pg
 
 from constants.player import HP_MAX
-from player import Body
-from player import Shadow
+from player.body import Body
+from player.shadow import Shadow
 import constants.settings as settings_constants
 from hud.hud import HudManager
 from map import Map
@@ -47,7 +47,7 @@ class Game:
         self.mur_bas_rects = []
         for obj in self.map.tmx_data.get_layer_by_name("mur_bas"):
             self.mur_bas_rects.append(pg.Rect(obj.x, obj.y, obj.width, obj.height))
-        
+
             
         self.walls_player = [
             pg.Rect(object.x, object.y, object.width, object.height)
@@ -107,9 +107,16 @@ class Game:
                         self.shadow.rect.topleft = self.player.rect.topleft
                         self.entity_active = self.shadow
 
+                        # pour debug le mouvement en changant d'etat
+                        self.player.reset_movement()
+                        self.shadow.reset_movement()
+
                     elif self.entity_active == self.shadow:
                         self.player.toggle_capacity()
                         self.entity_active = self.player
+
+                        self.player.reset_movement()
+                        self.shadow.reset_movement()
 
                 # permet de se téléporter à l'ombre
                 if self.entity_active == self.shadow:
@@ -117,6 +124,9 @@ class Game:
                         self.player.rect.topleft = self.shadow.rect.topleft
                         self.player.toggle_capacity()
                         self.entity_active = self.player
+
+                        self.player.reset_movement()
+                        self.shadow.reset_movement()
 
             # attaque
             if self.entity_active.is_attacking:
