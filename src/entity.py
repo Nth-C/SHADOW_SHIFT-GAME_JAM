@@ -4,16 +4,16 @@ import pygame as pg
 class Entity(pg.sprite.Sprite):
     def __init__(
             self, 
-            x, # position x
-            y, # postion y
-            color, # couleur rgb
-            width,
-            height, 
-            hp, 
-            attack, 
-            speed,
-            energy,
-            health
+            x: int, # position x
+            y: int, # position y
+            color: tuple[int, int, int], # couleur rgb
+            width: int,
+            height: int, 
+            hp: int, 
+            attack: int, 
+            speed: int,
+            energy: int = 0,
+            health: int = 100
         ):
         super().__init__()
         self.image = pg.Surface((width, height))
