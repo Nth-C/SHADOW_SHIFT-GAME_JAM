@@ -1,15 +1,19 @@
 import pygame as pg
 
 
-def dessiner_lumiere_degradee(surface: pg.Surface, x: int, y: int, rayon: int, couleur_base, alpha_max: int = 255):
-    # Dessine un halo lumineux circulaire avec dégradé
+def dessiner_lumiere_degradee(surface: pg.Surface, x: int, y: int, rayon: int, couleur_base=(255, 255, 255)):
+    # Dessine un halo lumineux circulaire avec dégradé additif
     rayon = max(1, int(rayon))
+    temp_surf = pg.Surface((rayon * 2, rayon * 2))
+    temp_surf.fill((0, 0, 0))  # Le noir n'ajoute aucune lumière
 
-    for distance in range(rayon, 0, -1):
-        intensite = (1 - (distance / rayon)) ** 2
-        alpha = max(0, min(alpha_max, int(alpha_max * intensite)))
-        couleur = tuple(int(c * intensite) for c in couleur_base) + (alpha,)
-        pg.draw.circle(surface, couleur, (x, y), distance)
+    for distance in range(rayon, 0, -2):
+        intensite = (1 - (distance / rayon)) ** 1.5
+        couleur = tuple(int(c * intensite) for c in couleur_base)
+        pg.draw.circle(temp_surf, couleur, (rayon, rayon), distance)
+
+    # Ajoute la lumière sur la surface sombre globale
+    surface.blit(temp_surf, (x - rayon, y - rayon), special_flags=pg.BLEND_RGB_ADD)
 
 
 def _get_map_objects(tmx_data):
@@ -40,12 +44,13 @@ def _iter_dark_areas(tmx_data):
             yield x, y, width, height
 
 
-def render_lights(surface_lumiere: pg.Surface, tmx_data, camera_offset=(0, 0), couleur_lumiere=(247, 255, 0)):
-    # Applique la lumière sur une surface de rendu avec un fond sombre
+def render_lights(surface_lumiere: pg.Surface, tmx_data, camera_offset=(0, 0), couleur_lumiere=(255, 255, 255)):
+    # Crée un masque d'obscurité qui sera multiplié à l'écran
     if surface_lumiere is None:
         return
 
-    surface_lumiere.fill((0, 0, 0, 180))
+    # Fond sombre (ex: bleu nuit très sombre). La multiplication assombrira l'écran.
+    surface_lumiere.fill((40, 40, 60))
 
     if not tmx_data:
         return
@@ -59,7 +64,7 @@ def render_lights(surface_lumiere: pg.Surface, tmx_data, camera_offset=(0, 0), c
 
     for x, y, width, height in _iter_dark_areas(tmx_data):
         rect_ombre = pg.Rect(int(x + offset_x), int(y + offset_y), int(width), int(height))
-        pg.draw.rect(surface_lumiere, (0, 0, 0, 220), rect_ombre)
+        pg.draw.rect(surface_lumiere, (10, 10, 15), rect_ombre)
 
 
 def draw_light_objects(screen: pg.Surface, tmx_data, camera_offset=(0, 0)):

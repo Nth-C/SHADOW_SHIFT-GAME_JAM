@@ -13,7 +13,8 @@ from enemy import Enemy
 from scroll import Scroll
 import constants.game_states as game_constants
 import constants.settings as settings_constants
-from light import render_lights
+from light import render_lights, _iter_light_sources
+import math
 
 # TODO essayer de ranger tout les fichier dans des dossiers
 
@@ -73,9 +74,9 @@ class Game:
         self.scroll = Scroll()
         self.zoom = 2
         self.fake_screen = pg.Surface((1024 // self.zoom, 768 // self.zoom))
-        self.light_surface = pg.Surface(self.screen.get_size(), pg.SRCALPHA)
+        self.light_surface = pg.Surface((1024 // self.zoom, 768 // self.zoom), pg.SRCALPHA)
 
-        self.background_galaxy = pg.image.load("../assets/images/galaxie.png").convert()
+        self.background_galaxy = pg.image.load("assets/images/galaxie.png").convert()
         self.background_galaxy = pg.transform.scale(
             self.background_galaxy,
             (1024 // self.zoom, 768 // self.zoom)
@@ -190,6 +191,10 @@ class Game:
                 
                 self.player.update_energy()
 
+                # Mise à jour des animations de marche
+                self.player.update_animation()
+                self.shadow.update_animation()
+
                 for enemy in self.enemies:
                     enemy.update(self.player)
 
@@ -200,6 +205,18 @@ class Game:
 
                 if self.player.hp <= 0:
                     self.state = game_constants.GAME_OVER
+
+                # Si l'ombre est active, vérifier si elle touche la lumière
+                if self.entity_active == self.shadow:
+                    shadow_x, shadow_y = self.shadow.rect.center
+                    for lampe_x, lampe_y, rayon in _iter_light_sources(self.map.tmx_data):
+                        # On considère le centre de la case TMX ou le point de l'objet
+                        if math.hypot(lampe_x - shadow_x, lampe_y - shadow_y) <= rayon:
+                            self.player.toggle_capacity()
+                            self.entity_active = self.player
+                            self.player.reset_movement()
+                            self.shadow.reset_movement()
+                            break
 
                 if self.entity_active == self.shadow and not self.player.capacity_active:
                     self.entity_active = self.player
@@ -225,12 +242,12 @@ class Game:
 
                 self.map.draw(self.scroll, self.fake_screen, ("mur", "barriere", "armoire"), mur_bas_rects=self.mur_bas_rects, draw_foreground=True)
 
-                screen_zoom = pg.transform.scale(self.fake_screen, (1024, 768))
-                self.screen.display.blit(screen_zoom, (0, 0))
-
                 self.light_surface.fill((0, 0, 0, 0))
                 render_lights(self.light_surface, self.map.tmx_data, camera_offset=(self.scroll.x, self.scroll.y))
-                self.screen.display.blit(self.light_surface, (0, 0), special_flags=pg.BLEND_RGB_ADD)
+                self.fake_screen.blit(self.light_surface, (0, 0), special_flags=pg.BLEND_RGB_MULT)
+
+                screen_zoom = pg.transform.scale(self.fake_screen, (1024, 768))
+                self.screen.display.blit(screen_zoom, (0, 0))
                 
                 self.hud.draw(self.screen.display, self.player)
             
