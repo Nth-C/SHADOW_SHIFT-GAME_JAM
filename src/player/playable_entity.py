@@ -88,51 +88,68 @@ class PlayableEntity(Entity):
         movement_x: int,
         movement_y: int,
         walls: list[pg.Rect] | None,
-    ) -> None:
+    ) -> bool:
         next_rect = self.rect.move(movement_x, movement_y)
         next_feet = self.feet.copy()
         next_feet.midbottom = next_rect.midbottom
 
-        if not walls or not any(next_feet.colliderect(wall) for wall in walls):
-            self.rect = next_rect
-            self.feet = next_feet
+        if walls and any(next_feet.colliderect(wall) for wall in walls):
+            return False
+
+        self.rect = next_rect
+        self.feet = next_feet
+        return True
 
     def move(self, walls: list[pg.Rect] | None = None):
-        # permet de pouvoir bouger que dans une seule direction
-        move_x = False;
-        move_y = False;
+        # permet de pouvoir bouger que dans une seule direction par axe
+        move_x = False
+        move_y = False
 
-        # si le joueur bouge on reinisialie tout (pour le dash si on est arreter)
         if len(self.keypress_history) > 0:
-            self.current_dir_x = None;
-            self.current_dir_y = None;
-            
-        # parcours les touches presser a l'envers pour pouvoir donner la priorité a la touche la plus récente
+            self.current_dir_x = None
+            self.current_dir_y = None
+
+        dir_x = None
+        dir_y = None
+
+        # 1ère passe : on détermine juste les directions, sans bouger encore
         for keypressed in reversed(self.keypress_history):
-                
-            # --- mouvement x
             if not move_x:
                 if keypressed == pg.K_q:
-                    self._move_axis(-self.speed, 0, walls)
-                    self.current_dir_x = Direction.LEFT;
-                    self.change_animation('left')
-                    move_x = True; # verrouille l'axe x
+                    dir_x = Direction.LEFT
+                    move_x = True
                 elif keypressed == pg.K_d:
-                    self._move_axis(self.speed, 0, walls)
-                    self.current_dir_x = Direction.RIGHT;
-                    self.change_animation('right')
-                    move_x = True;
-                
-            # --- mouvement y
+                    dir_x = Direction.RIGHT
+                    move_x = True
+
             if not move_y:
                 if keypressed == pg.K_z:
-                    self._move_axis(0, -self.speed, walls)
-                    self.current_dir_y = Direction.UP;
-                    self.change_animation('up')
-                    move_y = True; # verrouille l'axe y
+                    dir_y = Direction.UP
+                    move_y = True
                 elif keypressed == pg.K_s:
-                    self._move_axis(0, self.speed, walls)
-                    self.current_dir_y = Direction.DOWN;
-                    self.change_animation('down')
-                    move_y = True;
-                   
+                    dir_y = Direction.DOWN
+                    move_y = True
+
+        # si on bouge sur les deux axes en meme temps, on reduit la vitesse
+        speed = self.speed
+        if dir_x is not None and dir_y is not None:
+            speed *= 0.7071  # 1 / racine(2)
+
+        # 2eme passe : on applique le mouvement avec la vitesse corrigée
+        if dir_x == Direction.LEFT:
+            self._move_axis(-round(speed), 0, walls)
+            self.current_dir_x = Direction.LEFT
+            self.change_animation('left')
+        elif dir_x == Direction.RIGHT:
+            self._move_axis(round(speed), 0, walls)
+            self.current_dir_x = Direction.RIGHT
+            self.change_animation('right')
+
+        if dir_y == Direction.UP:
+            self._move_axis(0, -round(speed), walls)
+            self.current_dir_y = Direction.UP
+            self.change_animation('up')
+        elif dir_y == Direction.DOWN:
+            self._move_axis(0, round(speed), walls)
+            self.current_dir_y = Direction.DOWN
+            self.change_animation('down')

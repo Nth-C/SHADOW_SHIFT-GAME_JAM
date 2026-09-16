@@ -28,12 +28,26 @@ class Game:
         pg.display.set_caption(settings_constants.NAME_GAME)
         self.screen = Screen()
         self.timer = pg.time.Clock()
-
+        self.hint_shown = True
         self.state = game_constants.MENU
         
         pg.font.init()
+        self.font_hint = pg.font.SysFont("Arial", 16)
         self.font_title = pg.font.SysFont("Arial", 50, bold=True)
         self.font_instruction = pg.font.SysFont("Arial", 25)
+
+        pg.mixer.init()
+        self.sound_hit = pg.mixer.Sound('assets/sounds/hurt.mp3')
+        self.sound_death = pg.mixer.Sound('assets/sounds/death.mp3')
+        self.sound_death.set_volume(1)
+        self.sound_hit.set_volume(1)
+
+        pg.mixer.music.load('assets/sounds/music.mp3')
+        pg.mixer.music.set_volume(0.5)
+        pg.mixer.music.play(-1)
+
+        self.last_hit_time = 0
+        self.hit_cooldown = 800
         
         self.map = Map(self.screen)
         self.map.switch_map("spawn")
@@ -78,12 +92,12 @@ class Game:
         self.walls_player = [
             pg.Rect(obj.x, obj.y, obj.width, obj.height)
             for obj in self.map.tmx_data.objects
-            if obj.type in ("collision", "ombre")
+            if obj.type in ("collision", "ombre", "wave_exit")
         ]
         self.walls_shadow = [
             pg.Rect(obj.x, obj.y, obj.width, obj.height)
             for obj in self.map.tmx_data.objects
-            if obj.type in ("collision", "switch_map")
+            if obj.type in ("collision", "switch_map", "wave_exit")
         ]
 
         switch_map = next(
@@ -142,6 +156,7 @@ class Game:
                         self.player.toggle_capacity();
                         self.shadow.rect.topleft = self.player.rect.topleft
                         self.entity_active = self.shadow
+                        self.hint_shown = False
 
                         # pour debug le mouvement en changant d'etat
                         self.player.reset_movement()
@@ -226,13 +241,33 @@ class Game:
                     for enemy in self.enemies:
                         enemy.update(self.player)
 
+                ennemis_touches = pg.sprite.spritecollide(self.player, self.enemies, False)
+                if ennemis_touches:
+                    now = pg.time.get_ticks()
+                    if now - self.last_hit_time >= self.hit_cooldown:
+                        self.player.take_damage(ennemis_touches[0].attack)
+                        self.sound_hit.play()
+                        self.last_hit_time = now
+
+                if len(self.enemies) == 0:
+                    self.walls_player = [
+                        pg.Rect(obj.x, obj.y, obj.width, obj.height)
+                        for obj in self.map.tmx_data.objects
+                        if obj.type in ("collision", "ombre")
+                    ]
+                    self.walls_shadow = [
+                        pg.Rect(obj.x, obj.y, obj.width, obj.height)
+                        for obj in self.map.tmx_data.objects
+                        if obj.type in ("collision", "switch_map")
+                    ]
                     ennemis_touches = pg.sprite.spritecollide(self.player, self.enemies, False)
                     for ennemi in ennemis_touches:
                         self.player.take_damage(ennemi.attack)
                         break
 
                     if self.player.hp <= 0:
-                        self.state = game_constants.GAME_OVER
+                        self.sound_death.play()
+                    self.state = game_constants.GAME_OVER
 
                     if self.entity_active == self.shadow and not self.player.capacity_active:
                         self.entity_active = self.player
@@ -275,6 +310,22 @@ class Game:
                 self.hud.draw(self.screen.display, self.player)
 
                 self.scenario.dialog_draw(self.screen.display)
+
+                if self.hint_shown:
+
+                    hint_text:str = "A pour passer en ombre"
+                    hint_surf = self.font_hint.render(hint_text, True, (255, 255, 255))
+                    hint_rect = hint_surf.get_rect(midbottom=(1024 // 2, 768 // 3) )
+
+                    bg_rect = hint_rect.inflate(20, 20)
+                    bg_surf = pg.Surface(bg_rect.size, pg.SRCALPHA)
+                    bg_surf.fill((0, 0, 0,150))
+                    self.screen.display.blit(bg_surf, bg_rect)
+
+                    self.screen.display.blit(hint_surf, hint_rect)
+
+                    self.hud.draw(self.screen.display, self.player)
+
             
             self.screen.update()
             self.timer.tick(60)
