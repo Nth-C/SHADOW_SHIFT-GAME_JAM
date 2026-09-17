@@ -9,7 +9,7 @@ from eclipse import Eclipse
 from enemy import Enemy
 from hud.hint import Hint
 from hud.hud import HudManager
-from light import _iter_light_sources, render_lights
+from light import _iter_light_sources, render_lights, draw_light_objects
 from map import Map
 from player.body import Body
 from player.shadow import Shadow
