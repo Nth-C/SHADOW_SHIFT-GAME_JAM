@@ -28,6 +28,8 @@ class ScenarioManager:
                     self.dialogs = []
 
     def update_dialog(self, game):
+        was_playing = self.is_dialog_playing()
+
         if not self.is_dialog_playing():
             for zone_rect, zone_type in game.walls_dialogs:
                 if game.entity_active.feet.colliderect(zone_rect.inflate(15, 15)):
@@ -98,7 +100,6 @@ class ScenarioManager:
                     self.start_dialog([
                         ("Narrateur", "Le Sujet 0 frappa. L'ombre esquiva. Mais la horde\nne faisait que commencer. "),
                     ])
-                    from utils_wave import get_enemies_of_waves
                     game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 14, 4))
                     game.waves.is_active = True
                     self.memories["s2_wave1"] = True
@@ -111,7 +112,6 @@ class ScenarioManager:
                     self.start_dialog([
                         ("Narrateur", "Attention encore des enemies"),
                     ])
-                    from utils_wave import get_enemies_of_waves
                     game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 14, 4))
                     game.waves.is_active = True
                     self.memories["s2_wave2"] = True
@@ -130,7 +130,6 @@ class ScenarioManager:
         elif self.step == 2:
             if self.wave == 1 and not self.is_dialog_playing():
                 if not self.memories.get("s3_wave1"):
-                    from utils_wave import get_enemies_of_waves
                     game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 7, 3))
                     game.waves.is_active = True
                     self.memories["s3_wave1"] = True
@@ -139,7 +138,6 @@ class ScenarioManager:
 
             elif self.wave == 2 and not self.is_dialog_playing():
                 if not self.memories.get("s3_wave2"):
-                    from utils_wave import get_enemies_of_waves
                     game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 7, 4))
                     game.waves.is_active = True
                     self.memories["s3_wave2"] = True
@@ -176,6 +174,10 @@ class ScenarioManager:
                     ("Narrateur", "une fois toutes les portes ouverte le sujet 0 ainsi que son\nombre prirent une navette pour partir débuter une nouvelle vie\nloin de toutes cette agitation")
                 ])
                 self.memories["conclusion"] = True
+
+        if not was_playing and self.is_dialog_playing(): # pour éviter le pb ou on reste bloqué dans une direction quand un dialogue se lance et qu'on se deplace
+                game.player.reset_movement()
+                game.shadow.reset_movement()
 
     def dialog_draw(self, surface):
         if self.is_dialog_playing():
