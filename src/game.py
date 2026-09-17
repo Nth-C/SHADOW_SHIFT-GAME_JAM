@@ -30,6 +30,8 @@ class Game:
                     self.state = self.menu.start_game(event)
                 elif self.state == game_constants.GAME_OVER:
                     self.state = self.menu.restart_game(event, self.playing.player)
+                    if self.state == game_constants.PLAYING:
+                        self.playing.respawn_player()
                 elif self.state == game_constants.END:
                     self.state = self.menu.end_game(event, self.playing.player)
                 elif self.state == game_constants.CREDITS:

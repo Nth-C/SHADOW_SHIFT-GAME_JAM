@@ -56,7 +56,6 @@ class Body(PlayableEntity):
         if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
             self.dash(player_constants.DASH_DISTANCE, walls);
 
-    
     # dash du perso
     def dash(self, value: int, walls: list[pg.Rect] | None = None) -> None:
         if self.energy >= player_constants.DASH_ENERGY_CONSUMPTION:
