@@ -65,7 +65,7 @@ class ScenarioManager:
                                 
                             elif self.step == 1 and not self.memories.get("salle2_intro"):
                                 self.start_dialog([
-                                    ("Narrateur", "Le Sujet 0 pénétra dans la salle de recherche. L'air y était lourd, étouffant."),
+                                    ("Narrateur", "Le Sujet 0 pénétra dans la salle de recherche. L'air y était\nlourd, étouffant."),
                                     ("Narrateur", "Les robots sentinelles l'attendaient de pied ferme."),
                                 ])
                                 self.memories["salle2_intro"] = True
@@ -75,7 +75,7 @@ class ScenarioManager:
                             elif self.step == 2 and not self.memories.get("salle3_intro"):
                                 self.start_dialog([
                                     ("Sujet 0", "Parfait, il ne me reste plus qu'à couper cette source\nd'énergie et je pourrai partir."),
-                                    ("Narrateur", "Lorsque le joueur s'approcha, une vague de robots lui sauta dessus.")
+                                    ("Narrateur", "Lorsque le joueur s'approcha, une vague de robots\nlui sauta dessus.")
                                 ])
                                 self.memories["salle3_intro"] = True
                                 self.zone_past.append(zone_rect)
@@ -174,7 +174,7 @@ class ScenarioManager:
                 self.start_dialog([
                     ("Sujet 0", "J'étais à deux doigts d'y passer, j'ai vraiment eu de la chance."),
                     ("Sujet 0", "Bon maintenant, comment éteindre cette source d'énergie ?"),
-                    ("Tutoriel", "Pour éteindre le soleil, rapprochez-vous de lui puis appuyez sur [E].")
+                    ("Tutoriel", "Pour éteindre le soleil, rapprochez-vous de lui puis\nappuyez sur [E].")
                 ])
                 self.memories["end_wave_boss"] = True
                 
@@ -203,7 +203,7 @@ class ScenarioManager:
         if self.is_dialog_playing():
             speaker, text = self.dialogs[self.dialogs_index]
 
-            box_rect = pg.Rect(162, 600, 700, 120)
+            box_rect = pg.Rect(162, 600, 700, 140)
             pg.draw.rect(surface, (10, 10, 20), box_rect)
             pg.draw.rect(surface, (255, 255, 255), box_rect, 2)
 
