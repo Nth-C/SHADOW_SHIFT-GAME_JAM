@@ -42,24 +42,36 @@ class Enemy(Entity):
     def change_animation(self, name):
         self.image = self.images[name]
 
-    def update(self, player) -> None:
+    def move_axis(self, movement_x: int, movement_y: int, walls: list[pg.Rect] | None) -> bool:
+        next_rect = self.rect.move(movement_x, movement_y)
+        next_feet = self.feet.copy()
+        next_feet.midbottom = next_rect.midbottom
+
+        if walls and any(next_feet.colliderect(wall) for wall in walls):
+            return False
+
+        self.rect = next_rect
+        self.feet = next_feet
+        return True
+
+    def update(self, player, walls: list[pg.Rect] | None = None) -> None:
         attack_range = self.get_aggro_range()
 
         # si le joueur entre dans la range l'enemie lui fonce dessus
         if player.rect.colliderect(attack_range):
             if self.rect.x < player.rect.x:
                 self.change_animation('right')
-                self.rect.x += self.speed
+                self.move_axis(self.speed, 0, walls)
             elif self.rect.x > player.rect.x:
                 self.change_animation('left')
-                self.rect.x -= self.speed
+                self.move_axis(-self.speed, 0, walls)
                 
             if self.rect.y < player.rect.y:
                 self.change_animation('down')
-                self.rect.y += self.speed
+                self.move_axis(0, self.speed, walls)
             elif self.rect.y > player.rect.y:
                 self.change_animation('up')
-                self.rect.y -= self.speed        
+                self.move_axis(0, -self.speed, walls)
 
     def draw_hp_bar(self, surface: pg.Surface, offset_rect: pg.Rect) -> None:
         if self.hp > 0:
