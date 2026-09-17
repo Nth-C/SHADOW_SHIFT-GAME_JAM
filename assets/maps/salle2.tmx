@@ -7,7 +7,7 @@
  <tileset firstgid="2140" source="tilesets/tilesFloor32.tsx"/>
  <tileset firstgid="2338" source="tilesets/tilesStuff.tsx"/>
  <tileset firstgid="2930" source="tilesets/laboratory-tileset2.tsx"/>
- <tileset firstgid="2938" source="../../../../game jam2/Game-jam/assets/maps/tilesets/tilesStuff.tsx"/>
+ <tileset firstgid="2938" source="tilesets/tilesStuff.tsx"/>
  <tileset firstgid="3067" source="tilesets/dav65gu-5438904a-c502-4b9f-8a73-053fe69dc2e4.tsx"/>
  <layer id="1" name="Tile Layer 1" width="32" height="24">
   <data encoding="csv">
