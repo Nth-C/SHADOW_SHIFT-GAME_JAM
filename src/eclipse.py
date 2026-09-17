@@ -9,14 +9,15 @@ class Eclipse:
         self.height = self.sprite_sheet.get_height()
 
         self.images = [
-            pg.transform.scale(self.get_image(0, 0), (128, 128)),
-            pg.transform.scale(self.get_image(self.width * 1, 0), (128, 128)),
-            pg.transform.scale(self.get_image(self.width * 2, 0), (128, 128)),
-            pg.transform.scale(self.get_image(self.width * 3, 0), (128, 128)),
-            pg.transform.scale(self.get_image(self.width * 4, 0), (128, 128)),
+            pg.transform.scale(self.get_image(0, 0), (256, 256)),
+            pg.transform.scale(self.get_image(self.width * 1, 0), (256, 256)),
+            pg.transform.scale(self.get_image(self.width * 2, 0), (256, 256)),
+            pg.transform.scale(self.get_image(self.width * 3, 0), (256, 256)),
+            pg.transform.scale(self.get_image(self.width * 4, 0), (256, 256)),
         ]
 
-        self.rect = pg.Rect(x, y, 128, 128)
+        self.rect = pg.Rect(0, 0, 256, 256)
+        self.rect.center = (x, y)
         self.img_index = 0
         self.is_animating = False
         self.last_update = 0
