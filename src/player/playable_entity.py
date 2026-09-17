@@ -84,7 +84,7 @@ class PlayableEntity(Entity):
         self.keypress_history.clear()
 
     # mouvement du perso
-    def _move_axis(
+    def move_axis(
         self,
         movement_x: int,
         movement_y: int,
@@ -113,7 +113,6 @@ class PlayableEntity(Entity):
         dir_x = None
         dir_y = None
 
-        # 1ère passe : on détermine juste les directions, sans bouger encore
         for keypressed in reversed(self.keypress_history):
             if not move_x:
                 if keypressed == pg.K_q:
@@ -136,21 +135,20 @@ class PlayableEntity(Entity):
         if dir_x is not None and dir_y is not None:
             speed *= 0.7071  # 1 / racine(2)
 
-        # 2eme passe : on applique le mouvement avec la vitesse corrigée
         if dir_x == Direction.LEFT:
-            self._move_axis(-round(speed), 0, walls)
+            self.move_axis(-round(speed), 0, walls)
             self.current_dir_x = Direction.LEFT
             self.change_animation('left')
         elif dir_x == Direction.RIGHT:
-            self._move_axis(round(speed), 0, walls)
+            self.move_axis(round(speed), 0, walls)
             self.current_dir_x = Direction.RIGHT
             self.change_animation('right')
 
         if dir_y == Direction.UP:
-            self._move_axis(0, -round(speed), walls)
+            self.move_axis(0, -round(speed), walls)
             self.current_dir_y = Direction.UP
             self.change_animation('up')
         elif dir_y == Direction.DOWN:
-            self._move_axis(0, round(speed), walls)
+            self.move_axis(0, round(speed), walls)
             self.current_dir_y = Direction.DOWN
             self.change_animation('down')
