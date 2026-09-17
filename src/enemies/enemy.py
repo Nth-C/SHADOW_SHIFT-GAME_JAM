@@ -11,7 +11,7 @@ class Enemy(EnemiesEntity):
         y: int,
         width: int = 64,
         height: int = 64,
-        hp: int = 30,
+        hp: int = 20,
         attack: int = 10,
         speed: int = 1,
         aggro_range: int = 100,

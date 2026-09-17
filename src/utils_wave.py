@@ -6,7 +6,7 @@ from enemies.enemy import Enemy
 
 
 def get_enemies_of_waves(
-    self, min_id_enemy, max_id_enemy, nb_enemies
+    self, min_id_enemy, max_id_enemy, nb_enemies, hp=20
 ) -> pg.sprite.Group:
     id_enemies_selected: list[int] = []
     wave = pg.sprite.Group()
@@ -19,6 +19,6 @@ def get_enemies_of_waves(
         id_enemies_selected.append(rnd_int)
 
         enemy = self.map.tmx_data.get_object_by_name("ennemi " + str(rnd_int))
-        wave.add(Enemy(enemy.x, enemy.y, 50))
+        wave.add(Enemy(enemy.x, enemy.y, 50, hp=hp))
 
     return wave

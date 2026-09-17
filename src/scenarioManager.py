@@ -170,8 +170,8 @@ class ScenarioManager:
                             ),
                         ]
                     )
-                    game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 10, 4))
-                    game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 10, 4))
+                    game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 10, 4, hp=30))
+                    game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 10, 4, hp=40))
 
                     game.waves.is_active = True
                     self.memories["s2_wave1"] = True
@@ -210,7 +210,7 @@ class ScenarioManager:
         elif self.step == 2:
             if self.wave == 1 and not self.is_dialog_playing():
                 if not self.memories.get("s3_wave1"):
-                    game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 7, 3))
+                    game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 7, 3, hp=45))
                     game.waves.is_active = True
                     self.memories["s3_wave1"] = True
                 elif len(game.waves.get_current_enemies()) <= 0 and self.memories.get(
@@ -220,7 +220,7 @@ class ScenarioManager:
 
             elif self.wave == 2 and not self.is_dialog_playing():
                 if not self.memories.get("s3_wave2"):
-                    game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 7, 4))
+                    game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 7, 4, hp=50))
                     game.waves.is_active = True
                     self.memories["s3_wave2"] = True
                 elif len(game.waves.get_current_enemies()) <= 0 and self.memories.get(
@@ -239,7 +239,7 @@ class ScenarioManager:
 
                     boss_obj = game.map.tmx_data.get_object_by_name("boss")
                     boss_wave = pg.sprite.Group()
-                    boss_wave.add(Boss(boss_obj.x, boss_obj.y, 128, 128))
+                    boss_wave.add(Boss(boss_obj.x, boss_obj.y, 128, 128, hp=300))
 
                     game.waves.list_of_waves.append(boss_wave)
                     game.waves.is_active = True
