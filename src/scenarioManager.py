@@ -38,7 +38,7 @@ class ScenarioManager:
                             self.start_dialog([
                                 ("Sujet 0", "Je pourrais utiliser mon ombre pour passer derrière cette grille"),
                                 ("Tutoriel", "Appuyez sur [A] pour activer la capacitée spécial du sujet 0\n(Détachement de l'ombre)."),
-                                ("Tutoriel", "Puis appuyez sur [c] pour vous téléporter sur votre ombre.")
+                                ("Tutoriel", "Puis appuyez sur [C] pour vous téléporter sur votre ombre.")
                             ])
                             self.memories["read"] = True
                             
@@ -98,8 +98,9 @@ class ScenarioManager:
                     self.start_dialog([
                         ("Narrateur", "Le Sujet 0 frappa. L'ombre esquiva. Mais la horde\nne faisait que commencer. "),
                     ])
-                    from utils_wave import get_enemies_of_waves
                     game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 14, 4))
+                    game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 14, 4))
+
                     game.waves.is_active = True
                     self.memories["s2_wave1"] = True
                     
@@ -111,8 +112,7 @@ class ScenarioManager:
                     self.start_dialog([
                         ("Narrateur", "Attention encore des enemies"),
                     ])
-                    from utils_wave import get_enemies_of_waves
-                    game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 14, 4))
+                    
                     game.waves.is_active = True
                     self.memories["s2_wave2"] = True
                     
@@ -130,7 +130,6 @@ class ScenarioManager:
         elif self.step == 2:
             if self.wave == 1 and not self.is_dialog_playing():
                 if not self.memories.get("s3_wave1"):
-                    from utils_wave import get_enemies_of_waves
                     game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 7, 3))
                     game.waves.is_active = True
                     self.memories["s3_wave1"] = True
@@ -139,7 +138,6 @@ class ScenarioManager:
 
             elif self.wave == 2 and not self.is_dialog_playing():
                 if not self.memories.get("s3_wave2"):
-                    from utils_wave import get_enemies_of_waves
                     game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 7, 4))
                     game.waves.is_active = True
                     self.memories["s3_wave2"] = True
@@ -187,7 +185,7 @@ class ScenarioManager:
 
             surface.blit(self.font_dialogue.render(speaker, True, (255, 215, 0)), (182, 610))
             y = 645
-            for ligne in text.split('\n'): # Coupe le texte à chaque "\n"
+            for ligne in text.split('\n'): 
                 surface.blit(self.font_dialogue.render(ligne, True, (255, 255, 255)), (182, y))
                 y += 25
             surface.blit(self.font_dialogue.render("[ENTRÉE]", True, (150, 150, 150)), (750, 680))

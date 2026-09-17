@@ -123,17 +123,7 @@ class Playing:
             for obj in mur_bas_layer:
                 self.mur_bas_rects.append(pg.Rect(obj.x, obj.y, obj.width, obj.height))
 
-        self.walls_player = [
-            pg.Rect(obj.x, obj.y, obj.width, obj.height)
-            for obj in self.map.tmx_data.objects
-            if obj.type in ("collision", "ombre", "wave_exit")
-        ]
-
-        self.walls_shadow = [
-            pg.Rect(obj.x, obj.y, obj.width, obj.height)
-            for obj in self.map.tmx_data.objects
-            if obj.type in ("collision", "switch_map", "wave_exit")
-        ]
+        self.refresh_collision_walls(include_wave_exit=True)
 
         self.walls_dialogs = [
             (pg.Rect(obj.x, obj.y, obj.width, obj.height), obj.type)
@@ -152,6 +142,25 @@ class Playing:
         else:
             self.switch_map_rect = None
             self.target_map_name = None
+
+    def refresh_collision_walls(self, include_wave_exit):
+        blocked_player_types = {"collision", "ombre"}
+        blocked_shadow_types = {"collision", "switch_map"}
+
+        if include_wave_exit:
+            blocked_player_types.add("wave_exit")
+            blocked_shadow_types.add("wave_exit")
+
+        self.walls_player = [
+            pg.Rect(obj.x, obj.y, obj.width, obj.height)
+            for obj in self.map.tmx_data.objects
+            if obj.type in blocked_player_types
+        ]
+        self.walls_shadow = [
+            pg.Rect(obj.x, obj.y, obj.width, obj.height)
+            for obj in self.map.tmx_data.objects
+            if obj.type in blocked_shadow_types
+        ]
 
     def spawn_entities_at_player(self):
         player_position = self.map.tmx_data.get_object_by_name("player")
@@ -221,17 +230,8 @@ class Playing:
             if self.player.take_damage(ennemis_touches[0].attack):
                 self.sound.play_hit()
 
-        if self.waves.room_is_clear():
-            self.walls_player = [
-                pg.Rect(obj.x, obj.y, obj.width, obj.height)
-                for obj in self.map.tmx_data.objects
-                if obj.type in ("collision", "ombre")
-            ]
-            self.walls_shadow = [
-                pg.Rect(obj.x, obj.y, obj.width, obj.height)
-                for obj in self.map.tmx_data.objects
-                if obj.type in ("collision", "switch_map")
-            ]
+        if self.waves.room_is_clear() and len(self.waves.list_of_waves) > 0 and self.scenario.wave == 0:
+            self.refresh_collision_walls(include_wave_exit=False)
 
             if self.entity_active == self.shadow and not self.player.capacity_active:
                 self.entity_active = self.player
@@ -243,6 +243,7 @@ class Playing:
                         self.refresh_map_data()
                         self.spawn_entities_at_player()
                         self.entity_active = self.player
+                        self.waves = Waves([])
 
         if self.entity_active == self.shadow and not self.player.capacity_active:
             self.entity_active = self.player
@@ -279,14 +280,6 @@ class Playing:
         if self.player.capacity_active:
             self.shadow_move = self.scroll.apply(self.shadow.rect)
             self.fake_screen.blit(self.shadow.image, self.shadow_move)
-
-        """
-        for enemy in self.enemies:
-            enemy_move = self.scroll.apply(enemy.rect)
-            enemy.draw_aggro_range(self.fake_screen, enemy_move)
-            self.fake_screen.blit(enemy.image, enemy_move)
-            enemy.draw_hp_bar(self.fake_screen, enemy_move)
-        """
         
         self.waves.draw_waves(self.fake_screen, self.scroll)
 
