@@ -32,6 +32,8 @@ class Game:
                     self.state = self.menu.restart_game(event, self.playing.player)
                 elif self.state == game_constants.END:
                     self.state = self.menu.end_game(event, self.playing.player)
+                elif self.state == game_constants.CREDITS:
+                    self.state = self.menu.show_credits(event)
                 elif self.state == game_constants.PLAYING:
                     self.playing.handle_event(event)
 
@@ -42,6 +44,8 @@ class Game:
                 self.menu.draw_game_over(self.screen)
             elif self.state == game_constants.END:
                 self.menu.draw_end(self.screen)
+            elif self.state == game_constants.CREDITS:
+                self.menu.draw_credits(self.screen)
             elif self.state == game_constants.PLAYING:
                 self.state = self.playing.update()
                 self.playing.draw()

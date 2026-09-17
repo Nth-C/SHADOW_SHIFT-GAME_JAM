@@ -37,9 +37,15 @@ class Menu:
             # regen le joueur
             player.regen_all();
 
-            return game_constants.MENU
+            return game_constants.CREDITS
 
         return game_constants.END
+
+    def show_credits(self, event: Event) -> str:
+        if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
+            return game_constants.MENU
+
+        return game_constants.CREDITS
 
     # --- affichage
 
@@ -73,4 +79,33 @@ class Menu:
 
         inst_surf = self.font_instruction.render("Appuyez sur ESPACE pour retourner au menu", True, (0, 255, 200))
         inst_rect = inst_surf.get_rect(center=(1024 // 2, 768 // 2))
+        screen.display.blit(inst_surf, inst_rect)
+
+    # affiche l'ecran des credits
+    def draw_credits(self, screen: Screen):
+        screen.display.fill((20, 20, 40))
+
+        title_surf = self.font_title.render("CREDITS", True, (255, 255, 255))
+        title_rect = title_surf.get_rect(center=(1024 // 2, 768 // 6))
+        screen.display.blit(title_surf, title_rect)
+
+        credits_lines = [
+            "Realisé par",
+            "Rayan Tata, Nathan Coeurdevey,",
+            "Mathieu Macaud, Enzo Galiano et Thomas Demarcq",
+            "",
+            "Assets audio :",
+            "Pack audio par Chequered Ink",
+        ]
+
+        start_y = 768 // 3
+        line_height = 40
+
+        for i, line in enumerate(credits_lines):
+            line_surf = self.font_instruction.render(line, True, (0, 255, 200))
+            line_rect = line_surf.get_rect(center=(1024 // 2, start_y + i * line_height))
+            screen.display.blit(line_surf, line_rect)
+
+        inst_surf = self.font_instruction.render("Appuyez sur ESPACE pour retourner au menu", True, (255, 255, 255))
+        inst_rect = inst_surf.get_rect(center=(1024 // 2, 768 - 60))
         screen.display.blit(inst_surf, inst_rect)
