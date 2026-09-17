@@ -153,6 +153,9 @@
    <property name="rayon" type="int" value="35"/>
   </properties>
   <object id="94" name="player" x="494.663" y="661.081">
+   <properties>
+    <property name="direction" value="up"/>
+   </properties>
    <point/>
   </object>
   <object id="97" name="ennemi 8" x="711.269" y="485.22">
