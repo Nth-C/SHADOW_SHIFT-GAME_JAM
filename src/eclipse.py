@@ -46,3 +46,8 @@ class Eclipse:
         eclipse_move = scroll.apply(self.rect)
         if self.img_index < len(self.images):
             surface.blit(self.images[self.img_index], eclipse_move)
+
+    def reset(self):
+        self.img_index = 0
+        self.is_animating = False
+        self.last_update = 0
