@@ -69,6 +69,8 @@ class Playing:
         # gestion des dialogues
         if self.scenario.is_dialog_playing():
             self.scenario.event_handler(event)
+            self.player.reset_movement()
+            self.shadow.reset_movement()
         else:
             used_walls = self.walls_shadow if self.entity_active == self.shadow else self.walls_player
             self.entity_active.event_handler(event, used_walls)
