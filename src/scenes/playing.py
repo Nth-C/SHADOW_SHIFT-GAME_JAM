@@ -136,7 +136,7 @@ class Playing:
         self.walls_dialogs = [
             (pg.Rect(obj.x, obj.y, obj.width, obj.height), obj.type)
             for obj in self.map.tmx_data.objects
-            if obj.type in ("dialogue", "wave_exit", "dialogue1")
+            if obj.type in ("dialogue", "wave_exit", "dialogue 1")
         ]
 
         switch_map = next(

@@ -9,7 +9,7 @@ class ScenarioManager:
         self.dialogs_index = 0
         self.font_dialogue = pg.font.SysFont("Arial", 22, bold=True)
         self.dialog_played = False
-        self.memoire = {}
+        self.memories = {}
 
     def is_dialog_playing(self):
         return len(self.dialogs) > 0
@@ -28,83 +28,89 @@ class ScenarioManager:
     def update_dialog(self, game):
         if not self.is_dialog_playing() and game.entity_active == game.player:
             for zone_rect, zone_type in game.walls_dialogs:
-                if game.player.feet.colliderect(zone_rect):
+                if game.player.feet.colliderect(zone_rect.inflate(15, 15)):
                     
-                    if zone_type == 'dialogue1' and not self.memoire.get("read"):
+                    if zone_type == 'dialogue 1' and not self.memories.get("read"):
                         self.start_dialog([
                             ("Sujet 0", "Je pourrais utiliser mon ombre pour passer derrière cette grille"),
                             ("Tutoriel", "Appuyez sur [A] pour activer la capacitée spécial du sujet 0\n(Détachement de l'ombre)."),
                             ("Tutoriel", "Puis appuyez sur [c] pour vous téléporter sur votre ombre.")
                         ])
-                        self.memoire["read"] = True
+                        self.memories["read"] = True
                         
                     elif zone_type == 'wave_exit' and len(game.enemies) > 0:
-                        self.start_dialog([
-                            ("Sujet 0", "Je dois d'abord éliminer tous les ennemies de la zone\navant de pouvoir passer à la prochaine."),
-                        ])
+                        if not self.memories["touche_wall"]:
+                            self.start_dialog([
+                                ("Sujet 0", "Je dois d'abord éliminer tous les ennemies de la zone\navant de pouvoir passer à la prochaine."),
+                            ])
+                            self.memories["touche_wall"] = True
 
                     elif zone_type == 'dialogue':
-                        if self.step == 0 and not self.memoire.get("salle1_exit"):
+                        if self.step == 0 and not self.memories.get("salle1_exit"):
                             self.start_dialog([
                                 ("Narrateur", "Enfin libre... Mais la garde de nuit veillait déjà."),
                                 ("Sujet 0", "Maintenant il faut que je trouve un moyen d'accéder\nà la salle du soleil pour éteindre la source d'Energie\ndu laboratoire")                            
                             ])
-                            self.memoire["salle1_exit"] = True
+                            self.memories["salle1_exit"] = True
                             
-                        elif self.step == 1 and not self.memoire.get("salle2_intro"):
+                        elif self.step == 1 and not self.memories.get("salle2_intro"):
                             self.start_dialog([
                                 ("Narrateur", "le Sujet 0 pénétra dans ???. L'air y était lourd, étouffant."),
                                 ("Narrateur", "Les sentinelles mutantes l'attendaient de pied ferme."),
                             ])
-                            self.memoire["salle2_intro"] = True
+                            self.memories["salle2_intro"] = True
                             self.wave = 1
                             
-                        elif self.step == 2 and not self.memoire.get("salle3_intro"):
+                        elif self.step == 2 and not self.memories.get("salle3_intro"):
                             self.start_dialog([
                                 ("Sujet 0", "Parfait il ne me reste plus qu'a couper cette source\nd'energie et je pourrais partire."),
                                 ("Narrateur", "Lorsque le joueur s'approcha une vague de robot lui sauta dessus")
                             ])
-                            self.memoire["salle3_intro"] = True
+                            self.memories["salle3_intro"] = True
                             self.wave = 1
+
+                else:
+                    if zone_type == 'wave_exit':
+                        self.memories['touche_wall'] = False
 
         
         if self.step == 0:
-            if not self.memoire.get("intro_jeu"):
+            if not self.memories.get("intro_jeu"):
                 self.start_dialog([
                     ("Narrateur", "Le Sujet Zéro ouvrit les yeux. Enfermé dans sa chambre."),
                     ("Tutoriel", "Appuyez sur [ESPACE] pour effectuer un Dash (esquive).")
                 ])
-                self.memoire["intro_jeu"] = True
+                self.memories["intro_jeu"] = True
 
-            if len(game.enemies) <= 0 and self.memoire.get("salle1_sortie"):
+            if len(game.enemies) <= 0 and self.memories.get("salle1_sortie"):
                 self.step = 1
 
         elif self.step == 1:
             if self.wave == 1 and not self.is_dialog_playing():
-                if not self.memoire.get("s2_wave1"):
+                if not self.memories.get("s2_wave1"):
                     self.start_dialog([
                         ("Narrateur", "Le Sujet 0 frappa. L'ombre esquiva. Mais la horde\nne faisait que commencer. "),
                     ])
                     # game.enemies.add( Enemy(...) )
-                    self.memoire["s2_wave1"] = True
+                    self.memories["s2_wave1"] = True
                     
-                elif len(game.enemies) <= 0 and self.memoire.get("s2_w1_spawned"):
+                elif len(game.enemies) <= 0 and self.memories.get("s2_w1_spawned"):
                     self.wave = 2
 
             elif self.wave == 2 and not self.is_dialog_playing():
-                if not self.memoire.get("s2_wave2"):
+                if not self.memories.get("s2_wave2"):
                     self.start_dialog([
                         ("Narrateur", "Attention encore des enemies"),
                     ])
                     # game.enemies.add( Enemy(...) )
-                    self.memoire["s2_wave2"] = True
+                    self.memories["s2_wave2"] = True
                     
-                elif len(game.enemies) <= 0 and self.memoire.get("s2_w2_spawned"):
-                    if not self.memoire.get("s2_end"):
+                elif len(game.enemies) <= 0 and self.memories.get("s2_w2_spawned"):
+                    if not self.memories.get("s2_end"):
                         self.start_dialog([
                             ("Sujet 0", "Enfin ça y est il n'y a plus personne."),
                         ])
-                        self.memoire["s2_end"] = True
+                        self.memories["s2_end"] = True
                         
                     elif not self.is_dialog_playing():
                         self.wave = 0
@@ -112,49 +118,49 @@ class ScenarioManager:
 
         elif self.step == 2:
             if self.wave == 1 and not self.is_dialog_playing():
-                if not self.memoire.get("s3_wave1"):
+                if not self.memories.get("s3_wave1"):
                     # game.enemies.add( Enemy(...) )
-                    self.memoire["s3_wave1"] = True
-                elif len(game.enemies) <= 0 and self.memoire.get("s3_wave1"):
+                    self.memories["s3_wave1"] = True
+                elif len(game.enemies) <= 0 and self.memories.get("s3_wave1"):
                     self.wave = 2
 
             elif self.wave == 2 and not self.is_dialog_playing():
-                if not self.memoire.get("s3_wave2"):
+                if not self.memories.get("s3_wave2"):
                     # game.enemies.add( Enemy(...) )
-                    self.memoire["s3_wave2"] = True
-                elif len(game.enemies) <= 0 and self.memoire.get("s3_wave2"):
+                    self.memories["s3_wave2"] = True
+                elif len(game.enemies) <= 0 and self.memories.get("s3_wave2"):
                     self.wave = 3
 
             elif self.wave == 3 and not self.is_dialog_playing():
-                if not self.memoire.get("s3_wave_boss"):
+                if not self.memories.get("s3_wave_boss"):
                     self.start_dialog([
                         ("Narrateur", "..."),
                         ("Narrateur", "un bruit sours ce rapprocha du joueur")
                     ])
                     # game.enemies.add( Boss(...) )
-                    self.memoire["s3_wave_boss"] = True
-                elif len(game.enemies) <= 0 and self.memoire.get("s3_wave_boss"):
+                    self.memories["s3_wave_boss"] = True
+                elif len(game.enemies) <= 0 and self.memories.get("s3_wave_boss"):
                     self.wave = 0
                     self.step = 3
 
         elif self.step == 3:
-            if not self.memoire.get("end_wave_boss"):
+            if not self.memories.get("end_wave_boss"):
                 self.start_dialog([
                     ("Sujet 0", "J'était à 2 doigt d'y passer, j'ai vraiment eu de la chance."),
                     ("Sujet 0", "Bon maintenant comment éteindre cette source d'energie."),
                     ("Tutoriel", "Pour éteindre le soleil rapprocher vous de lui puis appuyez sur [e].")
                 ])
-                self.memoire["end_wave_boss"] = True
+                self.memories["end_wave_boss"] = True
                 
-            elif not self.is_dialog_playing() and not self.memoire.get("eclipse_start"):
+            elif not self.is_dialog_playing() and not self.memories.get("eclipse_start"):
                 game.eclipse.start_animation()
-                self.memoire["eclipse_start"] = True
+                self.memories["eclipse_start"] = True
                 
-            elif self.memoire.get("eclipse_start") and not self.is_dialog_playing() and not self.memoire.get("conclusion"):
+            elif self.memories.get("eclipse_start") and not self.is_dialog_playing() and not self.memories.get("conclusion"):
                 self.start_dialog([
                     ("Narrateur", "une fois toutes les portes ouverte le sujet 0 ainsi que son\nombre prirent une navette pour partir débuter une nouvelle vie\nloin de toutes cette agitation")
                 ])
-                self.memoire["conclusion"] = True
+                self.memories["conclusion"] = True
 
     def dialog_draw(self, surface):
         if self.is_dialog_playing():
