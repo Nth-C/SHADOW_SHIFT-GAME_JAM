@@ -7,7 +7,6 @@ class Entity(pg.sprite.Sprite):
             self, 
             x: int, # position x
             y: int, # position y
-            color: tuple[int, int, int], # couleur rgb
             width: int,
             height: int, 
             hp: int, 
@@ -18,7 +17,6 @@ class Entity(pg.sprite.Sprite):
         ):
         super().__init__()
         self.image = pg.Surface((width, height))
-        self.image.fill(color)
         self.rect = self.image.get_rect(topleft=(x, y))
         
         self.hp = hp

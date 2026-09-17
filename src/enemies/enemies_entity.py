@@ -1,10 +1,11 @@
 import pygame as pg
 from entity import Entity
+from enums.direction import Direction
 
-# TODO suppr color
+
 class EnemiesEntity(Entity):
     def __init__(self, x: int, y: int, width: int, height: int, hp: int, attack: int, speed: int, aggro_range: int):
-        super().__init__(x, y, color=(255, 0, 0), width=width, height=height, hp=hp, attack=attack, speed=speed)   
+        super().__init__(x, y, width=width, height=height, hp=hp, attack=attack, speed=speed)   
 
         self.max_hp = hp
         self.aggro_range = aggro_range
@@ -12,12 +13,12 @@ class EnemiesEntity(Entity):
         self.height = height
 
         self.images = {}
-        self.current_direction = 'down'
+        self.current_direction = Direction.DOWN
 
-    def change_animation(self, name: str):
-        if self.current_direction != name and name in self.images:
-            self.current_direction = name
-            self.image = self.images[name]
+    def change_animation(self, direction: Direction):
+        if self.current_direction != direction and direction in self.images:
+            self.current_direction = direction
+            self.image = self.images[direction]
 
     def move_axis(self, movement_x: int, movement_y: int, walls: list[pg.Rect] | None) -> bool:
         next_rect = self.rect.move(movement_x, movement_y)
@@ -53,14 +54,14 @@ class EnemiesEntity(Entity):
             # Animation
             if abs(dx) > abs(dy):
                 if dx > 0:
-                    self.change_animation('right')
+                    self.change_animation(Direction.RIGHT)
                 else:
-                    self.change_animation('left')
+                    self.change_animation(Direction.LEFT)
             else:
                 if dy > 0:
-                    self.change_animation('down')
+                    self.change_animation(Direction.DOWN)
                 elif dy < 0:
-                    self.change_animation('up')
+                    self.change_animation(Direction.UP)
 
     def draw_hp_bar(self, surface: pg.Surface, offset_rect: pg.Rect) -> None:
         if self.hp > 0:

@@ -1,5 +1,5 @@
 import pygame as pg
-
+from enums.direction import Direction
 from enemies.enemies_entity import EnemiesEntity
 
 class Enemy(EnemiesEntity):
@@ -11,10 +11,10 @@ class Enemy(EnemiesEntity):
         self.sprite_sheet = pg.transform.scale(original_sheet, (96, 128))
 
         self.images = {
-            'down': pg.transform.scale(self.get_image(32, 0), (self.width, self.height)),
-            'left': pg.transform.scale(self.get_image(64, 32), (self.width, self.height)),
-            'right': pg.transform.scale(self.get_image(0, 32), (self.width, self.height)),
-            'up': pg.transform.scale(self.get_image(32, 96), (self.width, self.height))
+            Direction.DOWN: pg.transform.scale(self.get_image(32, 0), (self.width, self.height)),
+            Direction.LEFT: pg.transform.scale(self.get_image(64, 32), (self.width, self.height)),
+            Direction.RIGHT: pg.transform.scale(self.get_image(0, 32), (self.width, self.height)),
+            Direction.UP: pg.transform.scale(self.get_image(32, 96), (self.width, self.height))
         }
 
         small_image = self.get_image(64, 0)
