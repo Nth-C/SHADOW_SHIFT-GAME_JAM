@@ -12,10 +12,10 @@ class Waves:
         if not self.room_is_clear():
             self.is_active = True
 
-    def wave_update(self, player):
+    def wave_update(self, player, walls: list[pg.Rect] | None = None):
         if self.is_active and not self.room_is_clear():
             for enemy in self.list_of_waves[self.current_index]:
-                enemy.update(player)
+                enemy.update(player, walls)
 
     def draw_waves(self, screen, scroll):
         if self.is_active and not self.room_is_clear():

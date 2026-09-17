@@ -87,7 +87,7 @@ class Boss(Enemy):
             self.current_frame = 0
             self.image = self.animations[self.current_direction][0]
 
-    def update(self, player) -> None:
+    def update(self, player, walls: list[pg.Rect] | None = None) -> None:
         attack_range = self.get_aggro_range()
 
         if player.rect.colliderect(attack_range):
@@ -96,14 +96,14 @@ class Boss(Enemy):
 
             # Move towards player
             if self.rect.x < player.rect.x:
-                self.rect.x += self.speed
+                self.move_axis(self.speed, 0, walls)
             elif self.rect.x > player.rect.x:
-                self.rect.x -= self.speed
+                self.move_axis(-self.speed, 0, walls)
 
             if self.rect.y < player.rect.y:
-                self.rect.y += self.speed
+                self.move_axis(0, self.speed, walls)
             elif self.rect.y > player.rect.y:
-                self.rect.y -= self.speed
+                self.move_axis(0, -self.speed, walls)
 
             # Determine direction based on dominant axis
             if abs(dx) > abs(dy):
@@ -117,5 +117,3 @@ class Boss(Enemy):
                 elif dy < 0:
                     self.change_animation('up')
 
-        # Update feet position
-        self.feet.midbottom = self.rect.midbottom

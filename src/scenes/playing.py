@@ -147,6 +147,7 @@ class Playing:
     def refresh_collision_walls(self, include_wave_exit):
         blocked_player_types = {"collision", "ombre"}
         blocked_shadow_types = {"collision", "switch_map"}
+        blocked_enemy_types = {"collision", "ombre", "switch_map", "wave_exit"}
 
         if include_wave_exit:
             blocked_player_types.add("wave_exit")
@@ -161,6 +162,11 @@ class Playing:
             pg.Rect(obj.x, obj.y, obj.width, obj.height)
             for obj in self.map.tmx_data.objects
             if obj.type in blocked_shadow_types
+        ]
+        self.walls_enemies = [
+            pg.Rect(obj.x, obj.y, obj.width, obj.height)
+            for obj in self.map.tmx_data.objects
+            if obj.type in blocked_enemy_types
         ]
 
     def spawn_entities_at_sun(self):
@@ -233,7 +239,7 @@ class Playing:
             self.entity_active.move(used_walls)
             self.player.update_energy()
 
-            self.waves.wave_update(self.player)
+            self.waves.wave_update(self.player, self.walls_enemies)
             self.waves.update_wave_status()
 
         ennemis_touches = pg.sprite.spritecollide(self.player, self.waves.get_current_enemies(), False)
