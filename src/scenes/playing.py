@@ -18,6 +18,7 @@ from scenarioManager import ScenarioManager
 from screen import Screen
 from scroll import Scroll
 from sound import Sound
+from utils_wave import get_enemies_of_waves
 from waves import Waves
 
 class Playing:
@@ -43,12 +44,10 @@ class Playing:
 
         self.zoom = 2
 
-        # vague_1 = get_enemies_of_waves(self, 1, 9, 4)
-        # vague_2 = get_enemies_of_waves(self, 1, 9, 2)
+        vague_1 = get_enemies_of_waves(self, 1, 9, 6)
 
-        # self.waves = Waves([vague_1, vague_2])
-
-        self.waves = Waves([])
+        self.waves = Waves([vague_1])
+        self.waves.start_wave()
         
         self.spawn_entities_at_player()
 

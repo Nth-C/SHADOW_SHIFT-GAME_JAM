@@ -98,8 +98,9 @@ class ScenarioManager:
                     self.start_dialog([
                         ("Narrateur", "Le Sujet 0 frappa. L'ombre esquiva. Mais la horde\nne faisait que commencer. "),
                     ])
-                    # game.enemies.add( Enemy(...) )
-                    game.start_waves_s2()
+                    from utils_wave import get_enemies_of_waves
+                    game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 14, 4))
+                    game.waves.is_active = True
                     self.memories["s2_wave1"] = True
                     
                 elif len(game.waves.get_current_enemies()) <= 0 and self.memories.get("s2_wave1"):
@@ -110,7 +111,9 @@ class ScenarioManager:
                     self.start_dialog([
                         ("Narrateur", "Attention encore des enemies"),
                     ])
-                    # game.enemies.add( Enemy(...) )
+                    from utils_wave import get_enemies_of_waves
+                    game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 14, 4))
+                    game.waves.is_active = True
                     self.memories["s2_wave2"] = True
                     
                 elif len(game.waves.get_current_enemies()) <= 0 and self.memories.get("s2_wave2"):
@@ -127,14 +130,18 @@ class ScenarioManager:
         elif self.step == 2:
             if self.wave == 1 and not self.is_dialog_playing():
                 if not self.memories.get("s3_wave1"):
-                    # game.enemies.add( Enemy(...) )
+                    from utils_wave import get_enemies_of_waves
+                    game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 7, 3))
+                    game.waves.is_active = True
                     self.memories["s3_wave1"] = True
                 elif len(game.waves.get_current_enemies()) <= 0 and self.memories.get("s3_wave1"):
                     self.wave = 2
 
             elif self.wave == 2 and not self.is_dialog_playing():
                 if not self.memories.get("s3_wave2"):
-                    # game.enemies.add( Enemy(...) )
+                    from utils_wave import get_enemies_of_waves
+                    game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 7, 4))
+                    game.waves.is_active = True
                     self.memories["s3_wave2"] = True
                 elif len(game.waves.get_current_enemies()) <= 0 and self.memories.get("s3_wave2"):
                     self.wave = 3
