@@ -38,9 +38,9 @@ class ScenarioManager:
                     
                         if zone_type == 'dialogue 1' and not self.memories.get("read"):
                             self.start_dialog([
-                                ("Sujet 0", "Je pourrais utiliser mon ombre pour passer derrière cette grille"),
-                                ("Tutoriel", "Appuyez sur [A] pour activer la capacité spéciale du sujet 0\n(Détachement de l'ombre)."),
-                                ("Tutoriel", "Puis appuyez sur [c] pour vous téléporter sur votre ombre.")
+                                ("Sujet 0", "Je pourrais utiliser mon ombre pour passer derrière cette grille."),
+                                ("Tutoriel", "Appuyez sur [A] pour activer la capacité spéciale du Sujet 0\n(Détachement de l'ombre)."),
+                                ("Tutoriel", "Puis appuyez sur [C] pour vous téléporter sur votre ombre.")
                             ])
                             self.memories["read"] = True
                             
@@ -56,14 +56,14 @@ class ScenarioManager:
                                 self.start_dialog([
                                     ("Narrateur", "Enfin libre... Mais la garde de nuit veillait déjà."),
                                     ("Narrateur", "Mais attention, l'ombre et la lumière ne font pas bon ménage."),
-                                    ("Sujet 0", "Maintenant il faut que je trouve un moyen d'accéder\nà la salle du soleil pour éteindre la source d'énergie\ndu laboratoire.")
+                                    ("Sujet 0", "Maintenant, il faut que je trouve un moyen d'accéder\nà la salle du soleil pour éteindre la source d'énergie\ndu laboratoire.")
                                 ])
                                 self.memories["salle1_exit"] = True
                                 self.zone_past.append(zone_rect)
                                 
                             elif self.step == 1 and not self.memories.get("salle2_intro"):
                                 self.start_dialog([
-                                    ("Narrateur", "le Sujet 0 pénétra dans la salle de recherche. L'air y était lourd, étouffant."),
+                                    ("Narrateur", "Le Sujet 0 pénétra dans la salle de recherche. L'air y était lourd, étouffant."),
                                     ("Narrateur", "Les robots sentinelles l'attendaient de pied ferme."),
                                 ])
                                 self.memories["salle2_intro"] = True
@@ -72,8 +72,8 @@ class ScenarioManager:
                                 
                             elif self.step == 2 and not self.memories.get("salle3_intro"):
                                 self.start_dialog([
-                                    ("Sujet 0", "Parfait il ne me reste plus qu'à couper cette source\nd'énergie et je pourrais partir."),
-                                    ("Narrateur", "Lorsque le joueur s'approcha, une vague de robots lui sauta dessus")
+                                    ("Sujet 0", "Parfait, il ne me reste plus qu'à couper cette source\nd'énergie et je pourrai partir."),
+                                    ("Narrateur", "Lorsque le joueur s'approcha, une vague de robots lui sauta dessus.")
                                 ])
                                 self.memories["salle3_intro"] = True
                                 self.zone_past.append(zone_rect)
@@ -87,7 +87,7 @@ class ScenarioManager:
         if self.step == 0:
             if not self.memories.get("intro_jeu"):
                 self.start_dialog([
-                    ("Narrateur", "Le Sujet Zéro ouvrit les yeux. Enfermé dans sa chambre."),
+                    ("Narrateur", "Le Sujet 0 ouvrit les yeux. Enfermé dans sa chambre."),
                     ("Tutoriel", "Appuyez sur [ESPACE] pour effectuer un Dash (esquive).")
                 ])
                 self.memories["intro_jeu"] = True
@@ -99,7 +99,7 @@ class ScenarioManager:
             if self.wave == 1 and not self.is_dialog_playing():
                 if not self.memories.get("s2_wave1"):
                     self.start_dialog([
-                        ("Narrateur", "Le Sujet 0 frappa. L'ombre esquiva. Mais la horde\nne faisait que commencer. "),
+                        ("Narrateur", "Le Sujet 0 frappa. L'ombre esquiva. Mais la horde\nne faisait que commencer."),
                     ])
                     from utils_wave import get_enemies_of_waves
                     game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 14, 4))
@@ -112,7 +112,7 @@ class ScenarioManager:
             elif self.wave == 2 and not self.is_dialog_playing():
                 if not self.memories.get("s2_wave2"):
                     self.start_dialog([
-                        ("Narrateur", "Attention, encore des ennemis"),
+                        ("Narrateur", "Attention, encore des ennemis."),
                     ])
                     game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 14, 4))
                     game.waves.is_active = True
@@ -150,7 +150,7 @@ class ScenarioManager:
                 if not self.memories.get("s3_wave_boss"):
                     self.start_dialog([
                         ("Narrateur", "..."),
-                        ("Narrateur", "un bruit sourd se rapprocha du joueur")
+                        ("Narrateur", "Un bruit sourd se rapprocha du joueur.")
                     ])
                     # game.enemies.add( Boss(...) )
                     self.memories["s3_wave_boss"] = True
@@ -162,8 +162,8 @@ class ScenarioManager:
             if not self.memories.get("end_wave_boss"):
                 self.start_dialog([
                     ("Sujet 0", "J'étais à deux doigts d'y passer, j'ai vraiment eu de la chance."),
-                    ("Sujet 0", "Bon maintenant comment éteindre cette source d'énergie ?"),
-                    ("Tutoriel", "Pour éteindre le soleil rapprochez-vous de lui puis appuyez sur [e].")
+                    ("Sujet 0", "Bon maintenant, comment éteindre cette source d'énergie ?"),
+                    ("Tutoriel", "Pour éteindre le soleil, rapprochez-vous de lui puis appuyez sur [E].")
                 ])
                 self.memories["end_wave_boss"] = True
                 
