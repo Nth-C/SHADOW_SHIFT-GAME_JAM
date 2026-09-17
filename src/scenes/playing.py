@@ -34,9 +34,6 @@ class Playing:
         self.sound = Sound()
         self.sound.play_music()
 
-        self.last_hit_time = 0
-        self.hit_cooldown = 800
-        
         self.map = Map(self.screen)
         self.map.switch_map("spawn")
         self.refresh_map_data()
@@ -85,6 +82,7 @@ class Playing:
                     self.player.toggle_capacity();
                     self.shadow.rect.topleft = self.player.rect.topleft
                     self.entity_active = self.shadow
+                    self.sound.play_shadow_enter()
 
                     # pour debug le mouvement en changant d'etat
                     self.player.reset_movement()
@@ -93,6 +91,7 @@ class Playing:
                 elif self.entity_active == self.shadow:
                     self.player.toggle_capacity()
                     self.entity_active = self.player
+                    self.sound.play_shadow_exit()
 
                     self.player.reset_movement()
                     self.shadow.reset_movement()
@@ -103,6 +102,7 @@ class Playing:
                     self.player.rect.topleft = self.shadow.rect.topleft
                     self.player.toggle_capacity()
                     self.entity_active = self.player
+                    self.sound.play_shadow_exit()
 
                     self.player.reset_movement()
                     self.shadow.reset_movement()
@@ -162,7 +162,12 @@ class Playing:
             for ennemi in self.enemies:
                 if zone_attaque.colliderect(ennemi.rect):
                     ennemi.take_damage(self.entity_active.attack)
+
+                    if not ennemi.alive():
+                        self.sound.play_enemy_death()
+
             self.entity_active.is_attacking = False
+            self.sound.play_attack()
 
         self.scenario.update_dialog(self)
         self.eclipse.update()
@@ -182,11 +187,8 @@ class Playing:
 
         ennemis_touches = pg.sprite.spritecollide(self.player, self.enemies, False)
         if ennemis_touches:
-            now = pg.time.get_ticks()
-            if now - self.last_hit_time >= self.hit_cooldown:
-                self.player.take_damage(ennemis_touches[0].attack)
-                self.sound.play_hit();
-                self.last_hit_time = now
+            if self.player.take_damage(ennemis_touches[0].attack):
+                self.sound.play_hit()
 
         if len(self.enemies) == 0:
             self.walls_player = [
