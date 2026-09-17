@@ -11,8 +11,10 @@ class EnergyBar:
 
     def draw(self, screen: pg.Surface, current_energy: int) -> None:
         ratio = current_energy / self.max_energy
-        
+
         # fond
         pg.draw.rect(screen, (50, 50, 50), (self.x, self.y, self.width, self.height))
         # barre
-        pg.draw.rect(screen, (0, 100, 255), (self.x, self.y, self.width * ratio, self.height))
+        pg.draw.rect(
+            screen, (0, 100, 255), (self.x, self.y, self.width * ratio, self.height)
+        )

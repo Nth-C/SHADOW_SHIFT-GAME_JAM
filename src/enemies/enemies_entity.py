@@ -1,11 +1,24 @@
 import pygame as pg
+
 from entity import Entity
 from enums.direction import Direction
 
 
 class EnemiesEntity(Entity):
-    def __init__(self, x: int, y: int, width: int, height: int, hp: int, attack: int, speed: int, aggro_range: int):
-        super().__init__(x, y, width=width, height=height, hp=hp, attack=attack, speed=speed)   
+    def __init__(
+        self,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        hp: int,
+        attack: int,
+        speed: int,
+        aggro_range: int,
+    ):
+        super().__init__(
+            x, y, width=width, height=height, hp=hp, attack=attack, speed=speed
+        )
 
         self.max_hp = hp
         self.aggro_range = aggro_range
@@ -20,7 +33,9 @@ class EnemiesEntity(Entity):
             self.current_direction = direction
             self.image = self.images[direction]
 
-    def move_axis(self, movement_x: int, movement_y: int, walls: list[pg.Rect] | None) -> bool:
+    def move_axis(
+        self, movement_x: int, movement_y: int, walls: list[pg.Rect] | None
+    ) -> bool:
         next_rect = self.rect.move(movement_x, movement_y)
         next_feet = self.feet.copy()
         next_feet.midbottom = next_rect.midbottom
@@ -70,13 +85,19 @@ class EnemiesEntity(Entity):
             bar_height = 5
             x = offset_rect.x
             y = offset_rect.y
-            
+
             pg.draw.rect(surface, (50, 50, 50), (x, y, bar_width, bar_height))
             pg.draw.rect(surface, (255, 50, 50), (x, y, bar_width * ratio, bar_height))
 
-    def draw_aggro_range(self, surface: pg.Surface, offset_rect: pg.Rect) -> None:        
+    def draw_aggro_range(self, surface: pg.Surface, offset_rect: pg.Rect) -> None:
         calque = pg.Surface((self.aggro_range * 2, self.aggro_range * 2), pg.SRCALPHA)
-        pg.draw.circle(calque, (240, 128, 128, 100), (self.aggro_range, self.aggro_range), self.aggro_range, 0)
+        pg.draw.circle(
+            calque,
+            (240, 128, 128, 100),
+            (self.aggro_range, self.aggro_range),
+            self.aggro_range,
+            0,
+        )
         pos_x = offset_rect.centerx - self.aggro_range
         pos_y = offset_rect.centery - self.aggro_range
         surface.blit(calque, (pos_x, pos_y))
@@ -88,4 +109,4 @@ class EnemiesEntity(Entity):
         return zone_rect
 
     def is_dead(self) -> bool:
-       return self.hp <= 0
+        return self.hp <= 0

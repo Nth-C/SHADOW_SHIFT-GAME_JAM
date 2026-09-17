@@ -1,7 +1,9 @@
 import pygame as pg
 
 
-def dessiner_lumiere_degradee(surface: pg.Surface, x: int, y: int, rayon: int, obscurite_alpha: int = 160):
+def dessiner_lumiere_degradee(
+    surface: pg.Surface, x: int, y: int, rayon: int, obscurite_alpha: int = 160
+):
     rayon = max(1, int(rayon))
     temp_surf = pg.Surface((rayon * 2, rayon * 2), pg.SRCALPHA)
     temp_surf.fill((0, 0, 0, 0))
@@ -44,7 +46,12 @@ def iter_dark_areas(tmx_data):
             yield x, y, width, height
 
 
-def render_lights(surface_lumiere: pg.Surface, tmx_data, camera_offset=(0, 0), obscurite_alpha: int = 110):
+def render_lights(
+    surface_lumiere: pg.Surface,
+    tmx_data,
+    camera_offset=(0, 0),
+    obscurite_alpha: int = 110,
+):
     if surface_lumiere is None:
         return
 
@@ -58,11 +65,17 @@ def render_lights(surface_lumiere: pg.Surface, tmx_data, camera_offset=(0, 0), o
     for lampe_x, lampe_y, rayon in iter_light_sources(tmx_data):
         screen_x = int(lampe_x + offset_x)
         screen_y = int(lampe_y + offset_y)
-        dessiner_lumiere_degradee(surface_lumiere, screen_x, screen_y, rayon, obscurite_alpha)
+        dessiner_lumiere_degradee(
+            surface_lumiere, screen_x, screen_y, rayon, obscurite_alpha
+        )
 
     for x, y, width, height in iter_dark_areas(tmx_data):
-        rect_ombre = pg.Rect(int(x + offset_x), int(y + offset_y), int(width), int(height))
-        pg.draw.rect(surface_lumiere, (0, 0, 0, min(255, obscurite_alpha + 60)), rect_ombre)
+        rect_ombre = pg.Rect(
+            int(x + offset_x), int(y + offset_y), int(width), int(height)
+        )
+        pg.draw.rect(
+            surface_lumiere, (0, 0, 0, min(255, obscurite_alpha + 60)), rect_ombre
+        )
 
 
 def draw_light_objects(screen: pg.Surface, tmx_data, camera_offset=(0, 0)):

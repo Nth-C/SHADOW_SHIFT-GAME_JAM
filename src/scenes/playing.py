@@ -1,6 +1,5 @@
 import math
 
-
 import pygame as pg
 from pygame.event import Event
 
@@ -10,7 +9,7 @@ from eclipse import Eclipse
 from enums.direction import Direction
 from hud.hint import Hint
 from hud.hud import HudManager
-from light import iter_light_sources, render_lights, draw_light_objects
+from light import draw_light_objects, iter_light_sources, render_lights
 from map import Map
 from player.body import Body
 from player.shadow import Shadow
@@ -22,13 +21,14 @@ from timer import Timer
 from utils_wave import get_enemies_of_waves
 from waves import Waves
 
+
 class Playing:
     def __init__(self):
         pg.display.set_caption(settings_constants.NAME_GAME)
         self.screen = Screen()
         self.timer = pg.time.Clock()
         self.state = game_constants.MENU
-        
+
         pg.font.init()
         self.font_hint = pg.font.SysFont("Arial", 16)
         self.font_title = pg.font.SysFont("Arial", 50, bold=True)
@@ -40,16 +40,15 @@ class Playing:
         self.map = Map(self.screen)
         self.map.switch_map("spawn")
         self.refresh_map_data()
-        
-        self.hud = HudManager();
 
+        self.hud = HudManager()
         self.zoom = 2
 
         vague_1 = get_enemies_of_waves(self, 1, 9, 6)
 
         self.waves = Waves([vague_1])
         self.waves.start_wave()
-        
+
         self.spawn_entities_at_player()
 
         self.entity_active = self.player
@@ -59,7 +58,9 @@ class Playing:
 
         self.scroll = Scroll()
         self.fake_screen = pg.Surface((1024 // self.zoom, 768 // self.zoom))
-        self.light_surface = pg.Surface((1024 // self.zoom, 768 // self.zoom), pg.SRCALPHA)
+        self.light_surface = pg.Surface(
+            (1024 // self.zoom, 768 // self.zoom), pg.SRCALPHA
+        )
 
         self.scenario = ScenarioManager()
 
@@ -76,7 +77,11 @@ class Playing:
             self.player.reset_movement()
             self.shadow.reset_movement()
         else:
-            used_walls = self.walls_shadow if self.entity_active == self.shadow else self.walls_player
+            used_walls = (
+                self.walls_shadow
+                if self.entity_active == self.shadow
+                else self.walls_player
+            )
             self.entity_active.event_handler(event, used_walls)
 
             # hint
@@ -87,7 +92,7 @@ class Playing:
             # active la capacite de se spéarer de son ombre
             if event.type == pg.KEYDOWN and event.key == pg.K_a:
                 if self.entity_active == self.player and self.player.energy > 0:
-                    self.player.toggle_capacity();
+                    self.player.toggle_capacity()
                     self.shadow.rect.topleft = self.player.rect.topleft
                     self.entity_active = self.shadow
                     self.sound.play_shadow_enter()
@@ -105,15 +110,18 @@ class Playing:
                     self.shadow.reset_movement()
 
             # permet de se téléporter à l'ombre
-            if self.entity_active == self.shadow:
-                if event.type == pg.KEYDOWN and event.key == pg.K_c:
-                    self.player.rect.topleft = self.shadow.rect.topleft
-                    self.player.toggle_capacity()
-                    self.entity_active = self.player
-                    self.sound.play_shadow_exit()
+            if (
+                self.entity_active == self.shadow
+                and event.type == pg.KEYDOWN
+                and event.key == pg.K_c
+            ):
+                self.player.rect.topleft = self.shadow.rect.topleft
+                self.player.toggle_capacity()
+                self.entity_active = self.player
+                self.sound.play_shadow_exit()
 
-                    self.player.reset_movement()
-                    self.shadow.reset_movement()
+                self.player.reset_movement()
+                self.shadow.reset_movement()
 
     def refresh_map_data(self):
         self.mur_bas_rects = []
@@ -143,8 +151,10 @@ class Playing:
         )
 
         if switch_map is not None:
-            self.switch_map_rect = (pg.Rect(switch_map.x, switch_map.y, switch_map.width, switch_map.height))
-            self.target_map_name = getattr(switch_map, "target_map", "spawn") 
+            self.switch_map_rect = pg.Rect(
+                switch_map.x, switch_map.y, switch_map.width, switch_map.height
+            )
+            self.target_map_name = getattr(switch_map, "target_map", "spawn")
         else:
             self.switch_map_rect = None
             self.target_map_name = None
@@ -184,12 +194,12 @@ class Playing:
         self.shadow = Shadow(player_position.x, player_position.y)
 
         spawn_dir = getattr(player_position, "direction", "down")
-        
+
         self.player.change_animation(spawn_dir)
-        
+
         self.player.current_dir_x = None
         self.player.current_dir_y = None
-        
+
         if spawn_dir == "up":
             self.player.current_dir_y = Direction.UP
         elif spawn_dir == "down":
@@ -198,11 +208,10 @@ class Playing:
             self.player.current_dir_x = Direction.LEFT
         elif spawn_dir == "right":
             self.player.current_dir_x = Direction.RIGHT
-        
-        self.background_galaxy = pg.image.load('assets/images/galaxie.png').convert()
+
+        self.background_galaxy = pg.image.load("assets/images/galaxie.png").convert()
         self.background_galaxy = pg.transform.scale(
-            self.background_galaxy,
-            (1024 // self.zoom, 768 // self.zoom)
+            self.background_galaxy, (1024 // self.zoom, 768 // self.zoom)
         )
 
     def respawn_player(self):
@@ -223,7 +232,7 @@ class Playing:
     def update(self) -> str:
         if self.entity_active.is_attacking:
             zone_attaque = self.entity_active.get_attack_range()
-            for ennemi in self.waves.get_current_enemies():                
+            for ennemi in self.waves.get_current_enemies():
                 if zone_attaque.colliderect(ennemi.rect):
                     ennemi.take_damage(self.entity_active.attack)
 
@@ -242,32 +251,40 @@ class Playing:
                 used_walls = self.walls_shadow
             else:
                 used_walls = self.walls_player
-            
+
             self.entity_active.move(used_walls)
             self.player.update_energy()
 
             self.waves.wave_update(self.player, self.walls_enemies)
             self.waves.update_wave_status()
 
-        ennemis_touches = pg.sprite.spritecollide(self.player, self.waves.get_current_enemies(), False)
+        ennemis_touches = pg.sprite.spritecollide(
+            self.player, self.waves.get_current_enemies(), False
+        )
 
-        if ennemis_touches:
-            if self.player.take_damage(ennemis_touches[0].attack):
-                self.sound.play_hit()
+        if ennemis_touches and self.player.take_damage(ennemis_touches[0].attack):
+            self.sound.play_hit()
 
-        if self.waves.room_is_clear() and len(self.waves.list_of_waves) > 0 and self.scenario.wave == 0:
+        if (
+            self.waves.room_is_clear()
+            and len(self.waves.list_of_waves) > 0
+            and self.scenario.wave == 0
+        ):
             self.refresh_collision_walls(include_wave_exit=False)
 
             if self.entity_active == self.shadow and not self.player.capacity_active:
                 self.entity_active = self.player
 
-            if self.entity_active == self.player:
-                if self.switch_map_rect and self.player.feet.colliderect(self.switch_map_rect):
-                    if self.target_map_name: 
-                        self.map.switch_map(self.target_map_name)
-                        self.refresh_map_data()
-                        self.spawn_entities_at_player()
-                        self.entity_active = self.player
+            if (
+                self.entity_active == self.player
+                and self.switch_map_rect
+                and self.player.feet.colliderect(self.switch_map_rect)
+                and self.target_map_name
+            ):
+                self.map.switch_map(self.target_map_name)
+                self.refresh_map_data()
+                self.spawn_entities_at_player()
+                self.entity_active = self.player
 
         if self.entity_active == self.shadow and not self.player.capacity_active:
             self.entity_active = self.player
@@ -296,11 +313,18 @@ class Playing:
 
     # --- affichage
     def draw(self):
-        self.scroll.scroll_update(self.entity_active, 1024 // self.zoom, 768 // self.zoom)
+        self.scroll.scroll_update(
+            self.entity_active, 1024 // self.zoom, 768 // self.zoom
+        )
 
         self.fake_screen.blit(self.background_galaxy, (0, 0))
 
-        self.map.draw(self.scroll, self.fake_screen, mur_bas_rects=self.mur_bas_rects, draw_foreground=False)
+        self.map.draw(
+            self.scroll,
+            self.fake_screen,
+            mur_bas_rects=self.mur_bas_rects,
+            draw_foreground=False,
+        )
 
         if self.eclipse.rect.x > -4000:
             self.eclipse.draw(self.fake_screen, self.scroll)
@@ -308,19 +332,32 @@ class Playing:
         if self.player.capacity_active:
             self.shadow_move = self.scroll.apply(self.shadow.rect)
             self.fake_screen.blit(self.shadow.image, self.shadow_move)
-        
+
         self.waves.draw_waves(self.fake_screen, self.scroll)
 
         self.player_move = self.scroll.apply(self.player.rect)
         self.fake_screen.blit(self.player.image, self.player_move)
-            
+
         # map
-        self.map.draw(self.scroll, self.fake_screen, mur_bas_rects=self.mur_bas_rects, draw_foreground=True)
+        self.map.draw(
+            self.scroll,
+            self.fake_screen,
+            mur_bas_rects=self.mur_bas_rects,
+            draw_foreground=True,
+        )
 
         # light
-        draw_light_objects(self.fake_screen, self.map.tmx_data, camera_offset=(self.scroll.x, self.scroll.y))
+        draw_light_objects(
+            self.fake_screen,
+            self.map.tmx_data,
+            camera_offset=(self.scroll.x, self.scroll.y),
+        )
         self.light_surface.fill((0, 0, 0, 0))
-        render_lights(self.light_surface, self.map.tmx_data, camera_offset=(self.scroll.x, self.scroll.y))
+        render_lights(
+            self.light_surface,
+            self.map.tmx_data,
+            camera_offset=(self.scroll.x, self.scroll.y),
+        )
         self.fake_screen.blit(self.light_surface, (0, 0))
 
         # zoom
@@ -332,7 +369,7 @@ class Playing:
             black_filter = pg.Surface((1024, 768), pg.SRCALPHA)
             black_filter.fill((0, 0, 0, int(self.eclipse.fade)))
             self.screen.display.blit(black_filter, (0, 0))
-            
+
         # hud
         self.hud.draw(self.screen.display, self.player)
         self.scenario.dialog_draw(self.screen.display)

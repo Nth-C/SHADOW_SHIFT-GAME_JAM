@@ -4,21 +4,21 @@ import pygame as pg
 # Class parent qui represente une entité dans le jeu (joueur, ennemi, etc.)
 class Entity(pg.sprite.Sprite):
     def __init__(
-            self, 
-            x: int, # position x
-            y: int, # position y
-            width: int,
-            height: int, 
-            hp: int, 
-            attack: int, 
-            speed: int,
-            energy: int = 0,
-            health: int = 100
-        ):
+        self,
+        x: int,  # position x
+        y: int,  # position y
+        width: int,
+        height: int,
+        hp: int,
+        attack: int,
+        speed: int,
+        energy: int = 0,
+        health: int = 100,
+    ):
         super().__init__()
         self.image = pg.Surface((width, height))
         self.rect = self.image.get_rect(topleft=(x, y))
-        
+
         self.hp = hp
         self.attack = attack
         self.speed = speed

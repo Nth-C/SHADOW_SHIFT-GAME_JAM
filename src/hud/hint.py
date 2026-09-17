@@ -31,6 +31,6 @@ class Hint:
         bg_rect = hint_rect.inflate(20, 20)
         bg_surf = pg.Surface(bg_rect.size, pg.SRCALPHA)
         bg_surf.fill((0, 0, 0, 150))
-        
+
         surface.blit(bg_surf, bg_rect)
         surface.blit(hint_surf, hint_rect)

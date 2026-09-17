@@ -1,4 +1,3 @@
-
 class Scroll:
     def __init__(self):
         self.x = 0
@@ -18,4 +17,3 @@ class Scroll:
 
         self.x = max(-(1024 - width), self.x)
         self.y = max(-(768 - height), self.y)
-    
