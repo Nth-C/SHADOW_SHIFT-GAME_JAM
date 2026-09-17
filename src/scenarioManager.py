@@ -55,6 +55,7 @@ class ScenarioManager:
                             if self.step == 0 and not self.memories.get("salle1_exit"):
                                 self.start_dialog([
                                     ("Narrateur", "Enfin libre... Mais la garde de nuit veillait déjà."),
+                                    ("Narrateur", "Mais attention, l'ombre et la lumière ne font pas bon ménage"),
                                     ("Sujet 0", "Maintenant il faut que je trouve un moyen d'accéder\nà la salle du soleil pour éteindre la source d'Energie\ndu laboratoire")                            
                                 ])
                                 self.memories["salle1_exit"] = True
@@ -62,7 +63,7 @@ class ScenarioManager:
                                 
                             elif self.step == 1 and not self.memories.get("salle2_intro"):
                                 self.start_dialog([
-                                    ("Narrateur", "le Sujet 0 pénétra dans ???. L'air y était lourd, étouffant."),
+                                    ("Narrateur", "le Sujet 0 pénétra dans la sale de recherche. L'air y était lourd, étouffant."),
                                     ("Narrateur", "Les robots sentinelles l'attendaient de pied ferme."),
                                 ])
                                 self.memories["salle2_intro"] = True
@@ -150,7 +151,6 @@ class ScenarioManager:
                         ("Narrateur", "..."),
                         ("Narrateur", "un bruit sours ce rapprocha du joueur")
                     ])
-                    # game.enemies.add( Boss(...) )
                     self.memories["s3_wave_boss"] = True
                 elif len(game.waves.get_current_enemies()) <= 0 and self.memories.get("s3_wave_boss"):
                     self.wave = 0
