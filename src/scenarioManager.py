@@ -1,6 +1,7 @@
 import pygame as pg
 from waves import Waves
 from utils_wave import get_enemies_of_waves
+from utils_wave import get_enemies_of_waves
 
 class ScenarioManager:
     def __init__(self):
@@ -28,6 +29,8 @@ class ScenarioManager:
                     self.dialogs = []
 
     def update_dialog(self, game):
+        was_playing = self.is_dialog_playing()
+
         if not self.is_dialog_playing():
             for zone_rect, zone_type in game.walls_dialogs:
                 if game.entity_active.feet.colliderect(zone_rect.inflate(15, 15)):
@@ -36,16 +39,16 @@ class ScenarioManager:
                     
                         if zone_type == 'dialogue 1' and not self.memories.get("read"):
                             self.start_dialog([
-                                ("Sujet 0", "Je pourrais utiliser mon ombre pour passer derrière cette grille"),
-                                ("Tutoriel", "Appuyez sur [A] pour activer la capacitée spécial du sujet 0\n(Détachement de l'ombre)."),
-                                ("Tutoriel", "Puis appuyez sur [c] pour vous téléporter sur votre ombre.")
+                                ("Sujet 0", "Je pourrais utiliser mon ombre pour passer derrière cette grille."),
+                                ("Tutoriel", "Appuyez sur [A] pour activer la capacité spéciale du Sujet 0\n(Détachement de l'ombre)."),
+                                ("Tutoriel", "Puis appuyez sur [C] pour vous téléporter sur votre ombre.")
                             ])
                             self.memories["read"] = True
                             
                         elif zone_type == 'wave_exit' and len(game.waves.get_current_enemies()) > 0:
                             if not self.memories.get("touche_wall"):
                                 self.start_dialog([
-                                    ("Sujet 0", "Je dois d'abord éliminer tous les ennemies de la zone\navant de pouvoir passer à la prochaine."),
+                                    ("Sujet 0", "Je dois d'abord éliminer tous les ennemis de la zone\navant de pouvoir passer à la prochaine."),
                                 ])
                                 self.memories["touche_wall"] = True
 
@@ -53,14 +56,15 @@ class ScenarioManager:
                             if self.step == 0 and not self.memories.get("salle1_exit"):
                                 self.start_dialog([
                                     ("Narrateur", "Enfin libre... Mais la garde de nuit veillait déjà."),
-                                    ("Sujet 0", "Maintenant il faut que je trouve un moyen d'accéder\nà la salle du soleil pour éteindre la source d'Energie\ndu laboratoire")                            
+                                    ("Narrateur", "Mais attention, l'ombre et la lumière ne font pas bon ménage."),
+                                    ("Sujet 0", "Maintenant, il faut que je trouve un moyen d'accéder\nà la salle du soleil pour éteindre la source d'énergie\ndu laboratoire.")
                                 ])
                                 self.memories["salle1_exit"] = True
                                 self.zone_past.append(zone_rect)
                                 
                             elif self.step == 1 and not self.memories.get("salle2_intro"):
                                 self.start_dialog([
-                                    ("Narrateur", "le Sujet 0 pénétra dans ???. L'air y était lourd, étouffant."),
+                                    ("Narrateur", "Le Sujet 0 pénétra dans la salle de recherche. L'air y était lourd, étouffant."),
                                     ("Narrateur", "Les robots sentinelles l'attendaient de pied ferme."),
                                 ])
                                 self.memories["salle2_intro"] = True
@@ -69,8 +73,8 @@ class ScenarioManager:
                                 
                             elif self.step == 2 and not self.memories.get("salle3_intro"):
                                 self.start_dialog([
-                                    ("Sujet 0", "Parfait il ne me reste plus qu'a couper cette source\nd'energie et je pourrais partire."),
-                                    ("Narrateur", "Lorsque le joueur s'approcha une vague de robot lui sauta dessus")
+                                    ("Sujet 0", "Parfait, il ne me reste plus qu'à couper cette source\nd'énergie et je pourrai partir."),
+                                    ("Narrateur", "Lorsque le joueur s'approcha, une vague de robots lui sauta dessus.")
                                 ])
                                 self.memories["salle3_intro"] = True
                                 self.zone_past.append(zone_rect)
@@ -84,7 +88,7 @@ class ScenarioManager:
         if self.step == 0:
             if not self.memories.get("intro_jeu"):
                 self.start_dialog([
-                    ("Narrateur", "Le Sujet Zéro ouvrit les yeux. Enfermé dans sa chambre."),
+                    ("Narrateur", "Le Sujet 0 ouvrit les yeux. Enfermé dans sa chambre."),
                     ("Tutoriel", "Appuyez sur [ESPACE] pour effectuer un Dash (esquive).")
                 ])
                 self.memories["intro_jeu"] = True
@@ -96,9 +100,8 @@ class ScenarioManager:
             if self.wave == 1 and not self.is_dialog_playing():
                 if not self.memories.get("s2_wave1"):
                     self.start_dialog([
-                        ("Narrateur", "Le Sujet 0 frappa. L'ombre esquiva. Mais la horde\nne faisait que commencer. "),
+                        ("Narrateur", "Le Sujet 0 frappa. L'ombre esquiva. Mais la horde\nne faisait que commencer."),
                     ])
-                    from utils_wave import get_enemies_of_waves
                     game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 14, 4))
                     game.waves.is_active = True
                     self.memories["s2_wave1"] = True
@@ -109,9 +112,8 @@ class ScenarioManager:
             elif self.wave == 2 and not self.is_dialog_playing():
                 if not self.memories.get("s2_wave2"):
                     self.start_dialog([
-                        ("Narrateur", "Attention encore des enemies"),
+                        ("Narrateur", "Attention, encore des ennemis."),
                     ])
-                    from utils_wave import get_enemies_of_waves
                     game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 14, 4))
                     game.waves.is_active = True
                     self.memories["s2_wave2"] = True
@@ -119,7 +121,7 @@ class ScenarioManager:
                 elif len(game.waves.get_current_enemies()) <= 0 and self.memories.get("s2_wave2"):
                     if not self.memories.get("s2_end"):
                         self.start_dialog([
-                            ("Sujet 0", "Enfin ça y est il n'y a plus personne."),
+                            ("Sujet 0", "Enfin ça y est, il n'y a plus personne."),
                         ])
                         self.memories["s2_end"] = True
                         
@@ -130,7 +132,6 @@ class ScenarioManager:
         elif self.step == 2:
             if self.wave == 1 and not self.is_dialog_playing():
                 if not self.memories.get("s3_wave1"):
-                    from utils_wave import get_enemies_of_waves
                     game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 7, 3))
                     game.waves.is_active = True
                     self.memories["s3_wave1"] = True
@@ -139,7 +140,6 @@ class ScenarioManager:
 
             elif self.wave == 2 and not self.is_dialog_playing():
                 if not self.memories.get("s3_wave2"):
-                    from utils_wave import get_enemies_of_waves
                     game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 7, 4))
                     game.waves.is_active = True
                     self.memories["s3_wave2"] = True
@@ -150,7 +150,7 @@ class ScenarioManager:
                 if not self.memories.get("s3_wave_boss"):
                     self.start_dialog([
                         ("Narrateur", "..."),
-                        ("Narrateur", "un bruit sours ce rapprocha du joueur")
+                        ("Narrateur", "Un bruit sourd se rapprocha du joueur.")
                     ])
                     from boss import Boss
                     boss_obj = game.map.tmx_data.get_object_by_name("boss")
@@ -169,9 +169,9 @@ class ScenarioManager:
         elif self.step == 3:
             if not self.memories.get("end_wave_boss"):
                 self.start_dialog([
-                    ("Sujet 0", "J'était à 2 doigt d'y passer, j'ai vraiment eu de la chance."),
-                    ("Sujet 0", "Bon maintenant comment éteindre cette source d'energie."),
-                    ("Tutoriel", "Pour éteindre le soleil rapprocher vous de lui puis appuyez sur [e].")
+                    ("Sujet 0", "J'étais à deux doigts d'y passer, j'ai vraiment eu de la chance."),
+                    ("Sujet 0", "Bon maintenant, comment éteindre cette source d'énergie ?"),
+                    ("Tutoriel", "Pour éteindre le soleil, rapprochez-vous de lui puis appuyez sur [E].")
                 ])
                 self.memories["end_wave_boss"] = True
                 
@@ -181,9 +181,13 @@ class ScenarioManager:
                 
             elif self.memories.get("eclipse_start") and not self.is_dialog_playing() and not self.memories.get("conclusion"):
                 self.start_dialog([
-                    ("Narrateur", "une fois toutes les portes ouverte le sujet 0 ainsi que son\nombre prirent une navette pour partir débuter une nouvelle vie\nloin de toutes cette agitation")
+                    ("Narrateur", "Une fois toutes les portes ouvertes, le Sujet 0 ainsi que son\nombre prirent une navette pour partir débuter une nouvelle vie\nloin de toute cette agitation.")
                 ])
                 self.memories["conclusion"] = True
+
+        if not was_playing and self.is_dialog_playing(): # pour éviter le pb ou on reste bloqué dans une direction quand un dialogue se lance et qu'on se deplace
+                game.player.reset_movement()
+                game.shadow.reset_movement()
 
     def dialog_draw(self, surface):
         if self.is_dialog_playing():

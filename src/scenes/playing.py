@@ -69,6 +69,8 @@ class Playing:
         # gestion des dialogues
         if self.scenario.is_dialog_playing():
             self.scenario.event_handler(event)
+            self.player.reset_movement()
+            self.shadow.reset_movement()
         else:
             used_walls = self.walls_shadow if self.entity_active == self.shadow else self.walls_player
             self.entity_active.event_handler(event, used_walls)
@@ -186,6 +188,12 @@ class Playing:
         self.waves = Waves([wave_1])
         self.waves.start_wave()
 
+    def respawn_player(self):
+        self.map.switch_map("spawn")
+        self.refresh_map_data()
+        self.spawn_entities_at_player()
+        self.entity_active = self.player
+
     def update(self) -> str:
         if self.entity_active.is_attacking:
             zone_attaque = self.entity_active.get_attack_range()
@@ -253,8 +261,6 @@ class Playing:
                 if math.hypot(lampe_x - shadow_x, lampe_y - shadow_y) <= rayon:
                     self.player.toggle_capacity()
                     self.entity_active = self.player
-                    self.player.reset_movement()
-                    self.shadow.reset_movement()
                     break
 
         # mort
