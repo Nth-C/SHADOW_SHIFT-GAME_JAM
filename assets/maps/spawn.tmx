@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="24">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="26">
  <tileset firstgid="1" source="tilesets/tilesFloor32.tsx"/>
  <tileset firstgid="199" source="tilesets/tilesWalls.tsx"/>
  <tileset firstgid="391" source="tilesets/dav65gu-5438904a-c502-4b9f-8a73-053fe69dc2e4.tsx"/>
@@ -180,6 +180,8 @@
   <object id="8" type="collision" x="192.927" y="93.6864" width="95.1676" height="17.0339"/>
   <object id="11" name="switch_map" type="switch_map" x="448" y="0" width="96" height="96"/>
   <object id="23" type="wave_exit" x="448" y="64" width="96" height="64"/>
+  <object id="24" type="dialogue" x="449.043" y="227.625" width="94.1542" height="152.095"/>
+  <object id="25" type="dialogue" x="448.008" y="514.227" width="97.2581" height="26.9012"/>
  </objectgroup>
  <objectgroup id="8" name="spawn">
   <object id="36" name="player" x="495.212" y="587.352">

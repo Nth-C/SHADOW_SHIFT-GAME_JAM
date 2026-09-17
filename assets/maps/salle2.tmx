@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="127">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="129">
  <tileset firstgid="1" source="tilesets/laboratory-tileset5.tsx"/>
  <tileset firstgid="199" source="tilesets/laboratory-tileset7.tsx"/>
  <tileset firstgid="391" source="tilesets/tilesWalls.tsx"/>
@@ -217,5 +217,8 @@
   <object id="123" type="collision" x="803.938" y="237.071" width="26.7661" height="114.712"/>
   <object id="124" type="collision" x="544.881" y="261.925" width="94.6372" height="56.4"/>
   <object id="125" name="switch_map" type="switch_map" x="448" y="0" width="96" height="96"/>
+ </objectgroup>
+ <objectgroup id="12" name="dialogue">
+  <object id="128" type="dialogue" x="450.089" y="608.834" width="94.3132" height="31.749"/>
  </objectgroup>
 </map>
