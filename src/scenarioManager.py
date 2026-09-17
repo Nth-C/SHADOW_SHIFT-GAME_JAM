@@ -152,7 +152,15 @@ class ScenarioManager:
                         ("Narrateur", "..."),
                         ("Narrateur", "un bruit sours ce rapprocha du joueur")
                     ])
-                    # game.enemies.add( Boss(...) )
+                    from boss import Boss
+                    boss_obj = game.map.tmx_data.get_object_by_name("boss")
+                    
+                    import pygame as pg
+                    boss_wave = pg.sprite.Group()
+                    boss_wave.add(Boss(boss_obj.x, boss_obj.y, 128, 128))
+                    
+                    game.waves.list_of_waves.append(boss_wave)
+                    game.waves.is_active = True
                     self.memories["s3_wave_boss"] = True
                 elif len(game.waves.get_current_enemies()) <= 0 and self.memories.get("s3_wave_boss"):
                     self.wave = 0

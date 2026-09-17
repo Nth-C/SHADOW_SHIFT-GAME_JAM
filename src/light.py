@@ -49,11 +49,9 @@ def _iter_dark_areas(tmx_data):
 
 
 def render_lights(surface_lumiere: pg.Surface, tmx_data, camera_offset=(0, 0), obscurite_alpha: int = 110):
-    # Applique un voile d'obscurité semi-transparent percé par les sources de lumière
     if surface_lumiere is None:
         return
 
-    # Ambiance sombre mais où la pièce reste visible (semi-transparente)
     surface_lumiere.fill((0, 0, 0, obscurite_alpha))
 
     if not tmx_data:
@@ -72,7 +70,6 @@ def render_lights(surface_lumiere: pg.Surface, tmx_data, camera_offset=(0, 0), o
 
 
 def draw_light_objects(screen: pg.Surface, tmx_data, camera_offset=(0, 0)):
-    # Redessine les lampes au premier plan pour les préserver au-dessus du halo
     if not tmx_data:
         return
 
