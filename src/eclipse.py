@@ -36,7 +36,7 @@ class Eclipse:
         if self.is_animating:
             time_now = pg.time.get_ticks()
             if (time_now - self.last_update) >= self.duration:
-                if self.img_index <= len(self.images):
+                if self.img_index < len(self.images) - 1:
                     self.img_index += 1
                     self.last_update = time_now
                 else:
@@ -44,4 +44,5 @@ class Eclipse:
 
     def draw(self, surface, scroll):
         eclipse_move = scroll.apply(self.rect)
-        surface.blit(self.images[self.img_index], eclipse_move)
+        if self.img_index < len(self.images):
+            surface.blit(self.images[self.img_index], eclipse_move)

@@ -262,8 +262,6 @@ class Playing:
                 if math.hypot(lampe_x - shadow_x, lampe_y - shadow_y) <= rayon:
                     self.player.toggle_capacity()
                     self.entity_active = self.player
-                    self.player.reset_movement()
-                    self.shadow.reset_movement()
                     break
 
         # mort
