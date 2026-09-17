@@ -186,6 +186,12 @@ class Playing:
         self.waves = Waves([wave_1])
         self.waves.start_wave()
 
+    def respawn_player(self):
+        self.map.switch_map("spawn")
+        self.refresh_map_data()
+        self.spawn_entities_at_player()
+        self.entity_active = self.player
+
     def update(self) -> str:
         if self.entity_active.is_attacking:
             zone_attaque = self.entity_active.get_attack_range()
