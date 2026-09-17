@@ -92,15 +92,17 @@ class Body(PlayableEntity):
         self.energy = player_constants.ENERGY_MAX
 
     # permet de gerer l'invincibilité apres un degat
-    def take_damage(self, amount: int) -> None:
+    def take_damage(self, amount: int) -> bool:
         current_time = pg.time.get_ticks()
 
         if current_time - self.last_damage_time >= player_constants.INVINCIBLILITY_DURATION:
-
             # met les degat
             super().take_damage(amount)
-            
+
             self.last_damage_time = current_time
+            return True
+
+        return False
     
     # active / desactive la capacité
     def toggle_capacity(self):

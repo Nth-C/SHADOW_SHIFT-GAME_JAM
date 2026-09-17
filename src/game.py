@@ -1,11 +1,11 @@
 import pygame as pg
-from constants.player import HP_MAX
+
+import constants.game_states as game_constants
 import constants.settings as settings_constants
 from scenes.menu import Menu
 from scenes.playing import Playing
 from screen import Screen
-import constants.game_states as game_constants
-import constants.settings as settings_constants
+
 
 class Game:
     def __init__(self):

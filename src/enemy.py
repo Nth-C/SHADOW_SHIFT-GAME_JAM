@@ -4,7 +4,7 @@ from entity import Entity
 
 
 class Enemy(Entity):
-    def __init__(self, x: int, y: int, width: int = 64, height: int = 64, hp: int = 30, attack: int = 10, speed: int = 1, aggro_range: int = 50):
+    def __init__(self, x: int, y: int, width: int = 64, height: int = 64, hp: int = 30, attack: int = 10, speed: int = 1, aggro_range: int = 100):
         
         super().__init__(x, y, color=(255, 0, 0), width=width, height=height, hp=hp, attack=attack, speed=speed)
 
@@ -60,27 +60,32 @@ class Enemy(Entity):
                 self.change_animation('up')
                 self.rect.y -= self.speed        
 
-    def draw_hp_bar(self, surface: pg.Surface) -> None:
+    def draw_hp_bar(self, surface: pg.Surface, offset_rect: pg.Rect) -> None:
         if self.hp > 0:
             ratio = self.hp / self.max_hp
             
-            bar_width = self.rect.width
+            bar_width = offset_rect.width
             bar_height = 5
-            x = self.rect.x
-            y = self.rect.y - 10
+            
+            x = offset_rect.x
+            y = offset_rect.y
             
             pg.draw.rect(surface, (50, 50, 50), (x, y, bar_width, bar_height))
-            pg.draw.rect(surface, (255, 255, 0), (x, y, bar_width * ratio, bar_height))
+            pg.draw.rect(surface, (255, 50, 50), (x, y, bar_width * ratio, bar_height))
 
-    # TODO a suppr c'est pour voir la range d'aggro
-    def draw_aggro_range(self, surface: pg.Surface) -> None:
-        taille = self.aggro_range * 5
-        zone_rect = pg.Rect(0, 0, taille, taille)
-        zone_rect.center = self.rect.center
-        pg.draw.rect(surface, (255, 255, 0), zone_rect, 1)
+    # affiche la zone d'agrro
+    def draw_aggro_range(self, surface: pg.Surface, offset_rect: pg.Rect) -> None:        
+        calque = pg.Surface((self.aggro_range * 2, self.aggro_range * 2), pg.SRCALPHA)
+       
+        pg.draw.circle(calque, (240, 128, 128, 100), (self.aggro_range, self.aggro_range), self.aggro_range, 0)
+        
+        pos_x = offset_rect.centerx - self.aggro_range
+        pos_y = offset_rect.centery - self.aggro_range
+        
+        surface.blit(calque, (pos_x, pos_y))
 
     def get_aggro_range(self) -> pg.Rect:
-        taille = self.aggro_range * 5
+        taille = self.aggro_range
         zone_rect = pg.Rect(0, 0, taille, taille)
         zone_rect.center = self.rect.center
         return zone_rect

@@ -12,4 +12,10 @@ class Scroll:
     def scroll_update(self, target, width, height):
         self.x = -target.rect.centerx + (width // 2)
         self.y = -target.rect.centery + (height // 2)
+
+        self.x = min(0, self.x)
+        self.y = min(0, self.y)
+
+        self.x = max(-(1024 - width), self.x)
+        self.y = max(-(768 - height), self.y)
     

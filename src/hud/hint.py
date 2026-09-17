@@ -1,6 +1,7 @@
 import pygame as pg
 from pygame.event import Event
 
+
 class Hint:
     def __init__(self, text: str, desable_key: int, is_active: bool = False):
         self.text = text

@@ -1,19 +1,23 @@
+import math
+
 import pygame as pg
 from pygame.event import Event
+
 import constants.game_states as game_constants
 import constants.settings as settings_constants
+from eclipse import Eclipse
 from enemy import Enemy
+from hud.hint import Hint
 from hud.hud import HudManager
-from light import render_lights
+from light import _iter_light_sources, render_lights, draw_light_objects
 from map import Map
 from player.body import Body
 from player.shadow import Shadow
 from scenarioManager import ScenarioManager
-from eclipse import Eclipse
 from screen import Screen
 from scroll import Scroll
 from sound import Sound
-from hud.hint import Hint
+
 
 class Playing:
     def __init__(self):
@@ -30,9 +34,6 @@ class Playing:
         self.sound = Sound()
         self.sound.play_music()
 
-        self.last_hit_time = 0
-        self.hit_cooldown = 800
-        
         self.map = Map(self.screen)
         self.map.switch_map("spawn")
         self.refresh_map_data()
@@ -45,7 +46,7 @@ class Playing:
         
         self.enemies.add(Enemy(600, 600, 50))
         self.enemies.add(Enemy(200, 150, 50))
-        self.enemies.add(Enemy(750, 400, 50))
+        
         self.spawn_entities_at_player()
 
         self.entity_active = self.player
@@ -55,7 +56,7 @@ class Playing:
 
         self.scroll = Scroll()
         self.fake_screen = pg.Surface((1024 // self.zoom, 768 // self.zoom))
-        self.light_surface = pg.Surface(self.screen.get_size(), pg.SRCALPHA)
+        self.light_surface = pg.Surface((1024 // self.zoom, 768 // self.zoom), pg.SRCALPHA)
 
         self.scenario = ScenarioManager()
 
@@ -81,6 +82,7 @@ class Playing:
                     self.player.toggle_capacity();
                     self.shadow.rect.topleft = self.player.rect.topleft
                     self.entity_active = self.shadow
+                    self.sound.play_shadow_enter()
 
                     # pour debug le mouvement en changant d'etat
                     self.player.reset_movement()
@@ -89,6 +91,7 @@ class Playing:
                 elif self.entity_active == self.shadow:
                     self.player.toggle_capacity()
                     self.entity_active = self.player
+                    self.sound.play_shadow_exit()
 
                     self.player.reset_movement()
                     self.shadow.reset_movement()
@@ -99,6 +102,7 @@ class Playing:
                     self.player.rect.topleft = self.shadow.rect.topleft
                     self.player.toggle_capacity()
                     self.entity_active = self.player
+                    self.sound.play_shadow_exit()
 
                     self.player.reset_movement()
                     self.shadow.reset_movement()
@@ -139,11 +143,13 @@ class Playing:
             (obj for obj in self.map.tmx_data.objects if obj.type == "switch_map"),
             None,
         )
-        self.switch_map_rect = (
-            pg.Rect(switch_map.x, switch_map.y, switch_map.width, switch_map.height)
-            if switch_map is not None
-            else None
-        )
+
+        if switch_map is not None:
+            self.switch_map_rect = (pg.Rect(switch_map.x, switch_map.y, switch_map.width, switch_map.height))
+            self.target_map_name = getattr(switch_map, "target_map", "spawn") 
+        else:
+            self.switch_map_rect = None
+            self.target_map_name = None
 
     def spawn_entities_at_player(self):
         player_position = self.map.tmx_data.get_object_by_name("player")
@@ -163,7 +169,12 @@ class Playing:
             for ennemi in self.enemies:
                 if zone_attaque.colliderect(ennemi.rect):
                     ennemi.take_damage(self.entity_active.attack)
+
+                    if not ennemi.alive():
+                        self.sound.play_enemy_death()
+
             self.entity_active.is_attacking = False
+            self.sound.play_attack()
 
         self.scenario.update_dialog(self)
         self.eclipse.update()
@@ -183,11 +194,8 @@ class Playing:
 
         ennemis_touches = pg.sprite.spritecollide(self.player, self.enemies, False)
         if ennemis_touches:
-            now = pg.time.get_ticks()
-            if now - self.last_hit_time >= self.hit_cooldown:
-                self.player.take_damage(ennemis_touches[0].attack)
-                self.sound.play_hit();
-                self.last_hit_time = now
+            if self.player.take_damage(ennemis_touches[0].attack):
+                self.sound.play_hit()
 
         if len(self.enemies) == 0:
             self.walls_player = [
@@ -206,10 +214,24 @@ class Playing:
 
             if self.entity_active == self.player:
                 if self.switch_map_rect and self.player.feet.colliderect(self.switch_map_rect):
-                    self.map.switch_map("salle2")
-                    self.refresh_map_data()
-                    self.spawn_entities_at_player()
+                    if self.target_map_name: 
+                        self.map.switch_map(self.target_map_name)
+                        self.refresh_map_data()
+                        self.spawn_entities_at_player()
+                        self.entity_active = self.player
+
+        if self.entity_active == self.shadow and not self.player.capacity_active:
+            self.entity_active = self.player
+
+        if self.entity_active == self.shadow:
+            shadow_x, shadow_y = self.shadow.rect.center
+            for lampe_x, lampe_y, rayon in _iter_light_sources(self.map.tmx_data):
+                if math.hypot(lampe_x - shadow_x, lampe_y - shadow_y) <= rayon:
+                    self.player.toggle_capacity()
                     self.entity_active = self.player
+                    self.player.reset_movement()
+                    self.shadow.reset_movement()
+                    break
 
         # mort
         if self.player.hp <= 0:
@@ -229,9 +251,6 @@ class Playing:
 
         if self.eclipse.is_animating:
             self.eclipse.draw(self.fake_screen, self.scroll)
-            
-        self.player_move = self.scroll.apply(self.player.rect)
-        self.fake_screen.blit(self.player.image, self.player_move)
 
         if self.player.capacity_active:
             self.shadow_move = self.scroll.apply(self.shadow.rect)
@@ -239,19 +258,25 @@ class Playing:
 
         for enemy in self.enemies:
             enemy_move = self.scroll.apply(enemy.rect)
+            enemy.draw_aggro_range(self.fake_screen, enemy_move)
             self.fake_screen.blit(enemy.image, enemy_move)
+            enemy.draw_hp_bar(self.fake_screen, enemy_move)
 
+        self.player_move = self.scroll.apply(self.player.rect)
+        self.fake_screen.blit(self.player.image, self.player_move)
+            
         # map
         self.map.draw(self.scroll, self.fake_screen, mur_bas_rects=self.mur_bas_rects, draw_foreground=True)
+
+        # light
+        draw_light_objects(self.fake_screen, self.map.tmx_data, camera_offset=(self.scroll.x, self.scroll.y))
+        self.light_surface.fill((0, 0, 0, 0))
+        render_lights(self.light_surface, self.map.tmx_data, camera_offset=(self.scroll.x, self.scroll.y))
+        self.fake_screen.blit(self.light_surface, (0, 0))
 
         # zoom
         screen_zoom = pg.transform.scale(self.fake_screen, (1024, 768))
         self.screen.display.blit(screen_zoom, (0, 0))
-
-        # light
-        self.light_surface.fill((0, 0, 0, 0))
-        render_lights(self.light_surface, self.map.tmx_data, camera_offset=(self.scroll.x, self.scroll.y))
-        self.screen.display.blit(self.light_surface, (0, 0), special_flags=pg.BLEND_RGB_ADD)
             
         # hud
         self.hud.draw(self.screen.display, self.player)
