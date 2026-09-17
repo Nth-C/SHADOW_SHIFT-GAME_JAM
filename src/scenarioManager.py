@@ -1,6 +1,5 @@
 import pygame as pg
 
-
 class ScenarioManager:
     def __init__(self):
         self.step = 0
