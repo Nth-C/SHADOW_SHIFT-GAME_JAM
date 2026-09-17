@@ -1,92 +1,68 @@
 import pygame as pg
 
 
-def dessiner_lumiere_degradee(
-    surface: pg.Surface, x: int, y: int, rayon: int, obscurite_alpha: int = 160
-):
-    rayon = max(1, int(rayon))
-    temp_surf = pg.Surface((rayon * 2, rayon * 2), pg.SRCALPHA)
+def dessiner_lumiere_degradee(surface: pg.Surface, x: int, y: int, raidus: int, dark_alpha: int = 160):
+    temp_surf = pg.Surface((raidus * 2, raidus * 2), pg.SRCALPHA)
     temp_surf.fill((0, 0, 0, 0))
 
-    for distance in range(rayon, -1, -2):
-        intensite = (1 - (distance / rayon)) ** 1.3
-        alpha = int(obscurite_alpha * intensite)
-        pg.draw.circle(temp_surf, (0, 0, 0, alpha), (rayon, rayon), distance)
+    for dist in range(raidus, -1, -2):
+        intensity = (1 - (dist / raidus)) ** 1.3
+        alpha = int(dark_alpha * intensity)
+        pg.draw.circle(temp_surf, (0, 0, 0, alpha), (raidus, raidus), dist)
 
-    surface.blit(temp_surf, (x - rayon, y - rayon), special_flags=pg.BLEND_RGBA_SUB)
+    surface.blit(temp_surf, (x - raidus, y - raidus), special_flags=pg.BLEND_RGBA_SUB)
 
 
 def get_map_objects(tmx_data):
-    if not tmx_data:
-        return []
-    return getattr(tmx_data, "objects", [])
+    light_list = []
+    if tmx_data:
+        light_list = tmx_data.objects
+    return light_list
 
 
 def iter_light_sources(tmx_data):
+    lights = []
     for obj in get_map_objects(tmx_data):
-        name = str(getattr(obj, "name", "") or "").lower()
-        if name in {"lampe", "light", "source", "lamp"}:
-            properties = getattr(obj, "properties", {}) or {}
-            rayon = int(properties.get("rayon", properties.get("radius", 150)))
-            w = getattr(obj, "width", 0) or 0
-            h = getattr(obj, "height", 0) or 0
-            cx = obj.x + (w / 2 if w > 0 else 0)
-            cy = obj.y + (h / 2 if h > 0 else 0)
-            yield cx, cy, rayon
+        if obj.name and obj.name.lower() in ["lampe", "light", "source", "lamp"]:
+            raidus = int(obj.properties.get("rayon", 150))
+
+            center_x = obj.x + (obj.width / 2)
+            center_y = obj.y + (obj.height / 2)
+
+            lights.append((center_x, center_y, raidus))
+    
+    return lights
 
 
 def iter_dark_areas(tmx_data):
+    shadows = []
     for obj in get_map_objects(tmx_data):
-        name = str(getattr(obj, "name", "") or "").lower()
-        if name in {"ombre", "shadow", "dark", "obscurite"}:
-            x = int(getattr(obj, "x", 0))
-            y = int(getattr(obj, "y", 0))
-            width = int(getattr(obj, "width", 0))
-            height = int(getattr(obj, "height", 0))
-            yield x, y, width, height
+        if obj.name and obj.name.lower() in ["lampe", "light", "source", "lamp"]:
+            shadows.append((obj.x, obj.y, obj.width, obj.height))
+
+    return shadows
 
 
-def render_lights(
-    surface_lumiere: pg.Surface,
-    tmx_data,
-    camera_offset=(0, 0),
-    obscurite_alpha: int = 110,
-):
-    if surface_lumiere is None:
-        return
+def render_lights(surface_light: pg.Surface, tmx_data, camera_offset=(0, 0), dark_alpha: int = 110,):
+    if surface_light and tmx_data:
+        surface_light.fill((0, 0, 0, dark_alpha))
+        offset_x, offset_y = camera_offset
 
-    surface_lumiere.fill((0, 0, 0, obscurite_alpha))
+        for led_x, led_y, radius in iter_light_sources(tmx_data):
+            screen_x = led_x + offset_x
+            screen_y = led_y + offset_y
+            dessiner_lumiere_degradee(surface_light, screen_x, screen_y, radius, dark_alpha)
 
-    if not tmx_data:
-        return
-
-    offset_x, offset_y = camera_offset
-
-    for lampe_x, lampe_y, rayon in iter_light_sources(tmx_data):
-        screen_x = int(lampe_x + offset_x)
-        screen_y = int(lampe_y + offset_y)
-        dessiner_lumiere_degradee(
-            surface_lumiere, screen_x, screen_y, rayon, obscurite_alpha
-        )
-
-    for x, y, width, height in iter_dark_areas(tmx_data):
-        rect_ombre = pg.Rect(
-            int(x + offset_x), int(y + offset_y), int(width), int(height)
-        )
-        pg.draw.rect(
-            surface_lumiere, (0, 0, 0, min(255, obscurite_alpha + 60)), rect_ombre
-        )
+        for x, y, width, height in iter_dark_areas(tmx_data):
+            rect_shadow = pg.Rect(x + offset_x, y + offset_y, width, height)
+            pg.draw.rect(surface_light, (0, 0, 0, min(255, dark_alpha + 60)), rect_shadow)
 
 
 def draw_light_objects(screen: pg.Surface, tmx_data, camera_offset=(0, 0)):
-    if not tmx_data:
-        return
-
-    offset_x, offset_y = camera_offset
+    if tmx_data:
+        offset_x, offset_y = camera_offset
 
     for obj in get_map_objects(tmx_data):
-        name = str(getattr(obj, "name", "") or "").lower()
-        if name in {"lampe", "light", "source", "lamp"}:
-            image = getattr(obj, "image", None)
-            if image is not None:
-                screen.blit(image, (int(obj.x + offset_x), int(obj.y + offset_y)))
+        if obj.name and obj.name.lower() in ["lampe", "light", "source", "lamp"]:
+            if hasattr(obj, "image") and obj.image:
+                screen.blit(obj.image, (obj.x + offset_x, obj.y + offset_y))
