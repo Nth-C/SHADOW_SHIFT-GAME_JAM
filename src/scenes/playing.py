@@ -6,7 +6,6 @@ from pygame.event import Event
 import constants.game_states as game_constants
 import constants.settings as settings_constants
 from eclipse import Eclipse
-from enemy import Enemy
 from enums.direction import Direction
 from hud.hint import Hint
 from hud.hud import HudManager
@@ -210,6 +209,8 @@ class Playing:
         self.scenario.update_dialog(self)
         self.eclipse.update()
 
+        self.player.update_animation()
+
         if not self.scenario.is_dialog_playing():
             # Choix des murs selon qui on contrôle
             if self.entity_active == self.shadow:
@@ -287,14 +288,6 @@ class Playing:
         if self.player.capacity_active:
             self.shadow_move = self.scroll.apply(self.shadow.rect)
             self.fake_screen.blit(self.shadow.image, self.shadow_move)
-
-        """
-        for enemy in self.enemies:
-            enemy_move = self.scroll.apply(enemy.rect)
-            enemy.draw_aggro_range(self.fake_screen, enemy_move)
-            self.fake_screen.blit(enemy.image, enemy_move)
-            enemy.draw_hp_bar(self.fake_screen, enemy_move)
-        """
         
         self.waves.draw_waves(self.fake_screen, self.scroll)
 
