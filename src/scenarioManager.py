@@ -105,8 +105,8 @@ class ScenarioManager:
                     self.start_dialog([
                         ("Narrateur", "Le Sujet 0 frappa. L'ombre esquiva. Mais la horde\nne faisait que commencer."),
                     ])
-                    game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 14, 4))
-                    game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 14, 4))
+                    game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 10, 4))
+                    game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 10, 4))
 
                     game.waves.is_active = True
                     self.memories["s2_wave1"] = True
