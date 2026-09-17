@@ -306,7 +306,7 @@ class Playing:
         # fin / crédit
         if self.scenario.step == 4:
             self.game_timer.stop()
-            return game_constants.CREDITS
+            return game_constants.END
 
         # continuer le jeu
         return game_constants.PLAYING
