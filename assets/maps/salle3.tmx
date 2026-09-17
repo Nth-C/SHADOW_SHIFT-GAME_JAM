@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="38">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="39">
  <tileset firstgid="1" source="tilesets/tilesFloor32.tsx"/>
  <tileset firstgid="199" source="tilesets/laboratory-tileset7.tsx"/>
  <tileset firstgid="391" source="tilesets/laboratory-tileset6.tsx"/>
@@ -31,7 +31,7 @@
 1476,1477,1478,1476,1477,1478,1476,1477,1478,1476,1477,1478,1476,1477,1476,1477,1478,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 1487,1488,1489,1487,1488,1489,1487,1488,1489,1487,1488,1489,1487,1488,1487,1488,1489,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 1476,1477,1478,1476,1477,1478,1476,1477,1478,1476,1477,1478,1476,1477,1476,1477,1478,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-1487,1488,1489,1487,1488,1489,1487,1488,1489,1487,1488,1489,1487,1488,1487,1488,1489,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+0,0,0,0,0,0,0,0,0,0,0,0,0,1488,1487,1488,1489,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
  <layer id="1" name="Tile Layer 1" width="32" height="24">
@@ -118,6 +118,7 @@
   <object id="22" name="ennemi 4" x="512.938" y="160.898">
    <point/>
   </object>
+  <object id="38" type="collision" x="416" y="768" width="160" height="32"/>
  </objectgroup>
  <objectgroup id="4" name="collision">
   <object id="1" type="collision" x="0" y="576" width="31.4537" height="147.436"/>
