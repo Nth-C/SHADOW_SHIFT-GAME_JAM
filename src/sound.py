@@ -9,6 +9,8 @@ class Sound:
         self.sound_death = pg.mixer.Sound('assets/sounds/lose.wav')
         self.sound_attack = pg.mixer.Sound('assets/sounds/punch.wav')
         self.sound_enemy_death = pg.mixer.Sound('assets/sounds/robot_death.wav')
+        self.sound_shadow_enter = pg.mixer.Sound('assets/sounds/become_shadow.wav')
+        self.sound_shadow_exit = pg.mixer.Sound('assets/sounds/power_down.wav')
 
         self.sound_hit.set_volume(1)
         self.sound_death.set_volume(1)
@@ -30,3 +32,9 @@ class Sound:
 
     def play_enemy_death(self):
         self.sound_enemy_death.play()
+
+    def play_shadow_enter(self):
+        self.sound_shadow_enter.play()
+
+    def play_shadow_exit(self):
+        self.sound_shadow_exit.play()

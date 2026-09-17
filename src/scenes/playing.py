@@ -82,6 +82,7 @@ class Playing:
                     self.player.toggle_capacity();
                     self.shadow.rect.topleft = self.player.rect.topleft
                     self.entity_active = self.shadow
+                    self.sound.play_shadow_enter()
 
                     # pour debug le mouvement en changant d'etat
                     self.player.reset_movement()
@@ -90,6 +91,7 @@ class Playing:
                 elif self.entity_active == self.shadow:
                     self.player.toggle_capacity()
                     self.entity_active = self.player
+                    self.sound.play_shadow_exit()
 
                     self.player.reset_movement()
                     self.shadow.reset_movement()
@@ -100,6 +102,7 @@ class Playing:
                     self.player.rect.topleft = self.shadow.rect.topleft
                     self.player.toggle_capacity()
                     self.entity_active = self.player
+                    self.sound.play_shadow_exit()
 
                     self.player.reset_movement()
                     self.shadow.reset_movement()
