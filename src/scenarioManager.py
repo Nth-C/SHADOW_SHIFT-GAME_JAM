@@ -98,7 +98,6 @@ class ScenarioManager:
                     self.start_dialog([
                         ("Narrateur", "Le Sujet 0 frappa. L'ombre esquiva. Mais la horde\nne faisait que commencer. "),
                     ])
-                    from utils_wave import get_enemies_of_waves
                     game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 14, 4))
                     game.waves.is_active = True
                     self.memories["s2_wave1"] = True
@@ -111,7 +110,6 @@ class ScenarioManager:
                     self.start_dialog([
                         ("Narrateur", "Attention encore des enemies"),
                     ])
-                    from utils_wave import get_enemies_of_waves
                     game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 14, 4))
                     game.waves.is_active = True
                     self.memories["s2_wave2"] = True
@@ -130,7 +128,6 @@ class ScenarioManager:
         elif self.step == 2:
             if self.wave == 1 and not self.is_dialog_playing():
                 if not self.memories.get("s3_wave1"):
-                    from utils_wave import get_enemies_of_waves
                     game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 7, 3))
                     game.waves.is_active = True
                     self.memories["s3_wave1"] = True
@@ -139,7 +136,6 @@ class ScenarioManager:
 
             elif self.wave == 2 and not self.is_dialog_playing():
                 if not self.memories.get("s3_wave2"):
-                    from utils_wave import get_enemies_of_waves
                     game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 7, 4))
                     game.waves.is_active = True
                     self.memories["s3_wave2"] = True
