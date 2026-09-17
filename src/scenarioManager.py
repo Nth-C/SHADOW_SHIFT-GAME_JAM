@@ -1,6 +1,6 @@
 import pygame as pg
+from enemies.boss import Boss
 from waves import Waves
-from boss import Boss
 from utils_wave import get_enemies_of_waves
 from utils_wave import get_enemies_of_waves
 

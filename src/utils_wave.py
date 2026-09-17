@@ -1,7 +1,8 @@
 import random
 import pygame as pg
 
-from enemy import Enemy
+from enemies.enemy import Enemy
+
 
 def get_enemies_of_waves(self, min_id_enemy, max_id_enemy, nb_enemies) -> pg.sprite.Group:
     id_enemies_selected: list[int] = []
