@@ -2,43 +2,39 @@ import pygame as pg
 
 
 def dessiner_lumiere_degradee(surface: pg.Surface, x: int, y: int, rayon: int, obscurite_alpha: int = 160):
-    # Découpe un trou progressif et transparent dans l'obscurité (aucun filtre de couleur)
     rayon = max(1, int(rayon))
     temp_surf = pg.Surface((rayon * 2, rayon * 2), pg.SRCALPHA)
     temp_surf.fill((0, 0, 0, 0))
 
     for distance in range(rayon, -1, -2):
-        # intensité : 1.0 au centre, 0.0 au bord du rayon
         intensite = (1 - (distance / rayon)) ** 1.3
         alpha = int(obscurite_alpha * intensite)
         pg.draw.circle(temp_surf, (0, 0, 0, alpha), (rayon, rayon), distance)
 
-    # Soustrait l'alpha pour rendre la zone de la lampe complètement transparente et naturelle
     surface.blit(temp_surf, (x - rayon, y - rayon), special_flags=pg.BLEND_RGBA_SUB)
 
 
-def _get_map_objects(tmx_data):
+def get_map_objects(tmx_data):
     if not tmx_data:
         return []
     return getattr(tmx_data, "objects", [])
 
 
-def _iter_light_sources(tmx_data):
-    for obj in _get_map_objects(tmx_data):
+def iter_light_sources(tmx_data):
+    for obj in get_map_objects(tmx_data):
         name = str(getattr(obj, "name", "") or "").lower()
         if name in {"lampe", "light", "source", "lamp"}:
             properties = getattr(obj, "properties", {}) or {}
             rayon = int(properties.get("rayon", properties.get("radius", 150)))
             w = getattr(obj, "width", 0) or 0
             h = getattr(obj, "height", 0) or 0
-            # Pour un objet tuile, x/y est en haut à gauche, on prend le centre
             cx = obj.x + (w / 2 if w > 0 else 0)
             cy = obj.y + (h / 2 if h > 0 else 0)
             yield cx, cy, rayon
 
 
-def _iter_dark_areas(tmx_data):
-    for obj in _get_map_objects(tmx_data):
+def iter_dark_areas(tmx_data):
+    for obj in get_map_objects(tmx_data):
         name = str(getattr(obj, "name", "") or "").lower()
         if name in {"ombre", "shadow", "dark", "obscurite"}:
             x = int(getattr(obj, "x", 0))
@@ -59,12 +55,12 @@ def render_lights(surface_lumiere: pg.Surface, tmx_data, camera_offset=(0, 0), o
 
     offset_x, offset_y = camera_offset
 
-    for lampe_x, lampe_y, rayon in _iter_light_sources(tmx_data):
+    for lampe_x, lampe_y, rayon in iter_light_sources(tmx_data):
         screen_x = int(lampe_x + offset_x)
         screen_y = int(lampe_y + offset_y)
         dessiner_lumiere_degradee(surface_lumiere, screen_x, screen_y, rayon, obscurite_alpha)
 
-    for x, y, width, height in _iter_dark_areas(tmx_data):
+    for x, y, width, height in iter_dark_areas(tmx_data):
         rect_ombre = pg.Rect(int(x + offset_x), int(y + offset_y), int(width), int(height))
         pg.draw.rect(surface_lumiere, (0, 0, 0, min(255, obscurite_alpha + 60)), rect_ombre)
 
@@ -75,7 +71,7 @@ def draw_light_objects(screen: pg.Surface, tmx_data, camera_offset=(0, 0)):
 
     offset_x, offset_y = camera_offset
 
-    for obj in _get_map_objects(tmx_data):
+    for obj in get_map_objects(tmx_data):
         name = str(getattr(obj, "name", "") or "").lower()
         if name in {"lampe", "light", "source", "lamp"}:
             image = getattr(obj, "image", None)
