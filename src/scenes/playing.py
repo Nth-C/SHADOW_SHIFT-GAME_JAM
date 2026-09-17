@@ -1,20 +1,23 @@
+import math
+
 import pygame as pg
 from pygame.event import Event
+
 import constants.game_states as game_constants
 import constants.settings as settings_constants
-import math
+from eclipse import Eclipse
 from enemy import Enemy
+from hud.hint import Hint
 from hud.hud import HudManager
-from light import render_lights, _iter_light_sources
+from light import _iter_light_sources, render_lights
 from map import Map
 from player.body import Body
 from player.shadow import Shadow
 from scenarioManager import ScenarioManager
-from eclipse import Eclipse
 from screen import Screen
 from scroll import Scroll
 from sound import Sound
-from hud.hint import Hint
+
 
 class Playing:
     def __init__(self):
