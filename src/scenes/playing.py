@@ -46,7 +46,7 @@ class Playing:
         
         self.enemies.add(Enemy(600, 600, 50))
         self.enemies.add(Enemy(200, 150, 50))
-        self.enemies.add(Enemy(750, 400, 50))
+        
         self.spawn_entities_at_player()
 
         self.entity_active = self.player
