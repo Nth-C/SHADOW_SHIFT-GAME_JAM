@@ -1,20 +1,23 @@
+import math
+
 import pygame as pg
 from pygame.event import Event
+
 import constants.game_states as game_constants
 import constants.settings as settings_constants
-import math
+from eclipse import Eclipse
 from enemy import Enemy
+from hud.hint import Hint
 from hud.hud import HudManager
 from light import render_lights, _iter_light_sources, draw_light_objects
 from map import Map
 from player.body import Body
 from player.shadow import Shadow
 from scenarioManager import ScenarioManager
-from eclipse import Eclipse
 from screen import Screen
 from scroll import Scroll
 from sound import Sound
-from hud.hint import Hint
+
 
 class Playing:
     def __init__(self):
@@ -46,7 +49,7 @@ class Playing:
         
         self.enemies.add(Enemy(600, 600, 50))
         self.enemies.add(Enemy(200, 150, 50))
-        self.enemies.add(Enemy(750, 400, 50))
+        
         self.spawn_entities_at_player()
 
         self.entity_active = self.player
@@ -133,11 +136,13 @@ class Playing:
             (obj for obj in self.map.tmx_data.objects if obj.type == "switch_map"),
             None,
         )
-        self.switch_map_rect = (
-            pg.Rect(switch_map.x, switch_map.y, switch_map.width, switch_map.height)
-            if switch_map is not None
-            else None
-        )
+
+        if switch_map is not None:
+            self.switch_map_rect = (pg.Rect(switch_map.x, switch_map.y, switch_map.width, switch_map.height))
+            self.target_map_name = getattr(switch_map, "target_map", "spawn") 
+        else:
+            self.switch_map_rect = None
+            self.target_map_name = None
 
     def spawn_entities_at_player(self):
         player_position = self.map.tmx_data.get_object_by_name("player")
@@ -200,10 +205,11 @@ class Playing:
 
             if self.entity_active == self.player:
                 if self.switch_map_rect and self.player.feet.colliderect(self.switch_map_rect):
-                    self.map.switch_map("salle2")
-                    self.refresh_map_data()
-                    self.spawn_entities_at_player()
-                    self.entity_active = self.player
+                    if self.target_map_name: 
+                        self.map.switch_map(self.target_map_name)
+                        self.refresh_map_data()
+                        self.spawn_entities_at_player()
+                        self.entity_active = self.player
 
         if self.entity_active == self.shadow and not self.player.capacity_active:
             self.entity_active = self.player
@@ -236,9 +242,6 @@ class Playing:
 
         if self.eclipse.is_animating:
             self.eclipse.draw(self.fake_screen, self.scroll)
-            
-        self.player_move = self.scroll.apply(self.player.rect)
-        self.fake_screen.blit(self.player.image, self.player_move)
 
         if self.player.capacity_active:
             self.shadow_move = self.scroll.apply(self.shadow.rect)
@@ -246,8 +249,13 @@ class Playing:
 
         for enemy in self.enemies:
             enemy_move = self.scroll.apply(enemy.rect)
+            enemy.draw_aggro_range(self.fake_screen, enemy_move)
             self.fake_screen.blit(enemy.image, enemy_move)
+            enemy.draw_hp_bar(self.fake_screen, enemy_move)
 
+        self.player_move = self.scroll.apply(self.player.rect)
+        self.fake_screen.blit(self.player.image, self.player_move)
+            
         # map
         self.map.draw(self.scroll, self.fake_screen, mur_bas_rects=self.mur_bas_rects, draw_foreground=True)
 

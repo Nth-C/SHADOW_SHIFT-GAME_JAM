@@ -1,5 +1,6 @@
 import pygame as pg
 
+
 class Eclipse:
     def __init__(self, x, y):
         self.sprite_sheet = pg.image.load('assets/characters/sprite_eclipse.png').convert_alpha()

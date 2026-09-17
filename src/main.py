@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+
 import pygame as pg
 
 # Fix for relative paths: set working directory to the Game-jam root

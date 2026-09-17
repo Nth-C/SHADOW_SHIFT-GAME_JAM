@@ -3,9 +3,9 @@ from pygame.event import Event
 
 import constants.game_states as game_constants
 import constants.settings as settings_constants
-from constants.player import ENERGY_MAX, HP_MAX
 from player.body import Body
 from screen import Screen
+
 
 class Menu:
     def __init__(self):
