@@ -272,6 +272,10 @@ class Playing:
             self.sound.play_death()
             return game_constants.GAME_OVER
 
+        # fin / crédit
+        if self.scenario.step == 4:
+            return game_constants.CREDITS
+
         # continuer le jeu
         return game_constants.PLAYING
 
