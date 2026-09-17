@@ -132,11 +132,13 @@ class Playing:
             (obj for obj in self.map.tmx_data.objects if obj.type == "switch_map"),
             None,
         )
-        self.switch_map_rect = (
-            pg.Rect(switch_map.x, switch_map.y, switch_map.width, switch_map.height)
-            if switch_map is not None
-            else None
-        )
+
+        if switch_map is not None:
+            self.switch_map_rect = (pg.Rect(switch_map.x, switch_map.y, switch_map.width, switch_map.height))
+            self.target_map_name = getattr(switch_map, "target_map", "spawn") 
+        else:
+            self.switch_map_rect = None
+            self.target_map_name = None
 
     def spawn_entities_at_player(self):
         player_position = self.map.tmx_data.get_object_by_name("player")
@@ -199,10 +201,11 @@ class Playing:
 
             if self.entity_active == self.player:
                 if self.switch_map_rect and self.player.feet.colliderect(self.switch_map_rect):
-                    self.map.switch_map("salle2")
-                    self.refresh_map_data()
-                    self.spawn_entities_at_player()
-                    self.entity_active = self.player
+                    if self.target_map_name: 
+                        self.map.switch_map(self.target_map_name)
+                        self.refresh_map_data()
+                        self.spawn_entities_at_player()
+                        self.entity_active = self.player
 
         # mort
         if self.player.hp <= 0:

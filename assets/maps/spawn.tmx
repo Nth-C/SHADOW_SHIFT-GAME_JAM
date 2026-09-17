@@ -178,10 +178,14 @@
   <object id="6" type="collision" x="791.335" y="96.6488" width="39.6223" height="62.581"/>
   <object id="7" type="collision" x="672" y="256" width="86.7484" height="35.4275"/>
   <object id="8" type="collision" x="192.927" y="93.6864" width="95.1676" height="17.0339"/>
-  <object id="11" name="switch_map" type="switch_map" x="448" y="0" width="96" height="96"/>
+  <object id="11" name="switch_map" type="switch_map" x="448" y="0" width="96" height="96">
+   <properties>
+    <property name="target_map" value="salle2"/>
+   </properties>
+  </object>
   <object id="23" type="wave_exit" x="448" y="64" width="96" height="64"/>
   <object id="24" type="dialogue" x="449.043" y="227.625" width="94.1542" height="152.095"/>
-  <object id="25" type="dialogue" x="448.008" y="514.227" width="97.2581" height="26.9012"/>
+  <object id="25" type="dialogue 1" x="448.008" y="514.227" width="97.2581" height="26.9012"/>
  </objectgroup>
  <objectgroup id="8" name="spawn">
   <object id="36" name="player" x="495.212" y="587.352">
