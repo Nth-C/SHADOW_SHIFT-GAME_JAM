@@ -9,4 +9,4 @@ pip install -U pip
 pip install -e .
 
 echo "Commande pour activer l'environnement :"
-echo "    source .venv/bin/activate"
+echo "source .venv/bin/activate"
