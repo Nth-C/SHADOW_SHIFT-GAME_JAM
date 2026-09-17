@@ -222,9 +222,6 @@ class Playing:
 
         if self.eclipse.is_animating:
             self.eclipse.draw(self.fake_screen, self.scroll)
-            
-        self.player_move = self.scroll.apply(self.player.rect)
-        self.fake_screen.blit(self.player.image, self.player_move)
 
         if self.player.capacity_active:
             self.shadow_move = self.scroll.apply(self.shadow.rect)
@@ -232,8 +229,13 @@ class Playing:
 
         for enemy in self.enemies:
             enemy_move = self.scroll.apply(enemy.rect)
+            enemy.draw_aggro_range(self.fake_screen, enemy_move)
             self.fake_screen.blit(enemy.image, enemy_move)
+            enemy.draw_hp_bar(self.fake_screen, enemy_move)
 
+        self.player_move = self.scroll.apply(self.player.rect)
+        self.fake_screen.blit(self.player.image, self.player_move)
+            
         # map
         self.map.draw(self.scroll, self.fake_screen, mur_bas_rects=self.mur_bas_rects, draw_foreground=True)
 
