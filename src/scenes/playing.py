@@ -209,8 +209,6 @@ class Playing:
         self.scenario.update_dialog(self)
         self.eclipse.update()
 
-        self.player.update_animation()
-
         if not self.scenario.is_dialog_playing():
             # Choix des murs selon qui on contrôle
             if self.entity_active == self.shadow:
