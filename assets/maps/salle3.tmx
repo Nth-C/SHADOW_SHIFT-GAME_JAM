@@ -175,7 +175,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1704,1705,1706,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="8" name="collision">
+ <objectgroup id="8" name="collision" class="lampe">
   <object id="1" type="collision" x="512" y="288" width="448" height="96"/>
   <object id="3" type="collision" x="736" y="392.685" width="94.6064" height="55.3147"/>
   <object id="4" type="collision" x="928" y="384" width="32" height="352"/>
@@ -192,10 +192,16 @@
   <object id="15" type="collision" x="352" y="256" width="192" height="192"/>
   <object id="16" type="collsion" x="641.001" y="557.267" width="92.3965" height="17.3244"/>
   <object id="17" type="collision" x="64" y="512" width="288" height="64"/>
-  <object id="19" type="collision" x="100.096" y="389.798" width="22.1367" height="89.5091">
+  <object id="19" name="lampe" type="collision" x="100.096" y="389.798" width="22.1367" height="89.5091">
+   <properties>
+    <property name="rayon" type="int" value="200"/>
+   </properties>
    <capsule/>
   </object>
-  <object id="20" type="collision" x="88.5467" y="258.903" width="44.2733" height="103.946">
+  <object id="20" name="lampe" type="collision" x="88.5467" y="258.903" width="44.2733" height="103.946">
+   <properties>
+    <property name="rayon" type="int" value="50"/>
+   </properties>
    <capsule/>
   </object>
  </objectgroup>

@@ -48,7 +48,7 @@ def _iter_dark_areas(tmx_data):
             yield x, y, width, height
 
 
-def render_lights(surface_lumiere: pg.Surface, tmx_data, camera_offset=(0, 0), obscurite_alpha: int = 160):
+def render_lights(surface_lumiere: pg.Surface, tmx_data, camera_offset=(0, 0), obscurite_alpha: int = 110):
     # Applique un voile d'obscurité semi-transparent percé par les sources de lumière
     if surface_lumiere is None:
         return

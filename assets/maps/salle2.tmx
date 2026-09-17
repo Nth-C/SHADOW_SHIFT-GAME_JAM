@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="129">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="14" nextobjectid="138">
  <tileset firstgid="1" source="tilesets/laboratory-tileset5.tsx"/>
  <tileset firstgid="199" source="tilesets/laboratory-tileset7.tsx"/>
  <tileset firstgid="391" source="tilesets/tilesWalls.tsx"/>
@@ -148,6 +148,9 @@
 </data>
  </layer>
  <objectgroup id="11" name="spawn">
+  <properties>
+   <property name="rayon" type="int" value="35"/>
+  </properties>
   <object id="94" name="player" x="494.663" y="661.081">
    <point/>
   </object>
@@ -212,13 +215,50 @@
   <object id="118" type="ombre" x="440.684" y="350.827" width="7.64745" height="96.5491"/>
   <object id="119" type="ombre" x="448" y="368.224" width="384" height="79.7759"/>
   <object id="120" type="ombre" x="665.328" y="446.42" width="6.69152" height="196.922"/>
-  <object id="121" type="collision" x="290.603" y="513.335" width="92.7254" height="61.1796"/>
+  <object id="121" name="lampe" type="collision" x="290.603" y="513.335" width="92.7254" height="61.1796"/>
   <object id="122" type="collision" x="772.393" y="130.007" width="54.4881" height="94.6372"/>
-  <object id="123" type="collision" x="803.938" y="237.071" width="26.7661" height="114.712"/>
-  <object id="124" type="collision" x="544.881" y="261.925" width="94.6372" height="56.4"/>
+  <object id="123" name="lampe" type="collision" x="803.938" y="237.071" width="26.7661" height="114.712"/>
+  <object id="124" name="lampe" type="collision" x="544.881" y="261.925" width="94.6372" height="56.4"/>
   <object id="125" name="switch_map" type="switch_map" x="448" y="0" width="96" height="96"/>
  </objectgroup>
  <objectgroup id="12" name="dialogue">
   <object id="128" type="dialogue" x="450.089" y="608.834" width="94.3132" height="31.749"/>
+ </objectgroup>
+ <objectgroup id="13" name="light">
+  <object id="130" name="lampe" gid="1953" x="672" y="159.667" width="32" height="32">
+   <properties>
+    <property name="rayon" type="int" value="50"/>
+   </properties>
+  </object>
+  <object id="131" name="lampe" gid="1739" x="768.182" y="160.182" width="32" height="32">
+   <properties>
+    <property name="rayon" type="int" value="50"/>
+   </properties>
+  </object>
+  <object id="132" name="lampe" gid="1740" x="800.182" y="160" width="32" height="32">
+   <properties>
+    <property name="rayon" type="int" value="50"/>
+   </properties>
+  </object>
+  <object id="133" name="lampe" gid="1776" x="768.364" y="192" width="32" height="32">
+   <properties>
+    <property name="rayon" type="int" value="50"/>
+   </properties>
+  </object>
+  <object id="134" name="lampe" gid="1777" x="800.182" y="192.364" width="32" height="32">
+   <properties>
+    <property name="rayon" type="int" value="50"/>
+   </properties>
+  </object>
+  <object id="136" name="lampe" gid="1813" x="768.364" y="223.636" width="32" height="32">
+   <properties>
+    <property name="rayon" type="int" value="50"/>
+   </properties>
+  </object>
+  <object id="137" name="lampe" gid="1814" x="800.182" y="223.636" width="32" height="32">
+   <properties>
+    <property name="rayon" type="int" value="50"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

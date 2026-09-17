@@ -5,7 +5,7 @@ import constants.settings as settings_constants
 import math
 from enemy import Enemy
 from hud.hud import HudManager
-from light import render_lights, _iter_light_sources
+from light import render_lights, _iter_light_sources, draw_light_objects
 from map import Map
 from player.body import Body
 from player.shadow import Shadow
@@ -252,6 +252,7 @@ class Playing:
         self.map.draw(self.scroll, self.fake_screen, mur_bas_rects=self.mur_bas_rects, draw_foreground=True)
 
         # light
+        draw_light_objects(self.fake_screen, self.map.tmx_data, camera_offset=(self.scroll.x, self.scroll.y))
         self.light_surface.fill((0, 0, 0, 0))
         render_lights(self.light_surface, self.map.tmx_data, camera_offset=(self.scroll.x, self.scroll.y))
         self.fake_screen.blit(self.light_surface, (0, 0))
