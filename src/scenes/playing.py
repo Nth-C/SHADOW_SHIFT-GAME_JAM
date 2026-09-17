@@ -7,6 +7,7 @@ import constants.game_states as game_constants
 import constants.settings as settings_constants
 from eclipse import Eclipse
 from enemy import Enemy
+from enums.direction import Direction
 from hud.hint import Hint
 from hud.hud import HudManager
 from light import _iter_light_sources, render_lights, draw_light_objects
@@ -154,6 +155,22 @@ class Playing:
         player_position = self.map.tmx_data.get_object_by_name("player")
         self.player = Body(player_position.x, player_position.y)
         self.shadow = Shadow(player_position.x, player_position.y)
+
+        spawn_dir = getattr(player_position, "direction", "down")
+        
+        self.player.change_animation(spawn_dir)
+        
+        self.player.current_dir_x = None
+        self.player.current_dir_y = None
+        
+        if spawn_dir == "up":
+            self.player.current_dir_y = Direction.UP
+        elif spawn_dir == "down":
+            self.player.current_dir_y = Direction.DOWN
+        elif spawn_dir == "left":
+            self.player.current_dir_x = Direction.LEFT
+        elif spawn_dir == "right":
+            self.player.current_dir_x = Direction.RIGHT
         
         self.background_galaxy = pg.image.load('assets/images/galaxie.png').convert()
         self.background_galaxy = pg.transform.scale(
