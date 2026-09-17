@@ -299,11 +299,6 @@ class Playing:
         if self.player.capacity_active:
             self.shadow_move = self.scroll.apply(self.shadow.rect)
             self.fake_screen.blit(self.shadow.image, self.shadow_move)
-
-        if self.eclipse.fade > 0:
-            black_filter = pg.Surface((1024, 768), pg.SRCALPHA)
-            black_filter.fill((0, 0, 0, self.eclipse.fade))
-            self.screen.display.blit(black_filter, (0, 0))
         
         self.waves.draw_waves(self.fake_screen, self.scroll)
 
@@ -322,6 +317,12 @@ class Playing:
         # zoom
         screen_zoom = pg.transform.scale(self.fake_screen, (1024, 768))
         self.screen.display.blit(screen_zoom, (0, 0))
+
+        # filtre noir eclipse fin
+        if self.eclipse.fade > 0:
+            black_filter = pg.Surface((1024, 768), pg.SRCALPHA)
+            black_filter.fill((0, 0, 0, int(self.eclipse.fade)))
+            self.screen.display.blit(black_filter, (0, 0))
             
         # hud
         self.hud.draw(self.screen.display, self.player)

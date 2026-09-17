@@ -45,7 +45,7 @@ class Eclipse:
             time_pass = time_now - self.black_progress_start
             time_animation = self.duration * len(self.images)
 
-            ratio = min(1.0, time_pass // time_animation)
+            ratio = min(1.0, time_pass / time_animation)
             self.fade = (255 * ratio)
 
             if (time_now - self.last_update) >= self.duration:
