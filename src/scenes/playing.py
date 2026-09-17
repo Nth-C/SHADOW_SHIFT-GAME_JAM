@@ -62,7 +62,7 @@ class Playing:
 
         self.scenario = ScenarioManager()
 
-        self.eclipse = Eclipse(500, 350)
+        self.eclipse = Eclipse(1024 // 2, 768 // 2)
 
     # evenement du player
     def handle_event(self, event: Event) -> None:

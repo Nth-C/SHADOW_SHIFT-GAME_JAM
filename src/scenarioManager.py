@@ -166,8 +166,10 @@ class ScenarioManager:
                 self.memories["end_wave_boss"] = True
                 
             elif not self.is_dialog_playing() and not self.memories.get("eclipse_start"):
-                game.eclipse.start_animation()
-                self.memories["eclipse_start"] = True
+                keys = pg.key.get_pressed()
+                if keys[pg.K_e]:
+                    game.eclipse.start_animation()
+                    self.memories["eclipse_start"] = True
                 
             elif self.memories.get("eclipse_start") and not self.is_dialog_playing() and not self.memories.get("conclusion"):
                 self.start_dialog([
@@ -175,7 +177,14 @@ class ScenarioManager:
                 ])
                 self.memories["conclusion"] = True
 
-        if not was_playing and self.is_dialog_playing(): # pour éviter le pb ou on reste bloqué dans une direction quand un dialogue se lance et qu'on se deplace
+            elif self.memories.get("conclusion") and not self.is_dialog_playing():
+                self.step = 4
+
+        elif self.step == 4:
+            game.game_constants.CREDITS
+
+
+        if not was_playing and self.is_dialog_playing(): 
                 game.player.reset_movement()
                 game.shadow.reset_movement()
 
