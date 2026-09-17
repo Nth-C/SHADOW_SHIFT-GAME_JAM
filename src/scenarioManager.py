@@ -216,3 +216,12 @@ class ScenarioManager:
                 surface.blit(self.font_dialogue.render(ligne, True, (255, 255, 255)), (182, y))
                 y += 25
             surface.blit(self.font_dialogue.render("[ENTRÉE]", True, (150, 150, 150)), (750, 680))
+
+    def reset(self):
+        self.step = 0
+        self.wave = 0
+        self.dialogs = []
+        self.dialogs_index = 0
+        self.dialog_played = False
+        self.memories = {}
+        self.zone_past = []

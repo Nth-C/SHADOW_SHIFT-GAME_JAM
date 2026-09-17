@@ -9,7 +9,7 @@ from eclipse import Eclipse
 from enums.direction import Direction
 from hud.hint import Hint
 from hud.hud import HudManager
-from light import _iter_light_sources, render_lights, draw_light_objects
+from light import iter_light_sources, render_lights, draw_light_objects
 from map import Map
 from player.body import Body
 from player.shadow import Shadow
@@ -200,6 +200,13 @@ class Playing:
         self.spawn_entities_at_player()
         self.entity_active = self.player
 
+        vague_1 = get_enemies_of_waves(self, 1, 9, 6)
+        self.waves = Waves([vague_1])
+        self.waves.start_wave()
+
+        self.eclipse.reset()
+        self.scenario.reset()
+
     def update(self) -> str:
         if self.entity_active.is_attacking:
             zone_attaque = self.entity_active.get_attack_range()
@@ -248,14 +255,13 @@ class Playing:
                         self.refresh_map_data()
                         self.spawn_entities_at_player()
                         self.entity_active = self.player
-                        self.waves = Waves([])
 
         if self.entity_active == self.shadow and not self.player.capacity_active:
             self.entity_active = self.player
 
         if self.entity_active == self.shadow:
             shadow_x, shadow_y = self.shadow.rect.center
-            for lampe_x, lampe_y, rayon in _iter_light_sources(self.map.tmx_data):
+            for lampe_x, lampe_y, rayon in iter_light_sources(self.map.tmx_data):
                 if math.hypot(lampe_x - shadow_x, lampe_y - shadow_y) <= rayon:
                     self.player.toggle_capacity()
                     self.entity_active = self.player
