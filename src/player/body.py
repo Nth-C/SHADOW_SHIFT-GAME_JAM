@@ -2,9 +2,9 @@ import pygame as pg
 from pygame.event import Event
 
 import constants.player as player_constants
-from entity import Entity
 from enums.direction import Direction
 from player.playable_entity import PlayableEntity
+
 
 class Body(PlayableEntity):
     def __init__(self, x: int, y:int):
@@ -62,17 +62,34 @@ class Body(PlayableEntity):
         if self.energy >= player_constants.DASH_ENERGY_CONSUMPTION:
             self.use_energy(player_constants.DASH_ENERGY_CONSUMPTION);
 
+            movement = []
             if self.current_dir_y == Direction.UP:
-                self._move_axis(0, -value, walls)
+                movement.append((0, -1))
             elif self.current_dir_y == Direction.DOWN:
-                self._move_axis(0, value, walls)
+                movement.append((0, 1))
 
             if self.current_dir_x == Direction.LEFT:
-                self._move_axis(-value, 0, walls)
+                movement.append((-1, 0))
             elif self.current_dir_x == Direction.RIGHT:
-                self._move_axis(value, 0, walls)
+                movement.append((1, 0))
 
+            step = max(1, self.speed)
+            for direction_x, direction_y in movement:
+                distance_left = value
+                while distance_left > 0:
+                    distance = min(step, distance_left)
+                    if not self.move_axis(
+                        direction_x * distance,
+                        direction_y * distance,
+                        walls,
+                    ):
+                        break
+                    distance_left -= distance
 
+    # permet de soigner le joueur et de recuperer l'energie
+    def regen_all(self) -> None:
+        self.hp = player_constants.HP_MAX
+        self.energy = player_constants.ENERGY_MAX
 
     # permet de gerer l'invincibilité apres un degat
     def take_damage(self, amount: int) -> None:
@@ -84,23 +101,6 @@ class Body(PlayableEntity):
             super().take_damage(amount)
             
             self.last_damage_time = current_time
-
-    # recupere la position de l'attaque
-    def get_attack_range(self) -> pg.Rect:
-        attack_rect = pg.Rect(0, 0, 40, 40)
-        attack_rect.center = self.rect.center 
-        
-        if self.current_dir_x == Direction.LEFT:
-            attack_rect.centerx -= 30
-        elif self.current_dir_x == Direction.RIGHT:
-            attack_rect.centerx += 30
-            
-        if self.current_dir_y == Direction.UP:
-            attack_rect.centery -= 30
-        elif self.current_dir_y == Direction.DOWN:
-            attack_rect.centery += 30
-            
-        return attack_rect
     
     # active / desactive la capacité
     def toggle_capacity(self):
