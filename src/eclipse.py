@@ -3,7 +3,9 @@ import pygame as pg
 
 class Eclipse:
     def __init__(self, x, y):
-        self.sprite_sheet = pg.image.load('assets/characters/sprite_eclipse.png').convert_alpha()
+        self.sprite_sheet = pg.image.load(
+            "assets/characters/sprite_eclipse.png"
+        ).convert_alpha()
 
         self.width = self.sprite_sheet.get_width() // 5
         self.height = self.sprite_sheet.get_height()
@@ -46,7 +48,7 @@ class Eclipse:
             time_animation = self.duration * len(self.images)
 
             ratio = min(1.0, time_pass / time_animation)
-            self.fade = (255 * ratio)
+            self.fade = 255 * ratio
 
             if (time_now - self.last_update) >= self.duration:
                 if self.img_index < len(self.images) - 1:

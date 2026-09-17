@@ -1,5 +1,6 @@
 import pygame as pg
 
+
 class Waves:
     def __init__(self, list_of_waves: list[pg.sprite.Group]):
         # list avec un list d'enemies
@@ -35,9 +36,9 @@ class Waves:
 
     def room_is_clear(self) -> bool:
         return self.current_index >= len(self.list_of_waves)
-    
+
     def get_current_enemies(self) -> pg.sprite.Group:
         if self.room_is_clear() or not self.is_active:
             return pg.sprite.Group()
-        
+
         return self.list_of_waves[self.current_index]

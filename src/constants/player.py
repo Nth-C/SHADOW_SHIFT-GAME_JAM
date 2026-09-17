@@ -1,8 +1,8 @@
 # Joueur
 SPEED: int = 4
 HP_MAX: int = 100
-ENERGY_MAX : int= 100
-ENERGY_REGEN_TIME : int= 1000 # en ms
+ENERGY_MAX: int = 100
+ENERGY_REGEN_TIME: int = 1000  # en ms
 ENERGY_REGEN: int = 25
 INVINCIBLILITY_DURATION: int = 1000
 

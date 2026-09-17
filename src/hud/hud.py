@@ -14,6 +14,5 @@ class HudManager:
 
     # lire les infos du joueur pour mettre à jour l'hud
     def draw(self, screen: pg.Surface, player: Body) -> None:
-        self.energy_bar.draw(screen, player.energy);
-        self.health_bar.draw(screen, player.hp);
-
+        self.energy_bar.draw(screen, player.energy)
+        self.health_bar.draw(screen, player.hp)

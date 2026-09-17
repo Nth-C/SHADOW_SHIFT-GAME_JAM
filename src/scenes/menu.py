@@ -2,7 +2,6 @@ import pygame as pg
 from pygame.event import Event
 
 import constants.game_states as game_constants
-import constants.settings as settings_constants
 from player.body import Body
 from screen import Screen
 
@@ -26,8 +25,7 @@ class Menu:
     def restart_game(self, event: Event, player: Body) -> str:
         if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
             # regen le joueur
-            player.regen_all();
-
+            player.regen_all()
             return game_constants.PLAYING
 
         return game_constants.GAME_OVER
@@ -35,8 +33,7 @@ class Menu:
     def end_game(self, event: Event, player: Body) -> str:
         if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
             # regen le joueur
-            player.regen_all();
-
+            player.regen_all()
             return game_constants.CREDITS
 
         return game_constants.END
@@ -52,8 +49,10 @@ class Menu:
     # affiche le menu
     def draw_menu(self, screen: Screen):
         screen.display.blit(self.background_home, (0, 0))
-                        
-        inst_surf = self.font_instruction.render("Appuyez sur ESPACE pour commencer", True, (255, 215, 0))
+
+        inst_surf = self.font_instruction.render(
+            "Appuyez sur ESPACE pour commencer", True, (255, 215, 0)
+        )
         inst_rect = inst_surf.get_rect(center=(1024 // 2, 768 // 2))
         screen.display.blit(inst_surf, inst_rect)
 
@@ -65,20 +64,30 @@ class Menu:
         title_rect = title_surf.get_rect(center=(1024 // 2, 768 // 3))
         screen.display.blit(title_surf, title_rect)
 
-        inst_surf = self.font_instruction.render("Appuyez sur ESPACE pour recommencer", True, (255, 0, 0))
+        inst_surf = self.font_instruction.render(
+            "Appuyez sur ESPACE pour recommencer", True, (255, 0, 0)
+        )
         inst_rect = inst_surf.get_rect(center=(1024 // 2, 768 // 2))
         screen.display.blit(inst_surf, inst_rect)
 
     # affiche l'ecran de fin
-    def draw_end(self, screen: Screen):
+    def draw_end(self, screen: Screen, time: str):
         screen.display.fill((20, 20, 40))
 
         title_surf = self.font_title.render("VICTOIRE", True, (255, 255, 255))
         title_rect = title_surf.get_rect(center=(1024 // 2, 768 // 3))
         screen.display.blit(title_surf, title_rect)
 
-        inst_surf = self.font_instruction.render("Appuyez sur ESPACE pour retourner au menu", True, (0, 255, 200))
-        inst_rect = inst_surf.get_rect(center=(1024 // 2, 768 // 2))
+        final_time = self.font_instruction.render(
+            f"Temps de jeu : {time}", True, (255, 255, 255)
+        )
+        time_rect = final_time.get_rect(center=(1024 // 2, 768 // 2 - 20))
+        screen.display.blit(final_time, time_rect)
+
+        inst_surf = self.font_instruction.render(
+            "Appuyez sur ESPACE pour retourner au menu", True, (0, 255, 200)
+        )
+        inst_rect = inst_surf.get_rect(center=(1024 // 2, 768 // 2 + 50))
         screen.display.blit(inst_surf, inst_rect)
 
     # affiche l'ecran des credits
@@ -109,9 +118,13 @@ class Menu:
 
         for i, line in enumerate(credits_lines):
             line_surf = self.font_instruction.render(line, True, (0, 255, 200))
-            line_rect = line_surf.get_rect(center=(1024 // 2, start_y + i * line_height))
+            line_rect = line_surf.get_rect(
+                center=(1024 // 2, start_y + i * line_height)
+            )
             screen.display.blit(line_surf, line_rect)
 
-        inst_surf = self.font_instruction.render("Appuyez sur ESPACE pour retourner au menu", True, (255, 255, 255))
+        inst_surf = self.font_instruction.render(
+            "Appuyez sur ESPACE pour retourner au menu", True, (255, 255, 255)
+        )
         inst_rect = inst_surf.get_rect(center=(1024 // 2, 768 - 60))
         screen.display.blit(inst_surf, inst_rect)

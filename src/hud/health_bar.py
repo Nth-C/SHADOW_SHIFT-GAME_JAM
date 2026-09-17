@@ -11,8 +11,10 @@ class HealthBar:
 
     def draw(self, screen: pg.Surface, current_health: int) -> None:
         ratio = current_health / self.maxhealth
-        
+
         # fond
         pg.draw.rect(screen, (50, 50, 50), (self.x, self.y, self.width, self.height))
         # barre
-        pg.draw.rect(screen, (255, 0, 0), (self.x, self.y, self.width * ratio, self.height))
+        pg.draw.rect(
+            screen, (255, 0, 0), (self.x, self.y, self.width * ratio, self.height)
+        )

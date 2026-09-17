@@ -1,13 +1,35 @@
 import pygame as pg
+
 from enemies.enemies_entity import EnemiesEntity
 from enums.direction import Direction
 
 
 class Boss(EnemiesEntity):
-    def __init__(self, x: int, y: int, width: int = 128, height: int = 128, hp: int = 200, attack: int = 20, speed: int = 1, aggro_range: int = 300):
-        super().__init__(x, y, width=width, height=height, hp=hp, attack=attack, speed=speed, aggro_range=aggro_range)
+    def __init__(
+        self,
+        x: int,
+        y: int,
+        width: int = 128,
+        height: int = 128,
+        hp: int = 200,
+        attack: int = 20,
+        speed: int = 1,
+        aggro_range: int = 300,
+    ):
+        super().__init__(
+            x,
+            y,
+            width=width,
+            height=height,
+            hp=hp,
+            attack=attack,
+            speed=speed,
+            aggro_range=aggro_range,
+        )
 
-        original_sheet = pg.image.load('assets/characters/boss_robot_walk.png').convert_alpha()
+        original_sheet = pg.image.load(
+            "assets/characters/boss_robot_walk.png"
+        ).convert_alpha()
         self.sprite_sheet = original_sheet
 
         cw = 506
