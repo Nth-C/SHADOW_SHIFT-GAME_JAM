@@ -26,12 +26,8 @@ class ScenarioManager:
     def update_dialog(self, game):
         if self.step == 0:
             self.start_dialog([
-<<<<<<< HEAD
-                ("Sujet 0", "")
-=======
                 ("Narrateur", "Le Sujet Zéro ouvrit les yeux. Enfermé dans ça chambre."),
                 ("Tutoriel", "Appuyez sur [ESPACE] pour effectuer un Dash (esquive).")
->>>>>>> 91170cf327eb24f79fa4277c981748bc5571ad52
             ])
             self.step = 1
         elif self.step == 1 and not self.is_dialog_playing() and len(game.enemies) <= 0:
