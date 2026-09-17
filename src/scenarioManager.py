@@ -26,9 +26,9 @@ class ScenarioManager:
                     self.dialogs = []
 
     def update_dialog(self, game):
-        if not self.is_dialog_playing() and game.entity_active == game.player:
+        if not self.is_dialog_playing():
             for zone_rect, zone_type in game.walls_dialogs:
-                if game.player.feet.colliderect(zone_rect.inflate(15, 15)):
+                if game.entity_active.feet.colliderect(zone_rect.inflate(15, 15)):
                     
                     if zone_type == 'dialogue 1' and not self.memories.get("read"):
                         self.start_dialog([
