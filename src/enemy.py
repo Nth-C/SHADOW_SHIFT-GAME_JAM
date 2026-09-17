@@ -89,3 +89,6 @@ class Enemy(Entity):
         zone_rect = pg.Rect(0, 0, taille, taille)
         zone_rect.center = self.rect.center
         return zone_rect
+
+    def is_dead(self) -> bool:
+       return self.hp <= 0

@@ -7,6 +7,7 @@ import constants.game_states as game_constants
 import constants.settings as settings_constants
 from eclipse import Eclipse
 from enemy import Enemy
+from enums.direction import Direction
 from hud.hint import Hint
 from hud.hud import HudManager
 from light import _iter_light_sources, render_lights, draw_light_objects
@@ -17,7 +18,7 @@ from scenarioManager import ScenarioManager
 from screen import Screen
 from scroll import Scroll
 from sound import Sound
-
+from waves import Waves
 
 class Playing:
     def __init__(self):
@@ -42,10 +43,12 @@ class Playing:
 
         self.zoom = 2
 
-        self.enemies = pg.sprite.Group()
-        
-        self.enemies.add(Enemy(600, 600, 50))
-        self.enemies.add(Enemy(200, 150, 50))
+        # vague_1 = get_enemies_of_waves(self, 1, 9, 4)
+        # vague_2 = get_enemies_of_waves(self, 1, 9, 2)
+
+        # self.waves = Waves([vague_1, vague_2])
+
+        self.waves = Waves([])
         
         self.spawn_entities_at_player()
 
@@ -126,10 +129,17 @@ class Playing:
             for obj in self.map.tmx_data.objects
             if obj.type in ("collision", "ombre", "wave_exit")
         ]
+
         self.walls_shadow = [
             pg.Rect(obj.x, obj.y, obj.width, obj.height)
             for obj in self.map.tmx_data.objects
             if obj.type in ("collision", "switch_map", "wave_exit")
+        ]
+
+        self.walls_dialogs = [
+            (pg.Rect(obj.x, obj.y, obj.width, obj.height), obj.type)
+            for obj in self.map.tmx_data.objects
+            if obj.type in ("dialogue", "wave_exit", "dialogue 1")
         ]
 
         switch_map = next(
@@ -148,18 +158,39 @@ class Playing:
         player_position = self.map.tmx_data.get_object_by_name("player")
         self.player = Body(player_position.x, player_position.y)
         self.shadow = Shadow(player_position.x, player_position.y)
-        
 
+        spawn_dir = getattr(player_position, "direction", "down")
+        
+        self.player.change_animation(spawn_dir)
+        
+        self.player.current_dir_x = None
+        self.player.current_dir_y = None
+        
+        if spawn_dir == "up":
+            self.player.current_dir_y = Direction.UP
+        elif spawn_dir == "down":
+            self.player.current_dir_y = Direction.DOWN
+        elif spawn_dir == "left":
+            self.player.current_dir_x = Direction.LEFT
+        elif spawn_dir == "right":
+            self.player.current_dir_x = Direction.RIGHT
+        
         self.background_galaxy = pg.image.load('assets/images/galaxie.png').convert()
         self.background_galaxy = pg.transform.scale(
             self.background_galaxy,
             (1024 // self.zoom, 768 // self.zoom)
         )
 
+    def start_waves_s2(self):
+        wave_1 = get_enemies_of_waves(self, 1, 9, 7)
+
+        self.waves = Waves([wave_1])
+        self.waves.start_wave()
+
     def update(self) -> str:
         if self.entity_active.is_attacking:
             zone_attaque = self.entity_active.get_attack_range()
-            for ennemi in self.enemies:
+            for ennemi in self.waves.get_current_enemies():                
                 if zone_attaque.colliderect(ennemi.rect):
                     ennemi.take_damage(self.entity_active.attack)
 
@@ -181,16 +212,17 @@ class Playing:
             
             self.entity_active.move(used_walls)
             self.player.update_energy()
-            
-            for enemy in self.enemies:
-                enemy.update(self.player)
 
-        ennemis_touches = pg.sprite.spritecollide(self.player, self.enemies, False)
+            self.waves.wave_update(self.player)
+            self.waves.update_wave_status()
+
+        ennemis_touches = pg.sprite.spritecollide(self.player, self.waves.get_current_enemies(), False)
+
         if ennemis_touches:
             if self.player.take_damage(ennemis_touches[0].attack):
                 self.sound.play_hit()
 
-        if len(self.enemies) == 0:
+        if self.waves.room_is_clear():
             self.walls_player = [
                 pg.Rect(obj.x, obj.y, obj.width, obj.height)
                 for obj in self.map.tmx_data.objects
@@ -249,11 +281,15 @@ class Playing:
             self.shadow_move = self.scroll.apply(self.shadow.rect)
             self.fake_screen.blit(self.shadow.image, self.shadow_move)
 
+        """
         for enemy in self.enemies:
             enemy_move = self.scroll.apply(enemy.rect)
             enemy.draw_aggro_range(self.fake_screen, enemy_move)
             self.fake_screen.blit(enemy.image, enemy_move)
             enemy.draw_hp_bar(self.fake_screen, enemy_move)
+        """
+        
+        self.waves.draw_waves(self.fake_screen, self.scroll)
 
         self.player_move = self.scroll.apply(self.player.rect)
         self.fake_screen.blit(self.player.image, self.player_move)
