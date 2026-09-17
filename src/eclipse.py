@@ -23,6 +23,10 @@ class Eclipse:
         self.last_update = 0
         self.duration = 2500
 
+        self.black_progress = 0
+        self.black_progress_start = 0
+        self.fade = 0
+
     def get_image(self, x, y):
         image = pg.Surface([self.width, self.height], pg.SRCALPHA)
         image.blit(self.sprite_sheet, (0, 0), (x, y, self.width, self.height))
@@ -32,10 +36,18 @@ class Eclipse:
         self.is_animating = True
         self.img_index = 1
         self.last_update = pg.time.get_ticks()
+        self.black_progress_start = pg.time.get_ticks()
 
     def update(self):
         if self.is_animating:
             time_now = pg.time.get_ticks()
+
+            time_pass = time_now - self.black_progress_start
+            time_animation = self.duration * len(self.images)
+
+            ratio = min(1.0, time_pass // time_animation)
+            self.fade = (255 * ratio)
+
             if (time_now - self.last_update) >= self.duration:
                 if self.img_index < len(self.images) - 1:
                     self.img_index += 1
@@ -52,3 +64,4 @@ class Eclipse:
         self.img_index = 0
         self.is_animating = False
         self.last_update = 0
+        self.fade = 0

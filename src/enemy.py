@@ -29,6 +29,7 @@ class Enemy(Entity):
         self.image = pg.transform.scale(small_image, (self.width, self.height))
 
         self.rect = self.image.get_rect(topleft=(x, y))
+        self.rect.center = (x, y)
 
         self.feet = pg.Rect(0, 0, self.rect.width // 2, 12)
         self.feet.midbottom = self.rect.midbottom
