@@ -1,4 +1,6 @@
 import pygame as pg
+from waves import Waves
+from utils_wave import get_enemies_of_waves
 
 class ScenarioManager:
     def __init__(self):
@@ -59,7 +61,7 @@ class ScenarioManager:
                             elif self.step == 1 and not self.memories.get("salle2_intro"):
                                 self.start_dialog([
                                     ("Narrateur", "le Sujet 0 pénétra dans ???. L'air y était lourd, étouffant."),
-                                    ("Narrateur", "Les sentinelles mutantes l'attendaient de pied ferme."),
+                                    ("Narrateur", "Les robots sentinelles l'attendaient de pied ferme."),
                                 ])
                                 self.memories["salle2_intro"] = True
                                 self.zone_past.append(zone_rect)
@@ -97,6 +99,7 @@ class ScenarioManager:
                         ("Narrateur", "Le Sujet 0 frappa. L'ombre esquiva. Mais la horde\nne faisait que commencer. "),
                     ])
                     # game.enemies.add( Enemy(...) )
+                    game.start_waves_s2()
                     self.memories["s2_wave1"] = True
                     
                 elif len(game.waves.get_current_enemies()) <= 0 and self.memories.get("s2_wave1"):
