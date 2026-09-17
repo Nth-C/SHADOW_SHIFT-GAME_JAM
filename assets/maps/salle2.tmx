@@ -217,8 +217,8 @@
   <object id="120" type="ombre" x="665.328" y="446.42" width="6.69152" height="196.922"/>
   <object id="121" name="lampe" type="collision" x="290.603" y="513.335" width="92.7254" height="61.1796"/>
   <object id="122" type="collision" x="772.393" y="130.007" width="54.4881" height="94.6372"/>
-  <object id="123" type="collision" x="803.938" y="237.071" width="26.7661" height="114.712"/>
-  <object id="124" type="collision" x="544.881" y="261.925" width="94.6372" height="56.4"/>
+  <object id="123" name="lampe" type="collision" x="803.938" y="237.071" width="26.7661" height="114.712"/>
+  <object id="124" name="lampe" type="collision" x="544.881" y="261.925" width="94.6372" height="56.4"/>
   <object id="125" name="switch_map" type="switch_map" x="448" y="0" width="96" height="96">
    <properties>
     <property name="target_map" value="salle3"/>
