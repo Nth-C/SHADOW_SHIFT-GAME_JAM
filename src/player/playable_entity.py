@@ -9,7 +9,7 @@ from enums.direction import Direction
 # class parent de body et shadow
 class PlayableEntity(Entity):
     def __init__(self, x: int, y:int):
-        super().__init__(x, y, color=(0, 255, 0), width=25, height=50, hp=100, attack=20, speed=4, energy=100, health=100);
+        super().__init__(x, y, width=25, height=50, hp=100, attack=20, speed=4, energy=100, health=100);
 
         self.keypress_history: list[int] = []; # liste des touche qui sont actuellement presser
         self.current_dir_x: Direction = Direction.RIGHT; # direction dans laquel le joueur est

@@ -1,6 +1,7 @@
 import pygame as pg
-
 from enemies.enemies_entity import EnemiesEntity
+from enums.direction import Direction
+
 
 class Boss(EnemiesEntity):
     def __init__(self, x: int, y: int, width: int = 128, height: int = 128, hp: int = 200, attack: int = 20, speed: int = 1, aggro_range: int = 300):
@@ -13,10 +14,10 @@ class Boss(EnemiesEntity):
         ch = 506
 
         self.images = {
-            'down':  self.get_image(0, 0, cw, ch),
-            'left':  self.get_image(518, 0, cw, ch),
-            'right': self.get_image(0, 518, cw, ch),
-            'up':    self.get_image(518, 5138, cw, ch),
+            Direction.DOWN: self.get_image(0, 0, cw, ch),
+            Direction.LEFT: self.get_image(518, 0, cw, ch),
+            Direction.RIGHT: self.get_image(0, 518, cw, ch),
+            Direction.UP: self.get_image(518, 5138, cw, ch),
         }
 
         self.image = self.images[self.current_direction]
