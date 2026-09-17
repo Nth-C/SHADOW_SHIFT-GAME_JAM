@@ -317,6 +317,12 @@ class Playing:
         # zoom
         screen_zoom = pg.transform.scale(self.fake_screen, (1024, 768))
         self.screen.display.blit(screen_zoom, (0, 0))
+
+        # filtre noir eclipse fin
+        if self.eclipse.fade > 0:
+            black_filter = pg.Surface((1024, 768), pg.SRCALPHA)
+            black_filter.fill((0, 0, 0, int(self.eclipse.fade)))
+            self.screen.display.blit(black_filter, (0, 0))
             
         # hud
         self.hud.draw(self.screen.display, self.player)
