@@ -161,22 +161,22 @@
   <object id="97" name="ennemi 8" x="751.387" y="488.387">
    <point/>
   </object>
-  <object id="98" name="ennemi 9" x="506.739" y="558.47">
+  <object id="98" name="ennemi 9" x="519.408" y="559.525">
    <point/>
   </object>
   <object id="99" name="ennemi 10" x="751.014" y="620.187">
    <point/>
   </object>
-  <object id="101" name="ennemi 1" x="397.039" y="245.897">
+  <object id="101" name="ennemi 1" x="387.538" y="244.841">
    <point/>
   </object>
-  <object id="102" name="ennemi 4" x="203.738" y="405.028">
+  <object id="102" name="ennemi 4" x="203.738" y="420.864">
    <point/>
   </object>
   <object id="104" name="ennemi 3" x="213.353" y="234.47">
    <point/>
   </object>
-  <object id="105" name="ennemi 5" x="388.169" y="450.494">
+  <object id="105" name="ennemi 5" x="377.612" y="464.218">
    <point/>
   </object>
   <object id="107" name="ennemi 6" x="252.979" y="596.4">
@@ -185,19 +185,19 @@
   <object id="108" name="ennemi 13" x="740.291" y="294.507">
    <point/>
   </object>
-  <object id="109" name="ennemi 11" x="421.637" y="501.974">
+  <object id="109" name="ennemi 11" x="419.525" y="527.312">
    <point/>
   </object>
-  <object id="110" name="ennemi 12" x="515.876" y="302.745">
+  <object id="110" name="ennemi 12" x="514.82" y="302.745">
    <point/>
   </object>
-  <object id="112" name="ennemi 14" x="604.186" y="227.706">
+  <object id="112" name="ennemi 14" x="592.572" y="232.985">
    <point/>
   </object>
   <object id="113" name="ennemi 7" x="596.664" y="509.673">
    <point/>
   </object>
-  <object id="114" name="ennemi 2" x="757.498" y="550.951">
+  <object id="114" name="ennemi 2" x="806.062" y="556.229">
    <point/>
   </object>
   <object id="157" type="collision" x="128" y="192" width="32" height="480"/>

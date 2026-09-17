@@ -87,23 +87,29 @@ class Menu:
 
     # affiche l'ecran des credits
     def draw_credits(self, screen: Screen):
-        screen.display.fill((20, 20, 40))
+        screen.display.fill((20, 20, 30))
 
         title_surf = self.font_title.render("CREDITS", True, (255, 255, 255))
         title_rect = title_surf.get_rect(center=(1024 // 2, 768 // 6))
         screen.display.blit(title_surf, title_rect)
 
         credits_lines = [
-            "Realisé par",
+            "Realisé par :",
             "Rayan Tata, Nathan Coeurdevey,",
             "Mathieu Macaud, Enzo Galiano et Thomas Demarcq",
             "",
             "Assets audio :",
             "Pack audio par Chequered Ink",
+            "",
+            "Asset viuel :",
+            "https://marceles.itch.io/land-of-pixels-laboratory-tileset-pixel-art",
+            "",
+            "Sprite :",
+            "Généré avec Gemini",
         ]
 
         start_y = 768 // 3
-        line_height = 40
+        line_height = 30
 
         for i, line in enumerate(credits_lines):
             line_surf = self.font_instruction.render(line, True, (0, 255, 200))
