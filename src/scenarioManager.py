@@ -80,6 +80,8 @@ class ScenarioManager:
                                 self.zone_past.append(zone_rect)
                                 self.wave = 1
 
+                                game.spawn_entities_at_sun()
+
                 else:
                     if zone_type == 'wave_exit':
                         self.memories['touche_wall'] = False
