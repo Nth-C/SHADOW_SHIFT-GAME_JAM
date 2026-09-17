@@ -78,7 +78,7 @@ class Body(PlayableEntity):
                 distance_left = value
                 while distance_left > 0:
                     distance = min(step, distance_left)
-                    if not self.move_axis(
+                    if not self._move_axis(
                         direction_x * distance,
                         direction_y * distance,
                         walls,

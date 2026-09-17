@@ -2,9 +2,10 @@ import pygame as pg
 from pygame.event import Event
 import constants.game_states as game_constants
 import constants.settings as settings_constants
+import math
 from enemy import Enemy
 from hud.hud import HudManager
-from light import render_lights
+from light import render_lights, _iter_light_sources
 from map import Map
 from player.body import Body
 from player.shadow import Shadow
@@ -55,7 +56,7 @@ class Playing:
 
         self.scroll = Scroll()
         self.fake_screen = pg.Surface((1024 // self.zoom, 768 // self.zoom))
-        self.light_surface = pg.Surface(self.screen.get_size(), pg.SRCALPHA)
+        self.light_surface = pg.Surface((1024 // self.zoom, 768 // self.zoom), pg.SRCALPHA)
 
         self.scenario = ScenarioManager()
 
@@ -207,6 +208,19 @@ class Playing:
                         self.spawn_entities_at_player()
                         self.entity_active = self.player
 
+        if self.entity_active == self.shadow and not self.player.capacity_active:
+            self.entity_active = self.player
+
+        if self.entity_active == self.shadow:
+            shadow_x, shadow_y = self.shadow.rect.center
+            for lampe_x, lampe_y, rayon in _iter_light_sources(self.map.tmx_data):
+                if math.hypot(lampe_x - shadow_x, lampe_y - shadow_y) <= rayon:
+                    self.player.toggle_capacity()
+                    self.entity_active = self.player
+                    self.player.reset_movement()
+                    self.shadow.reset_movement()
+                    break
+
         # mort
         if self.player.hp <= 0:
             self.sound.play_death()
@@ -240,14 +254,14 @@ class Playing:
         # map
         self.map.draw(self.scroll, self.fake_screen, mur_bas_rects=self.mur_bas_rects, draw_foreground=True)
 
-        # zoom
-        screen_zoom = pg.transform.scale(self.fake_screen, (1024, 768))
-        self.screen.display.blit(screen_zoom, (0, 0))
-
         # light
         self.light_surface.fill((0, 0, 0, 0))
         render_lights(self.light_surface, self.map.tmx_data, camera_offset=(self.scroll.x, self.scroll.y))
-        self.screen.display.blit(self.light_surface, (0, 0), special_flags=pg.BLEND_RGB_ADD)
+        self.fake_screen.blit(self.light_surface, (0, 0))
+
+        # zoom
+        screen_zoom = pg.transform.scale(self.fake_screen, (1024, 768))
+        self.screen.display.blit(screen_zoom, (0, 0))
             
         # hud
         self.hud.draw(self.screen.display, self.player)
