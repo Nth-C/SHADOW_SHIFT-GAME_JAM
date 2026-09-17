@@ -1,5 +1,6 @@
 import pygame as pg
 from waves import Waves
+from boss import Boss
 from utils_wave import get_enemies_of_waves
 from utils_wave import get_enemies_of_waves
 
@@ -80,6 +81,8 @@ class ScenarioManager:
                                 self.zone_past.append(zone_rect)
                                 self.wave = 1
 
+                                game.spawn_entities_at_sun()
+
                 else:
                     if zone_type == 'wave_exit':
                         self.memories['touche_wall'] = False
@@ -154,10 +157,8 @@ class ScenarioManager:
                         ("Narrateur", "..."),
                         ("Narrateur", "Un bruit sourd se rapprocha du joueur.")
                     ])
-                    from boss import Boss
-                    boss_obj = game.map.tmx_data.get_object_by_name("boss")
                     
-                    import pygame as pg
+                    boss_obj = game.map.tmx_data.get_object_by_name("boss")
                     boss_wave = pg.sprite.Group()
                     boss_wave.add(Boss(boss_obj.x, boss_obj.y, 128, 128))
                     
@@ -192,8 +193,6 @@ class ScenarioManager:
             elif self.memories.get("conclusion") and not self.is_dialog_playing():
                 self.step = 4
 
-        elif self.step == 4:
-            game.game_constants.CREDITS
 
 
         if not was_playing and self.is_dialog_playing(): 

@@ -61,7 +61,7 @@ class Playing:
 
         self.scenario = ScenarioManager()
 
-        self.eclipse = Eclipse(1024 // 2, 768 // 2)
+        self.eclipse = Eclipse(-5000, -5000)
 
     # evenement du player
     def handle_event(self, event: Event) -> None:
@@ -163,6 +163,10 @@ class Playing:
             if obj.type in blocked_shadow_types
         ]
 
+    def spawn_entities_at_sun(self):
+        sun_position = self.map.tmx_data.get_object_by_name("soleil")
+        self.eclipse = Eclipse(sun_position.x, sun_position.y)
+
     def spawn_entities_at_player(self):
         player_position = self.map.tmx_data.get_object_by_name("player")
         self.player = Body(player_position.x, player_position.y)
@@ -189,12 +193,6 @@ class Playing:
             self.background_galaxy,
             (1024 // self.zoom, 768 // self.zoom)
         )
-
-    def start_waves_s2(self):
-        wave_1 = get_enemies_of_waves(self, 1, 9, 7)
-
-        self.waves = Waves([wave_1])
-        self.waves.start_wave()
 
     def respawn_player(self):
         self.map.switch_map("spawn")
@@ -274,6 +272,10 @@ class Playing:
             self.sound.play_death()
             return game_constants.GAME_OVER
 
+        # fin / crédit
+        if self.scenario.step == 4:
+            return game_constants.CREDITS
+
         # continuer le jeu
         return game_constants.PLAYING
 
@@ -285,7 +287,7 @@ class Playing:
 
         self.map.draw(self.scroll, self.fake_screen, mur_bas_rects=self.mur_bas_rects, draw_foreground=False)
 
-        if self.eclipse.is_animating:
+        if self.eclipse.rect.x > -4000:
             self.eclipse.draw(self.fake_screen, self.scroll)
 
         if self.player.capacity_active:
