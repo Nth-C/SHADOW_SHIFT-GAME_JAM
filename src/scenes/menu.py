@@ -70,15 +70,19 @@ class Menu:
         screen.display.blit(inst_surf, inst_rect)
 
     # affiche l'ecran de fin
-    def draw_end(self, screen: Screen):
+    def draw_end(self, screen: Screen, time: str):
         screen.display.fill((20, 20, 40))
 
         title_surf = self.font_title.render("VICTOIRE", True, (255, 255, 255))
         title_rect = title_surf.get_rect(center=(1024 // 2, 768 // 3))
         screen.display.blit(title_surf, title_rect)
 
+        final_time = self.font_instruction.render(f"Temps de jeu : {time}", True, (255, 255, 255))
+        time_rect = final_time.get_rect(center=(1024 // 2, 768 // 2 - 20)) 
+        screen.display.blit(final_time, time_rect)
+
         inst_surf = self.font_instruction.render("Appuyez sur ESPACE pour retourner au menu", True, (0, 255, 200))
-        inst_rect = inst_surf.get_rect(center=(1024 // 2, 768 // 2))
+        inst_rect = inst_surf.get_rect(center=(1024 // 2, 768 // 2 + 50))
         screen.display.blit(inst_surf, inst_rect)
 
     # affiche l'ecran des credits

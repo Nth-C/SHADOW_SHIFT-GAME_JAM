@@ -1,5 +1,6 @@
 import math
 
+
 import pygame as pg
 from pygame.event import Event
 
@@ -17,6 +18,7 @@ from scenarioManager import ScenarioManager
 from screen import Screen
 from scroll import Scroll
 from sound import Sound
+from timer import Timer
 from utils_wave import get_enemies_of_waves
 from waves import Waves
 
@@ -62,6 +64,9 @@ class Playing:
         self.scenario = ScenarioManager()
 
         self.eclipse = Eclipse(-5000, -5000)
+
+        self.game_timer = Timer()
+        self.game_timer.start()
 
     # evenement du player
     def handle_event(self, event: Event) -> None:
@@ -213,6 +218,8 @@ class Playing:
         self.eclipse.reset()
         self.scenario.reset()
 
+        self.game_timer.start()
+
     def update(self) -> str:
         if self.entity_active.is_attacking:
             zone_attaque = self.entity_active.get_attack_range()
@@ -275,11 +282,13 @@ class Playing:
 
         # mort
         if self.player.hp <= 0:
+            self.game_timer.stop()
             self.sound.play_death()
             return game_constants.GAME_OVER
 
         # fin / crédit
         if self.scenario.step == 4:
+            self.game_timer.stop()
             return game_constants.CREDITS
 
         # continuer le jeu
