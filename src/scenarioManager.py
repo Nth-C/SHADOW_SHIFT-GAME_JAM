@@ -1,6 +1,7 @@
 import pygame as pg
 from waves import Waves
 from utils_wave import get_enemies_of_waves
+from utils_wave import get_enemies_of_waves
 
 class ScenarioManager:
     def __init__(self):
@@ -101,7 +102,6 @@ class ScenarioManager:
                     self.start_dialog([
                         ("Narrateur", "Le Sujet 0 frappa. L'ombre esquiva. Mais la horde\nne faisait que commencer."),
                     ])
-                    from utils_wave import get_enemies_of_waves
                     game.waves.list_of_waves.append(get_enemies_of_waves(game, 1, 14, 4))
                     game.waves.is_active = True
                     self.memories["s2_wave1"] = True
