@@ -67,3 +67,5 @@ class Eclipse:
         self.is_animating = False
         self.last_update = 0
         self.fade = 0
+        self.rect.x = -4000
+        self.rect.y = -4000

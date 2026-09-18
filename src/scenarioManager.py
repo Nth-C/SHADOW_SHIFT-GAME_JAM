@@ -89,6 +89,10 @@ class ScenarioManager:
                                             "Sujet 0",
                                             "Maintenant, il faut que je trouve un moyen d'accéder\nà la salle du soleil pour éteindre la source d'énergie\ndu laboratoire.",
                                         ),
+                                        (
+                                            "Tutoriel",
+                                            "MAppuyez sur [F] pour attaquer des énemies.",
+                                        ),
                                     ]
                                 )
                                 self.memories["salle1_exit"] = True
