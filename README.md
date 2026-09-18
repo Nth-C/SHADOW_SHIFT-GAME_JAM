@@ -9,6 +9,10 @@
 ## Lancement du jeu 
 
 ```bash
-./run.sh
+./run.sh 
+
+ou 
+
+make start
 ```
  
